@@ -383,12 +383,14 @@
 
       
         
-          
-            <p>记得以前自己写数据统计接口时，遇到一个根据选择的月份，查询出每天的用户登录情况的要求，由于每个月份的天数不同，不能按照固定天数来查。<br>经过查阅之后找到了如下的方式：</p>
-<h3 id="使用union和日期函数构造一个左表"><a href="#使用union和日期函数构造一个左表" class="headerlink" title="使用union和日期函数构造一个左表"></a>使用union和日期函数构造一个左表</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">SELECT ADDDATE(y.first, x.d - <span class="number">1</span>) <span class="keyword">as</span> dd  </span><br><span class="line">  FROM</span><br><span class="line">	(SELECT <span class="number">1</span> AS d UNION ALL SELECT <span class="number">2</span> UNION ALL SELECT <span class="number">3</span> UNION ALL SELECT <span class="number">4</span>   </span><br><span class="line">		UNION ALL SELECT <span class="number">5</span> UNION ALL SELECT <span class="number">6</span> UNION ALL SELECT <span class="number">7</span> UNION ALL  </span><br><span class="line">		SELECT <span class="number">8</span> UNION ALL SELECT <span class="number">9</span> UNION ALL SELECT <span class="number">10</span> UNION ALL SELECT <span class="number">11</span>   </span><br><span class="line">		UNION ALL SELECT <span class="number">12</span> UNION ALL SELECT <span class="number">13</span> UNION ALL SELECT <span class="number">14</span> UNION ALL  </span><br><span class="line">		SELECT <span class="number">15</span> UNION ALL SELECT <span class="number">16</span> UNION ALL SELECT <span class="number">17</span> UNION ALL SELECT <span class="number">18</span>   </span><br><span class="line">		UNION ALL SELECT <span class="number">19</span> UNION ALL SELECT <span class="number">20</span> UNION ALL SELECT <span class="number">21</span> UNION ALL  </span><br><span class="line">		SELECT <span class="number">22</span> UNION ALL SELECT <span class="number">23</span> UNION ALL SELECT <span class="number">24</span> UNION ALL SELECT <span class="number">25</span>  </span><br><span class="line">		UNION ALL SELECT <span class="number">26</span> UNION ALL SELECT <span class="number">27</span> UNION ALL SELECT <span class="number">28</span> UNION ALL  </span><br><span class="line">		SELECT <span class="number">29</span> UNION ALL SELECT <span class="number">30</span> UNION ALL SELECT <span class="number">31</span> ) x,  </span><br><span class="line">		(SELECT CONCAT(<span class="string">"2019-02"</span>,<span class="string">'-01'</span>) <span class="keyword">as</span> FIRST, DAY(LAST_DAY(STR_TO_DATE(<span class="string">"2019-02"</span>,<span class="string">'%Y-%m'</span>))) AS last) y  </span><br><span class="line">	WHERE x.d &lt;= y.last</span><br></pre></td></tr></table></figure>
-<p>结果如下:<br><img src="/images/2019-04-22.png" alt="Alt"></p>
-
-          
+          <p>记得以前自己写数据统计接口时，遇到一个根据选择的月份，查询出每天的数据的要求，由于每个月份的天数不同，不能按照固定天数来查。<br>经过查阅之后找到了如下的方式：<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/04/22/mysql下获取某月的每一天/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
