@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[docker-alpine镜像安装字体库]]></title>
+    <url>%2F2019%2F07%2F07%2Fdocker-alpine%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85%E5%AD%97%E4%BD%93%E5%BA%93%2F</url>
+    <content type="text"><![CDATA[记录下前不久在制作镜像时踩的一个坑。（镜像的主要功能是，发送一个图片地址和中文名称。然后将微软雅黑字体作为签字写到图片上并返回。） openjdk与oraclejdk为了减小镜像的大小，我使用了alpine镜像。开始我的dockerfile如下：12345FROM java:8-alpineUSER rootRUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtimeCOPY target/image-sign.jar image-sign.jarENTRYPOINT ["java","-jar","image-sign.jar"] 使用docker build时候成功的制作了镜像。诶？好像看起来没什么问题啊？docker run启动容器。然后访问接口：空指针？程序不是好好的么。怎么放到镜像就出现这个问题了。仔细一查，发现是因为openjdk的原因,openjdk是开源的，在oracle接手之后，两者的内容已经有些区别了。From java:8-alpine这一句，下载的是openjdk8，而我需要的是oraclejdk8.于是换成了FROM anapsix/alpine-java之后就ok了 linux字体库的锅修改为oraclejdk后，镜像能够正常运行了，但是,我转入的中文却不能正常显示:此时在网上翻阅到的是说缺少字体。但linux下是没有微软雅黑、宋体这些字体的。但我按照他们的方式却怎么也安装不成功,最后找到的解决办法如下：1.将windows下的字体找到，复制出来。宋体为simsun.ttc,需要改后缀名为ttf，微软雅黑为msyf.tff。2.编辑dockerfile为如下即可：12345678910FROM anapsix/alpine-javaRUN echo "http://mirror.math.princeton.edu/pub/alpinelinux/v3.8/main" &gt; /etc/apk/repositories \ &amp;&amp; echo "http://mirror.math.princeton.edu/pub/alpinelinux/v3.8/community" &gt;&gt; /etc/apk/repositories \ &amp;&amp; apk add ttf-dejavu fontconfig \ &amp;&amp; rm -rf /var/cache/apk/* \ &amp;&amp; ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \ &amp;&amp; echo "Asia/Shanghai" &gt; /etc/timezone COPY target/image-sign.jar image-sign.jarCOPY ttf/* /usr/share/fonts/ENTRYPOINT ["java","-jar","image-sign.jar"] 这里做下解释，apk是alpine系统的安装工具，类似centos的yum与ubuntu系统的apt-get，前两句echo是更改apk安装的镜像地址，不清楚是资源的问题还是啥，在我没有改这个的时候。一直安装不成功。具体可见github的这个issues：apk WARNING Ignoring APKINDEX No such file or director 当然，这个办法也是在issue里找到的= =，github还是解决问题的好地方啊~，之后的apk add ttf-dejavu fontconfig是为容器安装字体库，同时删除安装包(减小镜像大小)。COPY ttf/* /usr/share/fonts/ 将从windows下拿到的字体文件放入docker镜像内，问题解决~]]></content>
+      <categories>
+        <category>docker</category>
+      </categories>
+      <tags>
+        <tag>笔记</tag>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[分布式笔记(一)]]></title>
     <url>%2F2019%2F05%2F28%2F%E5%88%86%E5%B8%83%E5%BC%8F%E7%AC%94%E8%AE%B0(%E4%B8%80)%2F</url>
     <content type="text"><![CDATA[从单机应用war包，到多机部署产生的问题：1.session跨域 session sticky session replication session 集中存储（redis等） cookie 逆向思维，由客户端来存储 2.请求转发，如何平均的请求到每一台机器上(负载均衡) Apache Nginx （http负载均衡支持很好） haproxy （tcp/ip界的老牌负载均衡器） lvs (不支持虚拟化) 由数据库读写瓶颈锁带来的，从单体数据库到读写分离产生的问题 数据库读写分离如何操作（读写分离配置） 读与写之间如何同步 （同步不及时？一致性与可用性） 数据库操作如何路由，什么操作用读库，什么操作用写库（mycat） 数据量过大的情况，如何实现高效率搜索搜索引擎也带来一个问题，如何进行数据同步？数据增量？全量同步？集群健康？ Elasticsearch solr lucene 持续性大量访问，数据库无法承受带来的问题使用缓存(redis、memcache)，降低数据库的直接大量访问，缓存集群（缓存的雪崩、击穿、穿透、数据不一致）限流、降级、熔断（高可用的保护措施） 数据库瓶颈的再延伸——数据库集群的使用 mysql的pxc集群（高可用，强一致性），replication集群 随异步处理，解耦，削峰而产生的—-&gt;消息队列 rabbitmq kafka activemq rocketmq 前后端分离，静态文件—CDN服务器的使用 应用拆分——&gt;微服务 服务注册 负载均衡 RPC远程调用 配置中心 路由规则 链路追踪]]></content>
@@ -41,8 +53,8 @@
         <category>并发</category>
       </categories>
       <tags>
-        <tag>java基础</tag>
         <tag>并发</tag>
+        <tag>java基础</tag>
       </tags>
   </entry>
   <entry>
@@ -54,17 +66,6 @@
       </categories>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[最终我还是将fate游戏玩了一遍]]></title>
-    <url>%2F2019%2F04%2F21%2Ffate%E6%B8%B8%E6%88%8F%2F</url>
-    <content type="text"><![CDATA[占个坑，慢慢填]]></content>
-      <categories>
-        <category>游戏</category>
-      </categories>
-      <tags>
-        <tag>另一个次元</tag>
       </tags>
   </entry>
   <entry>
