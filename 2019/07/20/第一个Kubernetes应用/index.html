@@ -94,12 +94,12 @@
 <meta property="og:site_name" content="北方轻巡舰的博客">
 <meta property="og:description" content="使用小细节从节点上使用kubectl时，如果出现   1The connection to the server localhost:8080 was refused - did you specify the right host or port?">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://note.youdao.com/yws/api/group/102464226/file/444043641?method=download&inline=true&version=1&shareToken=C9F17862CB4B42C0A4A60EB8AE4E995E">
-<meta property="og:updated_time" content="2019-07-20T07:46:41.007Z">
+<meta property="og:image" content="http://yoursite.com/images/image-sign-test.png">
+<meta property="og:updated_time" content="2019-07-20T14:58:14.705Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="第一个kubernetes应用">
 <meta name="twitter:description" content="使用小细节从节点上使用kubectl时，如果出现   1The connection to the server localhost:8080 was refused - did you specify the right host or port?">
-<meta name="twitter:image" content="https://note.youdao.com/yws/api/group/102464226/file/444043641?method=download&inline=true&version=1&shareToken=C9F17862CB4B42C0A4A60EB8AE4E995E">
+<meta name="twitter:image" content="http://yoursite.com/images/image-sign-test.png">
 
 
 
@@ -426,7 +426,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod -l app=image-sign</span><br><span class="line">NAME                                     READY   STATUS    RESTARTS   AGE</span><br><span class="line">image-sign-deployment-59948dd446-8n8l7   1/1     Running   0          16s</span><br><span class="line">image-sign-deployment-59948dd446-fsbdj   1/1     Running   0          16s</span><br></pre></td></tr></table></figure>
 <p>查看其中一个pod的相关属性：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">kubectl describe pod image-sign-deployment-59948dd446-8n8l7</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Node:           node2/192.168.110.131</span><br><span class="line"></span><br><span class="line">Status:         Running</span><br><span class="line">IP:             10.244.1.40</span><br><span class="line"></span><br><span class="line">Events:</span><br><span class="line">  Type    Reason     Age   From               Message</span><br><span class="line">  ----    ------     ----  ----               -------</span><br><span class="line">  Normal  Scheduled  108s  default-scheduler  Successfully assigned default/image-sign-deployment-59948dd446-8n8l7 to node2</span><br><span class="line">  Normal  Pulled     107s  kubelet, node2     Container image &quot;image-sign&quot; already present on machine</span><br><span class="line">  Normal  Created    107s  kubelet, node2     Created container image-sign</span><br><span class="line">  Normal  Started    106s  kubelet, node2     Started container image-sign</span><br></pre></td></tr></table></figure>
-<p>可以看到IP信息为10.244.1.40，接下来使用postman进行测试：<br><img src="https://note.youdao.com/yws/api/group/102464226/file/444043641?method=download&amp;inline=true&amp;version=1&amp;shareToken=C9F17862CB4B42C0A4A60EB8AE4E995E" alt="image"></p>
+<p>可以看到IP信息为10.244.1.40，接下来使用postman进行测试：<br><img src="/images/image-sign-test.png" alt="image"></p>
 <h2 id="大功告成！！！ヽ-・∀・-ノ"><a href="#大功告成！！！ヽ-・∀・-ノ" class="headerlink" title="大功告成！！！ヽ(・∀・)ノ"></a>大功告成！！！ヽ(・∀・)ノ</h2><h3 id="Tips补充"><a href="#Tips补充" class="headerlink" title="Tips补充"></a>Tips补充</h3><p>在kubernetes中拉取镜像有如下三种策略，可以通过imagePullPolicy进行设置</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Never                          ---- 从不拉取，只使用已有镜像</span><br><span class="line">Always                         ---- 总是拉取 </span><br><span class="line">IfNotPresent                   ---- 当本地不存在时拉取</span><br></pre></td></tr></table></figure>
 <p>目前版本的kubernetes默认使用的是IfNotPresent，但在没有标明镜像的tag时，如 image: nginx 这种写法会采用Always的方式进行拉取。</p>
@@ -471,6 +471,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/20/kubernetes集群组件介绍/" rel="prev" title="kubernetes集群组件介绍">
+                kubernetes集群组件介绍 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -551,7 +555,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
