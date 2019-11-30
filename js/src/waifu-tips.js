@@ -12,22 +12,22 @@ function initWidget(waifuPath, apiPath) {
 			<canvas id="live2d" width="300" height="300"></canvas>
 			<div id="waifu-tool">
 				<span class="fa fa-lg fa-comment"></span>
-				<span class="fa fa-lg fa-paper-plane"></span>
-				<!-- <span class="fa fa-lg fa-user-circle"></span> -->
-				<!-- <span class="fa fa-lg fa-street-view"></span> -->
+				<!--<span class="fa fa-lg fa-paper-plane"></span>-->
+				 <span class="fa fa-lg fa-user-circle"></span> 
+				 <span class="fa fa-lg fa-street-view"></span> 
 				<span class="fa fa-lg fa-camera-retro"></span>
 				<!-- <span class="fa fa-lg fa-info-circle"></span> -->
 				<span class="fa fa-lg fa-times"></span>
 			</div>
 		</div>`);
 	$("#waifu-tool .fa-comment").click(showHitokoto);
-	$("#waifu-tool .fa-paper-plane").click(function() {
-		var s = document.createElement("script");
-		document.body.appendChild(s);
-		s.src = "https://galaxymimi.com/js/asteroids.js";
-	});
-	//$("#waifu-tool .fa-user-circle").click(loadOtherModel);
-	//$("#waifu-tool .fa-street-view").click(loadRandModel);
+	//$("#waifu-tool .fa-paper-plane").click(function() {
+	//	var s = document.createElement("script");
+	//	document.body.appendChild(s);
+	//	s.src = "https://galaxymimi.com/js/asteroids.js";
+	//});
+	$("#waifu-tool .fa-user-circle").click(loadOtherModel);
+	$("#waifu-tool .fa-street-view").click(loadRandModel);
 	$("#waifu-tool .fa-camera-retro").click(function() {
 		showMessage("照好了嘛，是不是很可爱呢？", 6000, 9);
 		window.Live2D.captureName = "photo.png";

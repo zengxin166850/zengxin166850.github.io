@@ -94,13 +94,13 @@
 <meta property="og:site_name" content="北方轻巡舰的博客">
 <meta property="og:description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://note.youdao.com/yws/api/group/102464226/file/444057110?method=download&inline=true&version=1&shareToken=1C86D8103A804C8C9EC5F3BEAC80EDF4">
-<meta property="og:image" content="https://note.youdao.com/yws/api/group/102464226/file/444057194?method=download&inline=true&version=1&shareToken=E548281B2247432CB26521AB18AF63AE">
-<meta property="og:updated_time" content="2019-07-20T15:08:11.174Z">
+<meta property="og:image" content="http://yoursite.com/images/kubernetes-component.png">
+<meta property="og:image" content="http://yoursite.com/images/modeganqing.jpg">
+<meta property="og:updated_time" content="2019-11-30T11:18:24.367Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes集群组件介绍">
 <meta name="twitter:description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。">
-<meta name="twitter:image" content="https://note.youdao.com/yws/api/group/102464226/file/444057110?method=download&inline=true&version=1&shareToken=1C86D8103A804C8C9EC5F3BEAC80EDF4">
+<meta name="twitter:image" content="http://yoursite.com/images/kubernetes-component.png">
 
 
 
@@ -387,35 +387,35 @@
       
 
       
-        <p>一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。<br><a id="more"></a></p>
-<h3 id="系统组件图"><a href="#系统组件图" class="headerlink" title="系统组件图"></a>系统组件图</h3><p><img src="https://note.youdao.com/yws/api/group/102464226/file/444057110?method=download&amp;inline=true&amp;version=1&amp;shareToken=1C86D8103A804C8C9EC5F3BEAC80EDF4" alt="image"></p>
-<h4 id="Master-Node"><a href="#Master-Node" class="headerlink" title="Master Node"></a>Master Node</h4><p>Master节点主要由负责API服务的apiserver、负责容器编排的controller-manager、以及负责调度的scheduler组成。整个集群的持久化数据，由apiserver处理后，交由etcd进行管理。</p>
+        <p>一个<code>Kubernetes</code>集群，通常是由多个工作节点<code>Worker Node</code>加上一个集群控制者<code>Master</code>，以及集群状态存储系统<code>etcd</code>组成。<br><a id="more"></a></p>
+<h3 id="系统组件图"><a href="#系统组件图" class="headerlink" title="系统组件图"></a>系统组件图</h3><p><img src="/images/kubernetes-component.png" alt="image"></p>
+<h4 id="Master-Node"><a href="#Master-Node" class="headerlink" title="Master Node"></a>Master Node</h4><p><code>Master</code>节点主要由负责API服务的<code>apiserver</code>、负责容器编排的<code>controller-manager</code>、以及负责调度的<code>scheduler</code>组成。整个集群的持久化数据，由<code>apiserver</code>处理后，交由<code>etcd</code>进行管理。</p>
 <ul>
-<li><p>API server负责Restful风格的kubernetes API，负责接收、响应、校验发入集群的所有REST请求。</p>
+<li><p><code>API server</code>负责<code>Restful</code>风格的<code>kubernetes API</code>，负责接收、响应、校验发入集群的所有<code>REST</code>请求。</p>
 </li>
-<li><p>Controller Manager 负责维护集群的状态，包括很多资源的控制器，是保证 Kubernetes 声明式 API 工作的大脑，比如故障检测、自动扩展、滚动更新等。</p>
+<li><p><code>Controller Manager</code> 负责维护集群的状态，包括很多资源的控制器，是保证 <code>Kubernetes</code>声明式 API 工作的大脑，比如故障检测、自动扩展、滚动更新等。</p>
 </li>
-<li><p>Scheduler负责管理集群内各节点的资源状态。创建Pod时，根据合适的资源做出调度决策。在创建Pod的Events中可以看到，第一个Event便是Schedule。</p>
+<li><p><code>Scheduler</code>负责管理集群内各节点的资源状态。创建<code>Pod</code>时，根据合适的资源做出调度决策。在创建<code>Pod</code>的<code>Events</code>中可以看到，第一个<code>Event</code>便是<code>Schedule</code>。</p>
 </li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">kubectl describe pod image-sign-deployment-59948dd446-8n8l7</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Events:</span><br><span class="line">  Type    Reason     Age   From               Message</span><br><span class="line">  ----    ------     ----  ----               -------</span><br><span class="line">  Normal  Scheduled  108s  default-scheduler  Successfully assigned default/image-sign-deployment-59948dd446-8n8l7 to node2</span><br><span class="line">  Normal  Pulled     107s  kubelet, node2     Container image &quot;image-sign&quot; already present on machine</span><br><span class="line">  Normal  Created    107s  kubelet, node2     Created container image-sign</span><br><span class="line">  Normal  Started    106s  kubelet, node2     Started container image-sign</span><br></pre></td></tr></table></figure>
-<h4 id="Worker-Node"><a href="#Worker-Node" class="headerlink" title="Worker Node"></a>Worker Node</h4><p>在worker Node中，最重要的则是<strong>kubelet</strong>，<strong>它所负责的是与容器运行时打交道（如docker项目）</strong>。他们交互所依赖的，是一个称作CRI的远程调用接口，这个接口定义了容器运行时的各项核心操作。如启动一个容器所需的所有参数。  </p>
-<p>也正是因为CRI的存在，kubernetes并不关系用户部署的容器运行时是Docker亦或是其它的（但默认的是Docker），只要这个容器运行时能运行标准的镜像，它就能通过实现CRI接入到Kubernetes中。  </p>
-<p>具体的容器运行时，像Docker则一般通过OCI这个容器运行时规范，与底层的Linux操作系统进行交互。即：将CRI请求翻译成对Linux系统的调用，操作系统的NameSpace和CGroups等。</p>
-<p>此外，<strong>kubelet 还通过 gRPC 协议同一个叫作 Device Plugin 的插件进行交互</strong>。这个插件，是 Kubernetes 项目用来管理 GPU 等宿主机物理设备的主要组件，也<strong>是基于 Kubernetes 项目进行机器学习训练、高性能作业支持等工作必须关注的功能</strong>。</p>
-<p><strong>kubelet 的另一个重要功能，则是调用网络插件和存储插件为容器配置网络和持久化存储</strong>。这两个插件与 kubelet 进行交互的接口，分别是 CNI（Container Networking Interface）和 CSI（Container Storage Interface）。</p>
-<p>而kube-proxy，它所负责的是能够按需为Service资源对象创建iptables或ipvs规则。从而捕获访问当前访问Service的请求，将其转发至正确的Pod对象</p>
-<h4 id="核心附件"><a href="#核心附件" class="headerlink" title="核心附件"></a>核心附件</h4><p>kubernetes还需要依赖一组称为“附件”的组件来提供完整的功能。这些组件通常由第三方提供，运行在kubernetes集群上。</p>
+<h4 id="Worker-Node"><a href="#Worker-Node" class="headerlink" title="Worker Node"></a>Worker Node</h4><p>在<code>worker Node</code>中，最重要的则是<strong>kubelet</strong>，<strong>它所负责的是与容器运行时打交道（如docker项目）</strong>。他们交互所依赖的，是一个称作<code>CRI</code>的远程调用接口，这个接口定义了容器运行时的各项核心操作。如启动一个容器所需的所有参数。  </p>
+<p>也正是因为<code>CRI</code>的存在，<code>kubernetes</code>并不关系用户部署的容器运行时是<code>Docker</code>亦或是其它的（但默认的是<code>Docker</code>），只要这个容器运行时能运行标准的镜像，它就能通过实现<code>CRI</code>接入到<code>Kubernetes</code>中。  </p>
+<p>具体的容器运行时，像<code>Docker</code>则一般通过<code>OCI</code>这个容器运行时规范，与底层的<code>Linux</code>操作系统进行交互。即：将<code>CRI</code>请求翻译成对<code>Linux</code>系统的调用，操作系统的<code>NameSpace</code>和<code>CGroups</code>等。</p>
+<p>此外，<strong>kubelet 还通过 gRPC 协议同一个叫作 Device Plugin 的插件进行交互</strong>。这个插件，是 <code>Kubernetes</code> 项目用来管理 <code>GPU</code> 等宿主机物理设备的主要组件，也<strong>是基于 Kubernetes 项目进行机器学习训练、高性能作业支持等工作必须关注的功能</strong>。</p>
+<p><strong>kubelet 的另一个重要功能，则是调用网络插件和存储插件为容器配置网络和持久化存储</strong>。这两个插件与 <code>kubelet</code> 进行交互的接口，分别是 <code>CNI（Container Networking Interface）</code>和 <code>CSI（Container Storage Interface）</code>。</p>
+<p>而<code>kube-proxy</code>，它所负责的是能够按需为<code>Service</code>资源对象创建<code>iptables</code>或<code>ipvs</code>规则。从而捕获访问当前访问<code>Service</code>的请求，将其转发至正确的<code>Pod</code>对象</p>
+<h4 id="核心附件"><a href="#核心附件" class="headerlink" title="核心附件"></a>核心附件</h4><p><code>kubernetes</code>还需要依赖一组称为“附件”的组件来提供完整的功能。这些组件通常由第三方提供，运行在<code>kubernetes</code>集群上。</p>
 <ul>
-<li><p>CoreDNS 在Kubernetes集群中调度运行提供DNS服务的Pod，同一集群中的其他Pod可使用此DNS服务实现service name到 cluster IP的解析 。DNS服务是Kubernetes赖以实现服务发现的核心组件之一，默认情况下只会创建一个DNS Pod，在生产环境中我们需要对coredns进行扩容。 有两种方式：</p>
+<li><p><code>CoreDNS</code> 在<code>Kubernetes</code>集群中调度运行提供<code>DNS</code>服务的<code>Pod</code>，同一集群中的其他<code>Pod</code>可使用此<code>DNS</code>服务实现<code>service name</code>到 <code>cluster IP</code>的解析 。<code>DNS</code>服务是<code>Kubernetes</code>赖以实现服务发现的核心组件之一，默认情况下只会创建一个<code>DNS Pod</code>，在生产环境中我们需要对<code>coredns</code>进行扩容。 有两种方式：</p>
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">手动扩容 kubectl –namespace=kube-system scale deployment coredns –replicas=</span><br><span class="line">使用 DNS Horizontal Autoscaler</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>Kubernetes Dashboard： 一个Web UI,用于管理kubernetes集群中应用，以及集群自身。</p>
+<li><p><code>Kubernetes Dashboard</code>： 一个<code>Web UI</code>,用于管理<code>kubernetes</code>集群中应用，以及集群自身。</p>
 </li>
-<li><p>Ingress Controller： 暂时没学到相关内容。之后再来补充。</p>
+<li><p><code>Ingress Controller</code>： 暂时没学到相关内容。之后再来补充。</p>
 </li>
 </ul>
-<p><img src="https://note.youdao.com/yws/api/group/102464226/file/444057194?method=download&amp;inline=true&amp;version=1&amp;shareToken=E548281B2247432CB26521AB18AF63AE" alt="image"></p>
+<p><img src="/images/modeganqing.jpg" alt="image"></p>
 
       
     </div>
@@ -541,7 +541,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -552,7 +552,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -563,7 +563,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

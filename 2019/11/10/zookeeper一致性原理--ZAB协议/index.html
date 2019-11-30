@@ -95,12 +95,12 @@
 <meta property="og:description" content="1.什么是ZAB协议，ZAB协议介绍 ZAB 协议全称：Zookeeper Atomic Broadcast（Zookeeper 原子广播协议）。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://note.youdao.com/yws/api/group/102464226/file/449607376?method=download&inline=true&version=1&shareToken=92F0FC315E9F4C6D952CAC372113A4BF">
-<meta property="og:image" content="https://note.youdao.com/yws/api/group/102464226/file/449607847?method=download&inline=true&version=1&shareToken=8DE4693891624F8B99754C15D73FCA5E">
-<meta property="og:image" content="https://note.youdao.com/yws/api/group/102464226/file/449607861?method=download&inline=true&version=1&shareToken=40B80F022E72450E9E61118E9323D4A6">
-<meta property="og:image" content="https://note.youdao.com/yws/api/group/102464226/file/449607860?method=download&inline=true&version=1&shareToken=A61283CDC5744273A4BA42E8C88F6F31">
-<meta property="og:image" content="https://note.youdao.com/yws/api/group/102464226/file/449617056?method=download&inline=true&version=1&shareToken=181E888859644846B09862B7FE262E9C">
-<meta property="og:image" content="https://note.youdao.com/yws/api/group/102464226/file/449617057?method=download&inline=true&version=1&shareToken=E2EA779D02264ACBB45B37F85D52DEED">
-<meta property="og:updated_time" content="2019-11-10T14:20:55.491Z">
+<meta property="og:image" content="http://yoursite.com/images/zookeeper/zkzab1.png">
+<meta property="og:image" content="http://yoursite.com/images/zookeeper/zkzab2.png">
+<meta property="og:image" content="http://yoursite.com/images/zookeeper/zkzab3.png">
+<meta property="og:image" content="http://yoursite.com/images/zookeeper/zkzab4.png">
+<meta property="og:image" content="http://yoursite.com/images/zookeeper/zkzab5.png">
+<meta property="og:updated_time" content="2019-11-30T11:35:12.641Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="zookeeper一致性原理--ZAB协议(转)">
 <meta name="twitter:description" content="1.什么是ZAB协议，ZAB协议介绍 ZAB 协议全称：Zookeeper Atomic Broadcast（Zookeeper 原子广播协议）。">
@@ -392,46 +392,46 @@
 
       
         <h3 id="1-什么是ZAB协议，ZAB协议介绍"><a href="#1-什么是ZAB协议，ZAB协议介绍" class="headerlink" title="1.什么是ZAB协议，ZAB协议介绍"></a>1.什么是ZAB协议，ZAB协议介绍</h3><ol>
-<li><p>ZAB 协议全称：Zookeeper Atomic Broadcast（Zookeeper 原子广播协议）。<a id="more"></a></p>
+<li><p><code>ZAB</code> 协议全称：<code>Zookeeper Atomic Broadcast</code>（<code>Zookeeper</code> 原子广播协议）。<a id="more"></a></p>
 </li>
-<li><p>Zookeeper 是一个为分布式应用提供高效且可靠的分布式协调服务。在解决分布式一致性方面，Zookeeper 并没有使用 Paxos ，而是采用了 ZAB 协议。</p>
+<li><p><code>Zookeeper</code> 是一个为分布式应用提供高效且可靠的分布式协调服务。在解决分布式一致性方面，<code>Zookeeper</code> 并没有使用 <code>Paxos</code> ，而是采用了 <code>ZAB</code> 协议。</p>
 </li>
-<li><p>ZAB 协议定义：ZAB 协议是为分布式协调服务 Zookeeper 专门设计的一种支持 <strong>崩溃恢复</strong> 和 <strong>原子广播</strong> 协议。下面我们会重点讲这两个东西。</p>
+<li><p><code>ZAB</code> 协议定义：<code>ZAB</code> 协议是为分布式协调服务 <code>Zookeeper</code> 专门设计的一种支持 <strong>崩溃恢复</strong> 和 <strong>原子广播</strong> 协议。下面我们会重点讲这两个东西。</p>
 </li>
-<li><p>基于该协议，Zookeeper 实现了一种 <strong>主备模式</strong> 的系统架构来保持集群中各个副本之间数据一致性。具体如下图所示：<br><img src="https://note.youdao.com/yws/api/group/102464226/file/449607376?method=download&amp;inline=true&amp;version=1&amp;shareToken=92F0FC315E9F4C6D952CAC372113A4BF" alt="image"></p>
+<li><p>基于该协议，<code>Zookeeper</code> 实现了一种 <strong>主备模式</strong> 的系统架构来保持集群中各个副本之间数据一致性。具体如下图所示：<br><img src="https://note.youdao.com/yws/api/group/102464226/file/449607376?method=download&amp;inline=true&amp;version=1&amp;shareToken=92F0FC315E9F4C6D952CAC372113A4BF" alt="image"></p>
 </li>
 </ol>
-<p>上图显示了 Zookeeper 如何处理集群中的数据。所有客户端写入数据都是写入到 主进程（称为 Leader）中，然后，由 Leader 复制到备份进程（称为 Follower）中。从而保证数据一致性。从设计上看，和 Raft 类似。</p>
-<p>那么复制过程又是如何的呢？复制过程类似 2PC，ZAB 只需要 Follower 有一半以上返回 Ack 信息就可以执行提交，大大减小了同步阻塞。也提高了可用性。<br>简单介绍完，开始重点介绍 <strong>消息广播</strong> 和 <strong>崩溃恢复</strong>。整个 Zookeeper 就是在这两个模式之间切换。 简而言之，当 Leader 服务可以正常使用，就进入消息广播模式，当 Leader 不可用时，则进入崩溃恢复模式。</p>
-<h3 id="2-消息广播"><a href="#2-消息广播" class="headerlink" title="2.消息广播"></a>2.消息广播</h3><p>ZAB 协议的消息广播过程使用的是一个原子广播协议，类似一个二阶段提交过程。对于客户端发送的写请求，全部由 Leader 接收，Leader 将请求封装成一个事务 Proposal，将其发送给所有 Follower ，然后，根据所有 Follower 的反馈，如果超过半数成功响应，则执行 commit 操作（先提交自己，再发送 commit 给所有 Follwer）。</p>
+<p>上图显示了<code>Zookeeper</code> 如何处理集群中的数据。所有客户端写入数据都是写入到 主进程（称为 <code>Leader</code>）中，然后，由 <code>Leader</code> 复制到备份进程（称为 <code>Follower</code>）中。从而保证数据一致性。从设计上看，和 <code>Raft</code> 类似。</p>
+<p>那么复制过程又是如何的呢？复制过程类似 <code>2PC</code>，<code>ZAB</code> 只需要 <code>Follower</code> 有一半以上返回 <code>Ack</code> 信息就可以执行提交，大大减小了同步阻塞。也提高了可用性。<br>简单介绍完，开始重点介绍 <strong>消息广播</strong> 和 <strong>崩溃恢复</strong>。整个 <code>Zookeeper</code> 就是在这两个模式之间切换。 简而言之，当 <code>Leader</code> 服务可以正常使用，就进入消息广播模式，当 <code>Leader</code> 不可用时，则进入崩溃恢复模式。</p>
+<h3 id="2-消息广播"><a href="#2-消息广播" class="headerlink" title="2.消息广播"></a>2.消息广播</h3><p><code>ZAB</code> 协议的消息广播过程使用的是一个原子广播协议，类似一个二阶段提交过程。对于客户端发送的写请求，全部由 <code>Leader</code> 接收，<code>Leader</code> 将请求封装成一个事务 <code>Proposal</code>，将其发送给所有 <code>Follower</code> ，然后，根据所有 <code>Follower</code> 的反馈，如果超过半数成功响应，则执行 <code>commit</code> 操作（先提交自己，再发送 <code>commit</code> 给所有 <code>Follwer</code>）。</p>
 <p><strong>基本上，整个广播流程分为 3 步骤：</strong></p>
-<p>1.将数据都复制到 Follwer 中</p>
-<p><img src="https://note.youdao.com/yws/api/group/102464226/file/449607847?method=download&amp;inline=true&amp;version=1&amp;shareToken=8DE4693891624F8B99754C15D73FCA5E" alt="image"></p>
-<p>2.等待 Follwer 回应 Ack，最低超过半数即成功</p>
-<p><img src="https://note.youdao.com/yws/api/group/102464226/file/449607861?method=download&amp;inline=true&amp;version=1&amp;shareToken=40B80F022E72450E9E61118E9323D4A6" alt="image"></p>
-<p>3.当超过半数成功回应，则执行 commit ，同时提交自己</p>
-<p><img src="https://note.youdao.com/yws/api/group/102464226/file/449607860?method=download&amp;inline=true&amp;version=1&amp;shareToken=A61283CDC5744273A4BA42E8C88F6F31" alt="image"></p>
-<p>通过以上 3 个步骤，就能够保持集群之间数据的一致性。实际上，在 Leader 和 Follwer 之间还有一个消息队列，用来解耦他们之间的耦合，避免同步，实现异步解耦。</p>
+<p>1.将数据都复制到 <code>Follwer</code> 中</p>
+<p><img src="/images/zookeeper/zkzab1.png" alt="image"></p>
+<p>2.等待 <code>Follwer</code> 回应 <code>Ack</code>，最低超过半数即成功</p>
+<p><img src="/images/zookeeper/zkzab2.png" alt="image"></p>
+<p>3.当超过半数成功回应，则执行 <code>commit</code> ，同时提交自己</p>
+<p><img src="/images/zookeeper/zkzab3.png" alt="image"></p>
+<p>通过以上 3 个步骤，就能够保持集群之间数据的一致性。实际上，在 <code>Leader</code> 和 <code>Follwer</code> 之间还有一个消息队列，用来解耦他们之间的耦合，避免同步，实现异步解耦。</p>
 <p><strong>还有一些细节：</strong></p>
-<p>Leader 在收到客户端请求之后，会将这个请求封装成一个事务，并给这个事务分配一个全局递增的唯一 ID，称为事务ID（ZXID），ZAB 协议需要保证事务的顺序，因此必须将每一个事务按照 ZXID 进行先后排序然后处理。</p>
-<p>在 Leader 和 Follwer 之间还有一个消息队列，用来解耦他们之间的耦合，解除同步阻塞。</p>
-<p>zookeeper集群中为保证任何所有进程能够有序的顺序执行，只能是 Leader 服务器接受写请求，即使是 Follower 服务器接受到客户端的请求，也会转发到 Leader 服务器进行处理。</p>
-<p>实际上，这是一种简化版本的 2PC，不能解决单点问题。等会我们会讲述 ZAB 如何解决单点问题（即 Leader 崩溃问题）。</p>
-<h3 id="3-崩溃恢复"><a href="#3-崩溃恢复" class="headerlink" title="3.崩溃恢复"></a>3.崩溃恢复</h3><p>刚刚我们说消息广播过程中，Leader 崩溃怎么办？还能保证数据一致吗？如果 Leader 先本地提交了，然后 commit 请求没有发送出去，怎么办？</p>
-<p>实际上，当 Leader 崩溃，即进入我们开头所说的崩溃恢复模式（崩溃即：Leader 失去与过半 Follwer 的联系）。下面来详细讲述。</p>
-<p>假设1：Leader 在复制数据给所有 Follwer 之后崩溃，怎么办？<br>假设2：Leader 在收到 Ack 并提交了自己，同时发送了部分 commit 出去之后崩溃怎么办？</p>
+<p><code>Leader</code> 在收到客户端请求之后，会将这个请求封装成一个事务，并给这个事务分配一个全局递增的唯一 ID，称为事务ID（ZXID），<code>ZAB</code> 协议需要保证事务的顺序，因此必须将每一个事务按照 <code>ZXID</code> 进行先后排序然后处理。</p>
+<p>在 <code>Leader</code> 和 <code>Follwer</code> 之间还有一个消息队列，用来解耦他们之间的耦合，解除同步阻塞。</p>
+<p><code>zookeeper</code>集群中为保证任何所有进程能够有序的顺序执行，只能是 <code>Leader</code> 服务器接受写请求，即使是 <code>Follower</code> 服务器接受到客户端的请求，也会转发到 <code>Leader</code> 服务器进行处理。</p>
+<p>实际上，这是一种简化版本的 <code>2PC</code>，不能解决单点问题。等会我们会讲述 <code>ZAB</code> 如何解决单点问题（即 <code>Leader</code> 崩溃问题）。</p>
+<h3 id="3-崩溃恢复"><a href="#3-崩溃恢复" class="headerlink" title="3.崩溃恢复"></a>3.崩溃恢复</h3><p>刚刚我们说消息广播过程中，<code>Leader</code> 崩溃怎么办？还能保证数据一致吗？如果 <code>Leader</code> 先本地提交了，然后 <code>commit</code> 请求没有发送出去，怎么办？</p>
+<p>实际上，当 <code>Leader</code> 崩溃，即进入我们开头所说的崩溃恢复模式（崩溃即：<code>Leader</code> 失去与过半 <code>Follwer</code> 的联系）。下面来详细讲述。</p>
+<p>假设1：<code>Leader</code> 在复制数据给所有 <code>Follwer</code> 之后崩溃，怎么办？<br>假设2：<code>Leader</code> 在收到 <code>Ack</code> 并提交了自己，同时发送了部分 <code>commit</code> 出去之后崩溃怎么办？</p>
 <p><strong>针对这些问题，ZAB 定义了 2 个原则：</strong></p>
-<p>ZAB 协议确保那些已经在 Leader 提交的事务最终会被所有服务器提交。<br>ZAB 协议确保丢弃那些只在 Leader 提出/复制，但没有提交的事务。<br>所以，ZAB 设计了下面这样一个选举算法：<br><strong>能够确保提交已经被 Leader 提交的事务，同时丢弃已经被跳过的事务。</strong></p>
-<p>针对这个要求，如果让 Leader 选举算法能够保证新选举出来的 Leader 服务器拥有集群总所有机器编号（即 ZXID 最大）的事务，那么就能够保证这个新选举出来的 Leader 一定具有所有已经提交的提案。<br>而且这么做有一个好处是：<strong>可以省去 Leader 服务器检查事务的提交和丢弃工作的这一步操作</strong>。</p>
-<p><img src="https://note.youdao.com/yws/api/group/102464226/file/449617056?method=download&amp;inline=true&amp;version=1&amp;shareToken=181E888859644846B09862B7FE262E9C" alt="image"></p>
+<p><code>ZAB</code> 协议确保那些已经在 <code>Leader</code> 提交的事务最终会被所有服务器提交。<br><code>ZAB</code> 协议确保丢弃那些只在 <code>Leader</code> 提出/复制，但没有提交的事务。<br>所以，<code>ZAB</code> 设计了下面这样一个选举算法：<br><strong>能够确保提交已经被 Leader 提交的事务，同时丢弃已经被跳过的事务。</strong></p>
+<p>针对这个要求，如果让 <code>Leader</code> 选举算法能够保证新选举出来的 <code>Leader</code> 服务器拥有集群总所有机器编号（即 <code>ZXID</code> 最大）的事务，那么就能够保证这个新选举出来的 <code>Leader</code> 一定具有所有已经提交的提案。<br>而且这么做有一个好处是：<strong>可以省去 Leader 服务器检查事务的提交和丢弃工作的这一步操作</strong>。</p>
+<p><img src="/images/zookeeper/zkzab4.png" alt="image"></p>
 <p>这样，我们刚刚假设的两个问题便能够解决。假设 1 最终会丢弃调用没有提交的数据，假设 2 最终会同步所有服务器的数据。这个时候，就引出了一个问题，如何同步？</p>
-<h3 id="4-数据同步"><a href="#4-数据同步" class="headerlink" title="4.数据同步"></a>4.数据同步</h3><p>当崩溃恢复之后，需要在正式工作之前（接收客户端请求），Leader 服务器首先确认事务是否都已经被过半的 Follwer 提交了，即是否完成了数据同步。目的是为了保持数据一致。</p>
-<p>当所有的 Follwer 服务器都成功同步之后，Leader 会将这些服务器加入到可用服务器列表中。</p>
-<p>实际上，Leader 服务器处理或丢弃事务都是依赖着 ZXID 的，那么这个 ZXID 如何生成呢？</p>
-<p>答：在 ZAB 协议的事务编号 ZXID 设计中，ZXID 是一个 64 位的数字，其中低 32 位可以看作是一个简单的递增的计数器，针对客户端的每一个事务请求，Leader 都会产生一个新的事务 Proposal 并对该计数器进行 + 1 操作。</p>
-<p>而高 32 位则代表了 Leader 服务器上取出本地日志中最大事务 Proposal 的 ZXID，并从该 ZXID 中解析出对应的 epoch 值，然后再对这个值加一。<br><img src="https://note.youdao.com/yws/api/group/102464226/file/449617057?method=download&amp;inline=true&amp;version=1&amp;shareToken=E2EA779D02264ACBB45B37F85D52DEED" alt="image"></p>
-<p>高 32 位代表了每代 Leader 的唯一性，低 32 代表了每代 Leader 中事务的唯一性。同时，也能让 Follwer 通过高 32 位识别不同的 Leader。简化了数据恢复流程。</p>
-<p>基于这样的策略：当 Follower 链接上 Leader 之后，Leader 服务器会根据自己服务器上最后被提交的 ZXID 和 Follower 上的 ZXID 进行比对，比对结果要么回滚，要么和 Leader 同步。</p>
+<h3 id="4-数据同步"><a href="#4-数据同步" class="headerlink" title="4.数据同步"></a>4.数据同步</h3><p>当崩溃恢复之后，需要在正式工作之前（接收客户端请求），<code>Leader</code> 服务器首先确认事务是否都已经被过半的 <code>Follwer</code> 提交了，即是否完成了数据同步。目的是为了保持数据一致。</p>
+<p>当所有的 <code>Follwer</code> 服务器都成功同步之后，<code>Leader</code>会将这些服务器加入到可用服务器列表中。</p>
+<p>实际上，<code>Leader</code> 服务器处理或丢弃事务都是依赖着 <code>ZXID</code> 的，那么这个 <code>ZXID</code>如何生成呢？</p>
+<p>答：在 <code>ZAB</code> 协议的事务编号 <code>ZXID</code> 设计中，<code>ZXID</code> 是一个 64 位的数字，其中低 32 位可以看作是一个简单的递增的计数器，针对客户端的每一个事务请求，<code>Leader</code> 都会产生一个新的事务 <code>Proposal</code> 并对该计数器进行 + 1 操作。</p>
+<p>而高 32 位则代表了 <code>Leader</code> 服务器上取出本地日志中最大事务 <code>Proposal</code> 的 <code>ZXID</code>，并从该 <code>ZXID</code> 中解析出对应的 <code>epoch</code> 值，然后再对这个值加一。<br><img src="/images/zookeeper/zkzab5.png" alt="image"></p>
+<p>高 32 位代表了每代 <code>Leader</code> 的唯一性，低 32 代表了每代 <code>Leader</code> 中事务的唯一性。同时，也能让 <code>Follwer</code> 通过高 32 位识别不同的 <code>Leader</code>。简化了数据恢复流程。</p>
+<p>基于这样的策略：当 <code>Follower</code> 链接上 <code>Leader</code> 之后，<code>Leader</code> 服务器会根据自己服务器上最后被提交的 <code>ZXID</code> 和 <code>Follower</code> 上的 <code>ZXID</code> 进行比对，比对结果要么回滚，要么和 <code>Leader</code> 同步。</p>
 <p><a href="https://www.cnblogs.com/stateis0/p/9062133.html" target="_blank" rel="noopener">原文链接</a></p>
 
       
@@ -472,6 +472,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/30/mybatis插件开发/" rel="prev" title="mybatis插件开发">
+                mybatis插件开发 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -552,7 +556,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -563,7 +567,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -574,7 +578,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
