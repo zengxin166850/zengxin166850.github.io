@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="minio," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="我的第一印象去年7月份的大数据项目中使用的它做图片服务器，当时也就只听了个名字。这次需要涉及到视频处理和上传">
+<meta name="keywords" content="minio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对象存储服务minio">
+<meta property="og:url" content="http://yoursite.com/2020/01/04/对象存储服务minio/index.html">
+<meta property="og:site_name" content="北方轻巡舰的博客">
+<meta property="og:description" content="我的第一印象去年7月份的大数据项目中使用的它做图片服务器，当时也就只听了个名字。这次需要涉及到视频处理和上传">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-04T13:19:21.143Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="对象存储服务minio">
+<meta name="twitter:description" content="我的第一印象去年7月份的大数据项目中使用的它做图片服务器，当时也就只听了个名字。这次需要涉及到视频处理和上传">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/01/04/对象存储服务minio/"/>
+
+
+
+
+
+  <title>对象存储服务minio | 北方轻巡舰的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">北方轻巡舰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/04/对象存储服务minio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">对象存储服务minio</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-04T21:11:44+08:00">
+                2020-01-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/存储服务/" itemprop="url" rel="index">
+                    <span itemprop="name">存储服务</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="我的第一印象"><a href="#我的第一印象" class="headerlink" title="我的第一印象"></a>我的第一印象</h2><p>去年7月份的大数据项目中使用的它做图片服务器，当时也就只听了个名字。这次需要涉及到视频处理和上传<a id="more"></a>又用到了，所以来补一下知识点。</p>
+<p>简单、好用、方便快捷。</p>
+<h2 id="minio服务器"><a href="#minio服务器" class="headerlink" title="minio服务器"></a>minio服务器</h2><p><code>MinIO</code> 是一个基于<code>Apache License v2.0</code>开源协议的对象存储服务。<strong>它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据</strong>，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等，而一个对象文件可以是任意大小，从几kb到最大5T不等。</p>
+<p><code>MinIO</code>是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 <code>NodeJS</code>, <code>Redis</code> 或者 <code>MySQL</code>。（来自官方文档）</p>
+<h2 id="亚马逊S3云存储服务"><a href="#亚马逊S3云存储服务" class="headerlink" title="亚马逊S3云存储服务"></a>亚马逊S3云存储服务</h2><p>第一次看到这个词，怀着好奇心到<code>amazon</code>官网了解了一下，原介绍如下：</p>
+<p><strong>专为从任意位置存储和检索任意数量的数据而构建的对象存储</strong></p>
+<p><code>Amazon Simple Storage Service (Amazon S3)</code> 是一种对象存储服务，提供行业领先的可扩展性、数据可用性、安全性和性能。这意味着各种规模和行业的客户都可以使用它来存储和保护各种用例（如网站、移动应用程序、备份和还原、存档、企业应用程序、<code>IoT</code> 设备和大数据分析）的任意数量的数据。<code>Amazon S3</code> 提供了易于使用的管理功能，因此您可以组织数据并配置精细调整过的访问控制以满足特定的业务、组织和合规性要求。<strong>Amazon S3 可达到 99.999999999%（11 个 9）的持久性</strong>，并为全球各地的公司存储数百万个应用程序的数据。</p>
+<p>看起来有点长，简单的理解就是<code>amazon</code>提供了文件存储的服务，我们可以用它来做文件存储调<code></code>amazon`的接口，然后付钱即可。文件管理有他们来维护的这种感觉- -。</p>
+<h2 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h2><p><a href="https://min.io/download" target="_blank" rel="noopener">https://min.io/download</a></p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>正常是应该使用<code>linux</code>服务器的，无奈家里的环境不满足，这里我只是初步试验，先用<code>windows</code>版试试水。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; minio.exe server F:\minio\data</span><br></pre></td></tr></table></figure>
+<p>启动后的输出结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Endpoint:  http://192.168.124.13:9000  http://127.0.0.1:9000</span><br><span class="line">AccessKey: minioadmin</span><br><span class="line">SecretKey: minioadmin</span><br><span class="line"></span><br><span class="line">Browser Access:</span><br><span class="line">     http://192.168.124.13:9000   http://127.0.0.1:9000</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">Detected default credentials &apos;minioadmin:minioadmin&apos;, please change the credentials immediately using &apos;MINIO_ACCESS_KEY&apos; and &apos;MINIO_SECRET_KEY&apos;</span><br></pre></td></tr></table></figure></p>
+<p>使用<code>AccessKey</code>和<code>SecretKey</code>访问<code>http://localhost:9000</code>,即可进入到<code>web</code>端管理相关文件。</p>
+<p><strong>docker版运行方式</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull minio/minio</span><br><span class="line">docker run -p 9000:9000 minio/minio server /data</span><br></pre></td></tr></table></figure>
+<h2 id="java-SDK"><a href="#java-SDK" class="headerlink" title="java SDK"></a>java SDK</h2><p>完整<code>API</code>和示例请查看 <a href="http://docs.min.io/docs/java-client-api-reference" target="_blank" rel="noopener">Java Client API</a>。</p>
+<p>在<code>maven</code>项目中添加如下依赖：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.minio&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;minio&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;6.0.8&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p><strong>文件上传示例</strong>：  </p>
+<p>在<code>application.yml</code>中添加服务器相关信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">minio:</span><br><span class="line">  endpoint: http://localhost:9000   #minio所在的url</span><br><span class="line">  accesskey: minioadmin             #用户id</span><br><span class="line">  secretkey: minioadmin             #密码</span><br></pre></td></tr></table></figure></p>
+<p>完整代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class MinioService &#123;</span><br><span class="line"></span><br><span class="line">    @Value(&quot;$&#123;minio.endpoint&#125;&quot;)</span><br><span class="line">    private String endpoint;</span><br><span class="line"></span><br><span class="line">    @Value(&quot;$&#123;minio.secretkey&#125;&quot;)</span><br><span class="line">    private String secretkey;</span><br><span class="line"></span><br><span class="line">    @Value(&quot;$&#123;minio.accesskey&#125;&quot;)</span><br><span class="line">    private String accesskey;</span><br><span class="line"></span><br><span class="line">    public MinioClient minioClient() throws InvalidPortException, InvalidEndpointException &#123;</span><br><span class="line">        return new MinioClient(endpoint, accesskey, secretkey);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //检查并创建buckets</span><br><span class="line">    public void createBucket(String bucketName) throws Exception &#123;</span><br><span class="line">        MinioClient minioClient = minioClient();</span><br><span class="line">        boolean exists = minioClient.bucketExists(bucketName);</span><br><span class="line">        if (exists) &#123;</span><br><span class="line">            System.out.println(&quot;bucket is already exists&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            minioClient.makeBucket(bucketName);</span><br><span class="line">            //设置策略</span><br><span class="line">            minioClient.setBucketPolicy(bucketName, createBucketPolicy().replace(&quot;$bucket$&quot;, bucketName));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //上传</span><br><span class="line">    public void uploadFile(String bucketName, String objectName, String fileName) throws Exception &#123;</span><br><span class="line">        MinioClient minioClient = minioClient();</span><br><span class="line">        minioClient.putObject(bucketName, objectName, fileName, null, null, null, null);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //配置公共访问和永久可下载策略</span><br><span class="line">    private String createBucketPolicy() &#123;</span><br><span class="line">        StringBuilder builder = new StringBuilder();</span><br><span class="line">        builder.append(&quot;&#123;\n&quot;);</span><br><span class="line">        builder.append(&quot;    \&quot;Version\&quot;: \&quot;2012-10-17\&quot;,\n&quot;);</span><br><span class="line">        builder.append(&quot;    \&quot;Statement\&quot;: [&#123;\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Effect\&quot;: \&quot;Allow\&quot;,\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Principal\&quot;: &#123;\n&quot;);</span><br><span class="line">        builder.append(&quot;            \&quot;AWS\&quot;: [\&quot;*\&quot;]\n&quot;);</span><br><span class="line">        builder.append(&quot;        &#125;,\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Action\&quot;: [\&quot;s3:GetBucketLocation\&quot;, \&quot;s3:ListBucket\&quot;],\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Resource\&quot;: [\&quot;arn:aws:s3:::$bucket$\&quot;]\n&quot;);</span><br><span class="line">        builder.append(&quot;    &#125;, &#123;\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Effect\&quot;: \&quot;Allow\&quot;,\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Principal\&quot;: &#123;\n&quot;);</span><br><span class="line">        builder.append(&quot;            \&quot;AWS\&quot;: [\&quot;*\&quot;]\n&quot;);</span><br><span class="line">        builder.append(&quot;        &#125;,\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Action\&quot;: [\&quot;s3:GetObject\&quot;],\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Resource\&quot;: [\&quot;arn:aws:s3:::$bucket$/*\&quot;]\n&quot;);</span><br><span class="line">        builder.append(&quot;    &#125;]\n&quot;);</span><br><span class="line">        builder.append(&quot;&#125;&quot;);</span><br><span class="line">        return builder.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Autowired</span><br><span class="line">MinioService minioService;</span><br><span class="line"></span><br><span class="line">@Test</span><br><span class="line">public void uploadFileTest() throws Exception &#123;</span><br><span class="line">    minioService.createBucket(&quot;test&quot;);</span><br><span class="line">    minioService.uploadFile(&quot;test&quot;, &quot;minio.exe&quot;, &quot;I:\\minio.exe&quot;);</span><br><span class="line">    System.out.println(&quot;上传成功...&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>。。。真的超级简单啊。</p>
+<h2 id="基础API介绍"><a href="#基础API介绍" class="headerlink" title="基础API介绍"></a>基础API介绍</h2><h3 id="bucket操作"><a href="#bucket操作" class="headerlink" title="bucket操作"></a>bucket操作</h3><ul>
+<li>makeBucket</li>
+<li>listBuckets</li>
+<li>bucketExists</li>
+<li>removeBucket</li>
+<li>listObjects</li>
+<li>listIncompleteUploads</li>
+</ul>
+<p>相关测试代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void bucketOperationTest() throws Exception &#123;</span><br><span class="line">    MinioClient minioClient = minioService.minioClient();</span><br><span class="line">    LocalDateTime localDateTime = LocalDateTime.now();</span><br><span class="line">    String dateFormat = localDateTime.format(DateTimeFormatter.ofPattern(&quot;yyyyMMdd&quot;));</span><br><span class="line">    //创建bucket</span><br><span class="line">    minioService.createBucket(&quot;hoppo&quot;);</span><br><span class="line">    minioService.createBucket(&quot;local&quot;);</span><br><span class="line">    //listBuckets</span><br><span class="line">    for (Bucket bucket : minioClient.listBuckets()) &#123;</span><br><span class="line">        System.out.println(&quot;alreay exists bucket: &quot; + bucket.name());</span><br><span class="line">    &#125;</span><br><span class="line">    //检查是否存在</span><br><span class="line">    System.out.println(&quot;bucketName local exists status: &quot; + minioClient.bucketExists(&quot;local&quot;));</span><br><span class="line">    //remove</span><br><span class="line">    minioClient.removeBucket(&quot;local&quot;);</span><br><span class="line">    System.out.println(&quot;bucketName local exists status: &quot; + minioClient.bucketExists(&quot;local&quot;));</span><br><span class="line">    //列出bucket</span><br><span class="line">    for (Bucket bucket : minioClient.listBuckets()) &#123;</span><br><span class="line">        System.out.println(bucket.name());</span><br><span class="line">    &#125;</span><br><span class="line">    minioService.uploadFile(&quot;hoppo&quot;, dateFormat + &quot;/minio.exe&quot;, &quot;I:\\minio.exe&quot;);</span><br><span class="line">    System.out.println(&quot;上传成功...&quot;);</span><br><span class="line">    //列出已有存储对象</span><br><span class="line">    for (Result&lt;Item&gt; next : minioClient.listObjects(&quot;hoppo&quot;)) &#123;</span><br><span class="line">        Item item = next.get();</span><br><span class="line">        System.out.println(item.objectName());</span><br><span class="line">        System.out.println(item.objectSize());</span><br><span class="line">        System.out.println(item.lastModified());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Object存储对象操作"><a href="#Object存储对象操作" class="headerlink" title="Object存储对象操作"></a>Object存储对象操作</h3><ul>
+<li>getObject</li>
+<li>putObject</li>
+<li>copyObject</li>
+<li>statObject</li>
+<li>removeObject</li>
+<li>removeIncompleteUpload</li>
+<li>getObjectUrl</li>
+</ul>
+<p>相关测试代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">void objectOperationTest() throws Exception &#123;</span><br><span class="line">    MinioClient minioClient = minioService.minioClient();</span><br><span class="line">    LocalDateTime localDateTime = LocalDateTime.now();</span><br><span class="line">    String dateFormat = localDateTime.format(DateTimeFormatter.ofPattern(&quot;yyyyMMdd&quot;));</span><br><span class="line">    //getObject下载</span><br><span class="line">    InputStream hoppo = minioClient.getObject(&quot;hoppo&quot;, dateFormat + &quot;/minio.exe&quot;);</span><br><span class="line">    FileOutputStream outputStream = new FileOutputStream(&quot;F:\\minio.exe&quot;);</span><br><span class="line"></span><br><span class="line">    byte[] buffer = new byte[1024];</span><br><span class="line">    while ((hoppo.read(buffer)) != -1) &#123;</span><br><span class="line">        outputStream.write(buffer);</span><br><span class="line">    &#125;</span><br><span class="line">    outputStream.close();</span><br><span class="line">    hoppo.close();</span><br><span class="line">    //putObject上传</span><br><span class="line">//        minioService.uploadFile(&quot;hoppo&quot;, dateFormat + &quot;/minio.exe&quot;, &quot;I:\\minio.exe&quot;);</span><br><span class="line">    //copyObject,复制一份到test</span><br><span class="line">    minioClient.copyObject(&quot;hoppo&quot;, dateFormat + &quot;/minio.exe&quot;, &quot;test&quot;, dateFormat + &quot;/minio.exe&quot;);</span><br><span class="line"></span><br><span class="line">    //获取指定存储对象的信息</span><br><span class="line">    ObjectStat minioexe = minioClient.statObject(&quot;hoppo&quot;, dateFormat + &quot;/minio.exe&quot;);</span><br><span class="line">    System.out.println(minioexe.contentType());</span><br><span class="line">    System.out.println(minioexe.name());</span><br><span class="line">    //获取下载链接,该方式获得的链接必须是公共可下载的，</span><br><span class="line">    String hoppoUrl = minioClient.getObjectUrl(&quot;hoppo&quot;, dateFormat + &quot;/minio.exe&quot;);</span><br><span class="line">    System.out.println(hoppoUrl);</span><br><span class="line">    //移除存储对象</span><br><span class="line">    //minioClient.removeObject(&quot;hoppo&quot;,dateFormat + &quot;/minio.exe&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Presign操作"><a href="#Presign操作" class="headerlink" title="Presign操作"></a>Presign操作</h3><p>这个没有做浏览器测试，照搬官方文档，仅当做个笔记，方便日后查阅。</p>
+<h4 id="presignedGetObject"><a href="#presignedGetObject" class="headerlink" title="presignedGetObject"></a>presignedGetObject</h4><blockquote>
+<p>public String presignedGetObject(String bucketName, String objectName, Integer expires)</p>
+</blockquote>
+<p>生成一个<code>HTTP GET</code>请求用的<code>presigned URL</code>。<strong>浏览器/移动端的</strong>客户端可以用这个<code>URL</code>进行<strong>下载</strong>，<strong>即使其所在的存储桶是私有的</strong>。这个<code>presigned URL</code>可以设置一个失效时间，默认值是7天。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">try &#123;</span><br><span class="line">    String url = minioClient.presignedGetObject(&quot;mybucket&quot;, &quot;myobject&quot;, 60 * 60 * 24);</span><br><span class="line">    System.out.println(url);</span><br><span class="line">&#125; catch(MinioException e) &#123;</span><br><span class="line">  System.out.println(&quot;Error occurred: &quot; + e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="presignedPutObject"><a href="#presignedPutObject" class="headerlink" title="presignedPutObject"></a>presignedPutObject</h4><blockquote>
+<p>public String presignedPutObject(String bucketName, String objectName, Integer expires)</p>
+</blockquote>
+<p>生成一个给<code>HTTP PUT</code>请求用的<code>presigned URL</code>。<strong>浏览器/移动端的</strong>客户端可以用这个<code>URL</code>进行<strong>上传</strong>，即使其所在的存储桶是私有的。这个<code>presigned URL</code>可以设置一个失效时间，默认值是7天</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">try &#123;</span><br><span class="line">    String url = minioClient.presignedPutObject(&quot;mybucket&quot;, &quot;myobject&quot;, 60 * 60 * 24);</span><br><span class="line">    System.out.println(url);</span><br><span class="line">&#125; catch(MinioException e) &#123;</span><br><span class="line">  System.out.println(&quot;Error occurred: &quot; + e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="presignedPostPolicy"><a href="#presignedPostPolicy" class="headerlink" title="presignedPostPolicy"></a>presignedPostPolicy</h4><blockquote>
+<p>public Map&lt;String,String&gt; presignedPostPolicy(PostPolicy policy)</p>
+</blockquote>
+<p>允许给<code>POST</code>请求的<code>presigned URL</code>设置策略，比如接收对象上传的存储桶名称的策略，<code>key</code>名称前缀，过期策略。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">try &#123;</span><br><span class="line">    PostPolicy policy = new PostPolicy(&quot;mybucket&quot;, &quot;myobject&quot;,DateTime.now().plusDays(7));</span><br><span class="line">    policy.setContentType(&quot;image/png&quot;);</span><br><span class="line">    Map&lt;String,String&gt; formData = minioClient.presignedPostPolicy(policy);</span><br><span class="line">    System.out.print(&quot;curl -X POST &quot;);</span><br><span class="line">    for (Map.Entry&lt;String,String&gt; entry : formData.entrySet()) &#123;</span><br><span class="line">    System.out.print(&quot; -F &quot; + entry.getKey() + &quot;=&quot; + entry.getValue());</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(&quot; -F file=@/tmp/userpic.png  https://play.min.io/mybucket&quot;);</span><br><span class="line">&#125; catch(MinioException e) &#123;</span><br><span class="line">  System.out.println(&quot;Error occurred: &quot; + e);</span><br></pre></td></tr></table></figure>
+<h3 id="BucketPolicy-操作"><a href="#BucketPolicy-操作" class="headerlink" title="BucketPolicy 操作"></a>BucketPolicy 操作</h3><ul>
+<li>getBucketPolicy</li>
+<li>setBucketPolicy</li>
+</ul>
+<p><code>get</code>不再贴出来了，<code>set</code>的实例方法如下所示：(将<code>my-bucketname</code>替换为自己的<code>bucketName</code>)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class SetBucketPolicy &#123;</span><br><span class="line">  /**</span><br><span class="line">   * 设置bucket策略，允许永久下载。minio 默认连接 7 天过期</span><br><span class="line">   */</span><br><span class="line">  public static void main(String[] args)</span><br><span class="line">    throws IOException, NoSuchAlgorithmException, InvalidKeyException, XmlPullParserException &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        StringBuilder builder = new StringBuilder();</span><br><span class="line">        builder.append(&quot;&#123;\n&quot;);</span><br><span class="line">        builder.append(&quot;    \&quot;Version\&quot;: \&quot;2012-10-17\&quot;,\n&quot;);</span><br><span class="line">        builder.append(&quot;    \&quot;Statement\&quot;: [&#123;\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Effect\&quot;: \&quot;Allow\&quot;,\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Principal\&quot;: &#123;\n&quot;);</span><br><span class="line">        builder.append(&quot;            \&quot;AWS\&quot;: [\&quot;*\&quot;]\n&quot;);</span><br><span class="line">        builder.append(&quot;        &#125;,\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Action\&quot;: [\&quot;s3:GetBucketLocation\&quot;, \&quot;s3:ListBucket\&quot;],\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Resource\&quot;: [\&quot;arn:aws:s3:::my-bucketname\&quot;]\n&quot;);</span><br><span class="line">        builder.append(&quot;    &#125;, &#123;\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Effect\&quot;: \&quot;Allow\&quot;,\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Principal\&quot;: &#123;\n&quot;);</span><br><span class="line">        builder.append(&quot;            \&quot;AWS\&quot;: [\&quot;*\&quot;]\n&quot;);</span><br><span class="line">        builder.append(&quot;        &#125;,\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Action\&quot;: [\&quot;s3:GetObject\&quot;],\n&quot;);</span><br><span class="line">        builder.append(&quot;        \&quot;Resource\&quot;: [\&quot;arn:aws:s3:::my-bucketname/*\&quot;]\n&quot;);</span><br><span class="line">        builder.append(&quot;    &#125;]\n&quot;);</span><br><span class="line">        builder.append(&quot;&#125;&quot;);</span><br><span class="line">        minioClient.setBucketPolicy(&quot;my-bucketname&quot;, builder.toString());</span><br><span class="line">    &#125; catch (MinioException e) &#123;</span><br><span class="line">      System.out.println(&quot;Error occurred: &quot; + e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="相关网站"><a href="#相关网站" class="headerlink" title="相关网站"></a>相关网站</h2><p><a href="https://www.bookstack.cn/read/MinioCookbookZH/ch5.md" target="_blank" rel="noopener">实战秘籍 - 《Minio Cookbook 中文版》 - 书栈网 · BookStack</a></p>
+<p><a href="https://docs.min.io/cn/java-client-api-reference.html" target="_blank" rel="noopener">Java Client API参考文档</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/minio/" rel="tag"><i class="fa fa-tag"></i> minio</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/21/gitlab-ci、cd初步使用及踩坑/" rel="next" title="gitlab-ci、cd初步使用及踩坑">
+                <i class="fa fa-chevron-left"></i> gitlab-ci、cd初步使用及踩坑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/header.png"
+                alt="北方轻巡舰" />
+            
+              <p class="site-author-name" itemprop="name">北方轻巡舰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zengxin166850" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#我的第一印象"><span class="nav-text">我的第一印象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#minio服务器"><span class="nav-text">minio服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#亚马逊S3云存储服务"><span class="nav-text">亚马逊S3云存储服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载地址"><span class="nav-text">下载地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行"><span class="nav-text">运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java-SDK"><span class="nav-text">java SDK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础API介绍"><span class="nav-text">基础API介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bucket操作"><span class="nav-text">bucket操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Object存储对象操作"><span class="nav-text">Object存储对象操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Presign操作"><span class="nav-text">Presign操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#presignedGetObject"><span class="nav-text">presignedGetObject</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#presignedPutObject"><span class="nav-text">presignedPutObject</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#presignedPostPolicy"><span class="nav-text">presignedPostPolicy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BucketPolicy-操作"><span class="nav-text">BucketPolicy 操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关网站"><span class="nav-text">相关网站</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">北方轻巡舰</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script src="/js/src/autoload.js"></script>
+</body>
+</html>
