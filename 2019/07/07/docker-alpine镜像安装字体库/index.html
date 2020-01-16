@@ -468,6 +468,10 @@
           
 
   
+    <div id="gitalk-container">
+	</div>
+	
+  
 
 
 
@@ -530,7 +534,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -777,6 +781,22 @@
 
 
 
+
+  <link rel="stylesheet" href="/css/gitalk.css">
+  
+  <script src="/js/src/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: 'Iv1.dca3b0b479622e65',
+		  clientSecret: '5530deb224863dc7ff6985061fe3850a345f02b5',
+		  repo: 'hoppoComments',
+		  owner: 'zengxin166850',
+		  admin: ['zengxin166850'], 
+		  id: location.pathname,
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
 
   
 
