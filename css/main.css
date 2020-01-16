@@ -1832,7 +1832,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ffc2b6;
+  background: #2fe09c;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2227,6 +2227,14 @@ pre .javascript .function {
 }
 .jiathis_style a {
   border: none;
+}
+.gt-header a,
+.gt-comments a,
+.gt-popup a {
+  border-bottom: none;
+}
+.gt-container .gt-popup .gt-action.is--active:before {
+  top: 0.7em;
 }
 .fa {
   font-family: FontAwesome !important;

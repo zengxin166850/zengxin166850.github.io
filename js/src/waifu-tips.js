@@ -4,8 +4,8 @@
  */
 
 function initWidget(waifuPath, apiPath) {
-	localStorage.removeItem("waifu-display");//移到这里，刷新后重新加载
 	if (screen.width <= 768 || (localStorage.getItem("waifu-display") && new Date().getTime() - localStorage.getItem("waifu-display") <= 86400000)) return;
+	localStorage.removeItem("waifu-display");//移到这里，刷新后重新加载
 	sessionStorage.removeItem("waifu-text");
 	$("body").append(`<div id="waifu" style:"position:fixed;z-index: 520;pointer-events: none;">
 			<div id="waifu-tips"></div>
