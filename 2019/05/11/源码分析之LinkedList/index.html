@@ -766,7 +766,7 @@
 
 
   <link rel="stylesheet" href="/css/gitalk.css">
-  
+  <script src="/js/src/md5.min.js"></script>
   <script src="/js/src/gitalk.min.js"></script>
    <script type="text/javascript">
 		var gitalk = new Gitalk({
@@ -775,7 +775,7 @@
 		  repo: 'hoppoComments',
 		  owner: 'zengxin166850',
 		  admin: ['zengxin166850'], 
-		  id: location.pathname,
+		  id: md5(location.pathname),
 		  distractionFreeMode: 'true'
 		})
 		gitalk.render('gitalk-container')           
