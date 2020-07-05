@@ -94,7 +94,7 @@
 <meta property="og:site_name" content="北方轻巡舰的博客">
 <meta property="og:description" content="索引操作PUT 和 POST 的区别： 相对来说PUT偏向于创建，POST 偏向于更新，其实使用场景不同。在索引（indexing）数据时，PUT 需要指定 id ，POST 可以自动生成。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-05T14:38:52.554Z">
+<meta property="og:updated_time" content="2020-07-05T15:03:49.827Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ES基础--常用知识梳理">
 <meta name="twitter:description" content="索引操作PUT 和 POST 的区别： 相对来说PUT偏向于创建，POST 偏向于更新，其实使用场景不同。在索引（indexing）数据时，PUT 需要指定 id ，POST 可以自动生成。">
@@ -442,7 +442,7 @@
 <h3 id="分片和副本"><a href="#分片和副本" class="headerlink" title="分片和副本"></a>分片和副本</h3><p>分片是将一份数据分成多个，水平扩展存储到不同机器，提高存储量。</p>
 <p>副本是将一份数据复制为两份或更多，避免数据丢失。</p>
 <h4 id="搜索类型"><a href="#搜索类型" class="headerlink" title="搜索类型"></a>搜索类型</h4><ul>
-<li><code>match</code></li>
+<li><code>match、term、terms、constant score等.....</code></li>
 <li><code>match_phrase</code></li>
 <li><code>match_phrase_prefix</code></li>
 <li><code>query_string</code> ,相对来说更智能，可以识别 <code>and</code> 和 <code>or</code></li>
