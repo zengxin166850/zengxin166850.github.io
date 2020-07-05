@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="elasticsearch," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="索引操作PUT 和 POST 的区别： 相对来说PUT偏向于创建，POST 偏向于更新，其实使用场景不同。在索引（indexing）数据时，PUT 需要指定 id ，POST 可以自动生成。">
+<meta name="keywords" content="elasticsearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES基础--常用知识梳理">
+<meta property="og:url" content="http://yoursite.com/2020/07/05/ES基础--常用知识梳理/index.html">
+<meta property="og:site_name" content="北方轻巡舰的博客">
+<meta property="og:description" content="索引操作PUT 和 POST 的区别： 相对来说PUT偏向于创建，POST 偏向于更新，其实使用场景不同。在索引（indexing）数据时，PUT 需要指定 id ，POST 可以自动生成。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-07-05T14:38:52.554Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES基础--常用知识梳理">
+<meta name="twitter:description" content="索引操作PUT 和 POST 的区别： 相对来说PUT偏向于创建，POST 偏向于更新，其实使用场景不同。在索引（indexing）数据时，PUT 需要指定 id ，POST 可以自动生成。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/05/ES基础--常用知识梳理/"/>
+
+
+
+
+
+  <title>ES基础--常用知识梳理 | 北方轻巡舰的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">北方轻巡舰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/05/ES基础--常用知识梳理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ES基础--常用知识梳理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-05T22:30:46+08:00">
+                2020-07-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ELK/" itemprop="url" rel="index">
+                    <span itemprop="name">ELK</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h4><p><strong>PUT 和 POST 的区别：</strong></p>
+<p>相对来说<code>PUT</code>偏向于创建，<code>POST</code> 偏向于更新，其实使用场景不同。在索引（<code>indexing</code>）数据时，<code>PUT</code> 需要指定 <code>id</code> ，<code>POST</code> 可以自动生成。<br><a id="more"></a><br>CRUD的API使用示例及区别：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#查看索引</span><br><span class="line">GET _cat/indices</span><br><span class="line"></span><br><span class="line">#索引文档，已有id的会删除重建，版本号+1</span><br><span class="line">PUT index_name/_doc/1 </span><br><span class="line">&#123;</span><br><span class="line">    &quot;user&quot;:&quot;elasticsearch&quot;,</span><br><span class="line">    &quot;comment&quot;:&quot;you know,for search&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#创建文档，已有id会报错。</span><br><span class="line">PUT index_name/_create/1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;user&quot;:&quot;elasticsearch&quot;,</span><br><span class="line">    &quot;comment&quot;:&quot;you know,for search&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#创建文档，不指定id，自动生成</span><br><span class="line">POST index_name/_doc</span><br><span class="line">&#123;</span><br><span class="line">    &quot;user&quot;:&quot;elasticsearch&quot;,</span><br><span class="line">    &quot;comment&quot;:&quot;you know,for search&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#查询</span><br><span class="line">GET index_name/_doc/1</span><br><span class="line"></span><br><span class="line">#更新，不会删除旧文档，真正的更新</span><br><span class="line">POST index_name/_update/1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;user&quot;:&quot;elasticsearch&quot;,</span><br><span class="line">    &quot;comment&quot;:&quot;document update&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#删除</span><br><span class="line">DELETE index_name/_doc/1</span><br></pre></td></tr></table></figure></p>
+<h4 id="节点类型"><a href="#节点类型" class="headerlink" title="节点类型"></a>节点类型</h4><ul>
+<li><code>Master eligible</code> 节点和 <code>Master</code> 节点。<code>eligible</code> 标识该节点是否参与选举。通过设置<code>node.master=false</code>禁止。第一个节点在启动时，会将自己设置为 <code>master</code> 。每个节点都保存了集群的状态（<code>state</code>），但只有 <code>master</code> 可以进行更改（确保数据的一致性）。</li>
+<li><code>DataNode</code>，存放数据的节点，负责保存分片数据。</li>
+<li><p><code>Coordinating</code> 节点，负责接收 <code>client</code> 的请求，将请求分发给合适的节点。最终汇聚结果，每个节点默认都起到了<code>Coordinating Node</code>的职责。</p>
+</li>
+<li><p><code>Hot&amp;Warm</code> 节点，不同硬件的 <code>DataNode</code>。<code>Hot&amp;Warm</code> 架构用于降低部署成本</p>
+</li>
+<li><code>MachineLearning</code> 节点，机器学习节点。</li>
+<li><code>TribeNode</code>，5.3后开始加入的，用于连接到不同集群，且支持当做新的集群来处理。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>节点类型</th>
+<th>配置参数</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Master eligible</td>
+<td>node.master</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>node.data</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Ingest</td>
+<td>node.ingest</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Coordinating</td>
+<td>无</td>
+<td>每个节点都是coordinating。设置其他类型全为false</td>
+</tr>
+<tr>
+<td>MachineLearning</td>
+<td>node.ml</td>
+<td>true(需enable-xpack)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="经常提到的-reIndex-和-alias-到底是什么？"><a href="#经常提到的-reIndex-和-alias-到底是什么？" class="headerlink" title="经常提到的 reIndex 和 alias 到底是什么？"></a>经常提到的 reIndex 和 alias 到底是什么？</h4><p><code>reIndex</code> 也称为索引重建。很多时候会遇到诸如：分片数设置错误、<code>mapping</code> 设置错误等。此时就只能选择 <code>reindex</code>，因为这些属性在创建后就不能进行修改。只能进行索引重建</p>
+<h4 id="集群颜色体现了什么"><a href="#集群颜色体现了什么" class="headerlink" title="集群颜色体现了什么"></a>集群颜色体现了什么</h4><p>查看集群状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET _cluster/health</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><code>Green</code> 代表所有主副分片均正常，</li>
+<li><code>Yellow</code> 代表主分片正常，有副本未能正常分配，</li>
+<li><code>Red</code> 代表有主分片为正常分配，如磁盘不足时，新建了一个索引</li>
+</ul>
+<h3 id="分片和副本"><a href="#分片和副本" class="headerlink" title="分片和副本"></a>分片和副本</h3><p>分片是将一份数据分成多个，水平扩展存储到不同机器，提高存储量。</p>
+<p>副本是将一份数据复制为两份或更多，避免数据丢失。</p>
+<h4 id="搜索类型"><a href="#搜索类型" class="headerlink" title="搜索类型"></a>搜索类型</h4><ul>
+<li><code>match</code></li>
+<li><code>match_phrase</code></li>
+<li><code>match_phrase_prefix</code></li>
+<li><code>query_string</code> ,相对来说更智能，可以识别 <code>and</code> 和 <code>or</code></li>
+<li><code>simple_query_string</code>，更笨重一些，无法识别 <code>and</code> 和 <code>or</code>，但可以通过 <code>default_oparator</code> 进行控制。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">// 假设数据有三条，elasticsearch函数、kibana函数、logstash函数。</span><br><span class="line">//query_string返回前两个</span><br><span class="line">GET search_jw_words/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;query_string&quot;: &#123;</span><br><span class="line">      &quot;default_field&quot;: &quot;content&quot;,</span><br><span class="line">      &quot;query&quot;: &quot;(elasticsearch AND 函数) OR (kibana AND 函数)&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">//simple——query_string三条全部返回</span><br><span class="line">GET search_jw_words/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;simple_query_string&quot;: &#123;</span><br><span class="line">      &quot;query&quot;: &quot;elasticsearch AND 函数&quot;,</span><br><span class="line">      &quot;fields&quot;: [&quot;content&quot;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">//修改默认连接参数，此时则只返回elasticsearch函数</span><br><span class="line">GET search_jw_words/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;simple_query_string&quot;: &#123;</span><br><span class="line">      &quot;query&quot;: &quot;elasticsearch AND 函数&quot;,</span><br><span class="line">      &quot;fields&quot;: [&quot;content&quot;],</span><br><span class="line">      &quot;default_operator&quot;: &quot;AND&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><ul>
+<li><code>text/keyword</code></li>
+<li><code>Date</code>,建立 <code>mapping</code> 时，需要指定 <code>format</code></li>
+<li><code>Integer/Floating</code></li>
+<li><code>boolean</code></li>
+<li><code>IPv4/IPv6</code></li>
+<li>复杂类型，对象和嵌套对象。</li>
+<li>特殊类型， <code>geo_point,geo_shape,percolator</code></li>
+</ul>
+<h3 id="mapping-和-DynamicMapping"><a href="#mapping-和-DynamicMapping" class="headerlink" title="mapping 和 DynamicMapping"></a>mapping 和 DynamicMapping</h3><p><code>mapping</code> 指的是字段的映射信息，即每个字段的数据类型，分词配置等等。<strong><code>mapping</code> 创建后，可以新加字段，但不能修改已有字段的 <code>mapping</code></strong>，要修改已有字段只能进行 <code>reindex</code> 操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">PUT search_jw_words</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot; : &#123;</span><br><span class="line">    &quot;properties&quot; : &#123;</span><br><span class="line">      &quot;content&quot; : &#123;</span><br><span class="line">        &quot;type&quot; : &quot;text&quot;,</span><br><span class="line">        &quot;analyzer&quot;: &quot;ik_smart&quot;,</span><br><span class="line">        &quot;fielddata&quot;: true,</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">          &quot;keyword&quot;:&#123;</span><br><span class="line">            &quot;type&quot;:&quot;keyword&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;searchtime&quot; : &#123;</span><br><span class="line">        &quot;type&quot; : &quot;date&quot;,</span><br><span class="line">        &quot;format&quot;: &quot;yyyy-MM-dd||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd HH:mm:ss.SSS||strict_date_optional_time||epoch_millis&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在写入文档时，如果索引不存在，<code>es</code> 会自动创建索引。此时，使用到的 <code>mapping</code> 映射就叫做 <code>DynamicMapping</code>。但默认的 <code>DynamicMaapping</code>会出现识别错误的情况。例如地理位置类型推断错误,分词器选择错误等等。所以就需要人为定义好<code>DynamicMapping</code>，减少识别错误的问题，实际使用中，其实用的不多，还是人工定义 <code>mapping</code> 更适合。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//查看某索引的mapping</span><br><span class="line">GET indexName/_mapping</span><br><span class="line"></span><br><span class="line">//控制dynamic映射的参数有三个、true、false以及strict，</span><br><span class="line">//默认值为true，false可以写入数据但不会被索引。strict会报错，禁止字段与mapping不一致。</span><br><span class="line">PUT search_jw_words/_mapping</span><br><span class="line">&#123;</span><br><span class="line">    &quot;dynamic&quot;:&quot;strict&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="null-value"><a href="#null-value" class="headerlink" title="null_value"></a>null_value</h3><p>对于插入的字段值为 “NULL” 且需要对其进行检索时，可以使用 <code>null_value</code> （只有 <code>keyword</code> 类型支持设定 <code>null_value</code>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PUT movies</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot; : &#123;</span><br><span class="line">    &quot;properties&quot; : &#123;</span><br><span class="line">      &quot;type&quot;:&quot;keyword&quot;,</span><br><span class="line">      &quot;null_value&quot;:&quot;NULL&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="copy-to"><a href="#copy-to" class="headerlink" title="copy_to"></a>copy_to</h3><p>拷贝字段到额外的新字段上，用于满足特性的搜索需求，由于老版本的 “_all” 已经去掉，<code>copy_to</code> 可以用于实现类型的功能：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">PUT users</span><br><span class="line">&#123;</span><br><span class="line">    &quot;mappoing&quot;:&#123;</span><br><span class="line">        &quot;properties&quot;:&#123;</span><br><span class="line">            &quot;firstName&quot;:&#123;</span><br><span class="line">                &quot;type&quot;:&quot;text&quot;,</span><br><span class="line">                &quot;copy_to&quot;:&quot;fullName&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;lastName&quot;:&#123;</span><br><span class="line">                &quot;type&quot;:&quot;text&quot;,</span><br><span class="line">                &quot;copy_to&quot;:&quot;fullName&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="数组类型"><a href="#数组类型" class="headerlink" title="数组类型"></a>数组类型</h3><p><code>es</code> 不提供专门的数组类型，任何类型都可以存储多个值，即每种类型都可以存储数组。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PUT users/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;user&quot;:[&quot;张三&quot;,&quot;李四&quot;],</span><br><span class="line">    &quot;age&quot;:[30,20]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多字段类型"><a href="#多字段类型" class="headerlink" title="多字段类型"></a>多字段类型</h3><p>基于不同需求情况下，可能会遇到同样的内容需要被中文检索到，也要被英文检索到。那次此时就可以使用到多字段类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">PUT products</span><br><span class="line">&#123;</span><br><span class="line">    &quot;mapping&quot;:&#123;</span><br><span class="line">        &quot;properties&quot;:&#123;</span><br><span class="line">            &quot;company&quot;:&#123;</span><br><span class="line">                &quot;type&quot;:&quot;text&quot;,</span><br><span class="line">                &quot;fields&quot;:&#123;</span><br><span class="line">                    &quot;keyword&quot;:&#123;</span><br><span class="line">                        &quot;type&quot;:&quot;keyword&quot;,</span><br><span class="line">                        &quot;ignore_above&quot;:256</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;comment&quot;:&#123;</span><br><span class="line">                &quot;type&quot;:&quot;text&quot;,</span><br><span class="line">                &quot;fields&quot;:&#123;</span><br><span class="line">                    &quot;english_comment&quot;:&#123;</span><br><span class="line">                        &quot;type&quot;:&quot;text&quot;,</span><br><span class="line">                        &quot;analyzer&quot;:&quot;english&quot;,</span><br><span class="line">                        &quot;search_analyzer&quot;:&quot;english&quot;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="自定义分词器"><a href="#自定义分词器" class="headerlink" title="自定义分词器"></a>自定义分词器</h3><p>自定义分词器分为以下三个部分：</p>
+<ul>
+<li><code>charfilter</code>，增加、替换或删除字符串</li>
+<li><code>tokenizer</code>，分词</li>
+<li><code>filter</code>，过滤</li>
+<li>组合成 <code>analyzer</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">自定义分析器标准格式是：</span><br><span class="line">PUT /my_index</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;analysis&quot;: &#123;</span><br><span class="line">            &quot;char_filter&quot;: &#123; ... custom character filters ... &#125;,//字符过滤器</span><br><span class="line">            &quot;tokenizer&quot;: &#123; ... custom tokenizers ... &#125;,//分词器</span><br><span class="line">            &quot;filter&quot;: &#123; ... custom token filters ... &#125;, //词单元过滤器</span><br><span class="line">            &quot;analyzer&quot;: &#123; ... custom analyzers ... &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">============================实例===========================</span><br><span class="line">PUT /my_index</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;analysis&quot;: &#123;</span><br><span class="line">            &quot;char_filter&quot;: &#123;</span><br><span class="line">                &quot;&amp;_to_and&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;mapping&quot;,</span><br><span class="line">                    &quot;mappings&quot;: [ &quot;&amp;=&gt; and &quot;]</span><br><span class="line">            &#125;&#125;,</span><br><span class="line">            &quot;filter&quot;: &#123;</span><br><span class="line">                &quot;my_stopwords&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;stop&quot;,</span><br><span class="line">                    &quot;stopwords&quot;: [ &quot;the&quot;, &quot;a&quot; ]</span><br><span class="line">            &#125;&#125;,</span><br><span class="line">            &quot;analyzer&quot;: &#123;</span><br><span class="line">                &quot;my_analyzer&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;custom&quot;,</span><br><span class="line">                    &quot;char_filter&quot;: [ &quot;html_strip&quot;, &quot;&amp;_to_and&quot; ],</span><br><span class="line">                    &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">                    &quot;filter&quot;: [ &quot;lowercase&quot;, &quot;my_stopwords&quot; ]</span><br><span class="line">            &#125;&#125;</span><br><span class="line">&#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">============================实例===========================</span><br><span class="line">比如自定义好的analyzer名字是my_analyzer,在此索引下的某个新增字段应用此分析器</span><br><span class="line">PUT /my_index/_mapping</span><br><span class="line">&#123;</span><br><span class="line">   &quot;properties&quot;:&#123;</span><br><span class="line">        &quot;username&quot;:&#123;</span><br><span class="line">             &quot;type&quot;:&quot;text&quot;,</span><br><span class="line">              &quot;analyzer&quot; : &quot;my_analyzer&quot;</span><br><span class="line">         &#125;,</span><br><span class="line">        &quot;password&quot; : &#123;</span><br><span class="line">          &quot;type&quot; : &quot;text&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">=================插入数据====================</span><br><span class="line">PUT /my_index/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;username&quot;:&quot;The quick &amp; brown fox &quot;,</span><br><span class="line">   &quot;password&quot;:&quot;The quick &amp; brown fox &quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">====username采用自定义分析器my_analyzer,password采用默认的standard分析器==</span><br><span class="line">===验证</span><br><span class="line">GET /my_index/_analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;field&quot;:&quot;username&quot;,</span><br><span class="line">  &quot;text&quot;:&quot;The quick &amp; brown fox&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET /my_index/_analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;field&quot;:&quot;password&quot;,</span><br><span class="line">  &quot;text&quot;:&quot;The quick &amp; brown fox&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="indexTemplate和DynamicTemplate"><a href="#indexTemplate和DynamicTemplate" class="headerlink" title="indexTemplate和DynamicTemplate"></a>indexTemplate和DynamicTemplate</h3><p>当一个索引被创建时，会按照以下步骤顺序进行：</p>
+<ul>
+<li>应用 <code>es</code> 默认的 <code>settings</code> 和 <code>mappings</code></li>
+<li>应用 <code>order</code> 数值更低的 <code>indexTemplate</code> 的设定</li>
+<li>应用 <code>order</code> 更高的 <code>indexTemplate</code> 的设定，会覆盖之前相同的属性</li>
+<li>应用创建索引时，用户手动指定的 <code>settings</code> 和 <code>mappings</code>，覆盖之前相同的属性</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">PUT _template/template_default</span><br><span class="line">&#123;</span><br><span class="line">    &quot;index_patterns&quot;:[&quot;*&quot;],</span><br><span class="line">    &quot;order&quot;:0,</span><br><span class="line">    &quot;version&quot;:1,</span><br><span class="line">    &quot;settings&quot;:&#123;</span><br><span class="line">        &quot;number_of_shards&quot;:1,</span><br><span class="line">        &quot;number_of_replicas&quot;:1</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT _template/template_test</span><br><span class="line">&#123;</span><br><span class="line">    &quot;index_patterns&quot;:[&quot;test*&quot;],</span><br><span class="line">    &quot;order&quot;:1,</span><br><span class="line">    &quot;settings&quot;:&#123;</span><br><span class="line">        &quot;number_of_shards&quot;:1,</span><br><span class="line">        &quot;number_of_replicas&quot;:2</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;mappings&quot;:&#123;</span><br><span class="line">    //日期推断关闭，数字推断打开</span><br><span class="line">        &quot;date_detection&quot;:false,</span><br><span class="line">        &quot;numeric_detection&quot;:true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//查看template信息</span><br><span class="line">GET _template/template_default</span><br><span class="line">GET _template/temp*</span><br><span class="line"></span><br><span class="line">PUT testtemplate/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;someNumber&quot;:&quot;1&quot;,</span><br><span class="line">    &quot;someDate&quot;:&quot;2020/01/01&quot;</span><br><span class="line">&#125;</span><br><span class="line">GET testtemplate/_mapping</span><br><span class="line"></span><br><span class="line">PUT testmy</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;:&#123;</span><br><span class="line">        &quot;number_of_replicas&quot;:5</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">GET testmy/_settings</span><br><span class="line">PUT testmy/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;key&quot;:&quot;value&quot;</span><br><span class="line">&#125;</span><br><span class="line">DELETE testmy</span><br><span class="line">DELETE _template/template_default</span><br><span class="line">DELETE _template/template_test</span><br><span class="line">//或</span><br><span class="line">DELETE _template/temp*</span><br></pre></td></tr></table></figure>
+<p><code>DynamicTemplate</code> 用于对新字段进行模板映射，当 <code>dynamicTemplates</code> 匹配到该字段时，就会应用已经设置好的 <code>mapping</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line">    &quot;mappings&quot;:&#123;</span><br><span class="line">        &quot;dynamic_templates&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;string_as_boolean&quot;:&#123;</span><br><span class="line">                &quot;match_mapping_type&quot;:&quot;string&quot;,</span><br><span class="line">                &quot;match&quot;:&quot;is*&quot;,</span><br><span class="line">                &quot;mapping&quot;:&#123;</span><br><span class="line">                    &quot;type&quot;:&quot;boolean&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;string_as_keywords&quot;:&#123;</span><br><span class="line">                &quot;match_mapping_type&quot;:&quot;string&quot;,</span><br><span class="line">                &quot;mapping&quot;:&#123;</span><br><span class="line">                    &quot;type&quot;:&quot;keyword&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//测试</span><br><span class="line">PUT my_index/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;firstName&quot;:&quot;zhang&quot;</span><br><span class="line">    &quot;isMan&quot;:&quot;true&quot;</span><br><span class="line">&#125;</span><br><span class="line">GET my_index/_mapping</span><br><span class="line">DELETE my_index</span><br><span class="line"></span><br><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line">    &quot;mappings&quot;:&#123;</span><br><span class="line">        &quot;dynamic_templates&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;full_name&quot;:&#123;</span><br><span class="line">                &quot;path_match&quot;:&quot;name.*&quot;,</span><br><span class="line">                &quot;path_unmatch&quot;:&quot;*.middle&quot;,</span><br><span class="line">                &quot;mapping&quot;:&#123;</span><br><span class="line">                    &quot;type&quot;:&quot;text&quot;,</span><br><span class="line">                    &quot;copy_to&quot;:&quot;full_name&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT my_index/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&#123;</span><br><span class="line">        &quot;first&quot;:&quot;张&quot;,</span><br><span class="line">        &quot;middle&quot;:&quot;尼古拉斯&quot;,</span><br><span class="line">        &quot;last&quot;:&quot;三&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//测试</span><br><span class="line">GET my_index/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;full_name&quot;: &quot;张三&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h3><p>聚合总体可以分为一下几个大类别：</p>
+<ul>
+<li><code>bucket aggregation</code>，满足特定条件的某些聚合</li>
+<li><code>metric aggregation</code>，一些数学运算，可以对文档字段进行统计分析</li>
+<li><code>pipeline aggregation</code>，对其它的聚合结果进行二次聚合</li>
+<li><code>Matrix aggregation</code>，支持对多个字段的操作，并提供一个结果矩阵。</li>
+</ul>
+<p><code>bucket</code> 可以简单理解为 <code>sql</code> 语句的 <code>group by</code> 操作，<code>metric</code> 可以理解为 <code>sql</code> 的 <code>count</code> 函数。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/elasticsearch/" rel="tag"><i class="fa fa-tag"></i> elasticsearch</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/02/ES基础--terms聚合/" rel="next" title="ES基础--terms聚合">
+                <i class="fa fa-chevron-left"></i> ES基础--terms聚合
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div id="gitalk-container">
+	</div>
+	
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/header.png"
+                alt="北方轻巡舰" />
+            
+              <p class="site-author-name" itemprop="name">北方轻巡舰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zengxin166850" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#索引操作"><span class="nav-text">索引操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#节点类型"><span class="nav-text">节点类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#经常提到的-reIndex-和-alias-到底是什么？"><span class="nav-text">经常提到的 reIndex 和 alias 到底是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集群颜色体现了什么"><span class="nav-text">集群颜色体现了什么</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片和副本"><span class="nav-text">分片和副本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#搜索类型"><span class="nav-text">搜索类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据类型"><span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mapping-和-DynamicMapping"><span class="nav-text">mapping 和 DynamicMapping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null-value"><span class="nav-text">null_value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-to"><span class="nav-text">copy_to</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组类型"><span class="nav-text">数组类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多字段类型"><span class="nav-text">多字段类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义分词器"><span class="nav-text">自定义分词器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#indexTemplate和DynamicTemplate"><span class="nav-text">indexTemplate和DynamicTemplate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚合"><span class="nav-text">聚合</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">北方轻巡舰</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="/css/gitalk.css">
+  <script src="/js/src/md5.min.js"></script>
+  <script src="/js/src/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '4d8264bae956afc03d03',
+		  clientSecret: 'cd2ea936a06ea5daf08bc14cd5538ae1f7eb491e',
+		  repo: 'hoppoComments',
+		  owner: 'zengxin166850',
+		  admin: ['zengxin166850'], 
+		  id: md5(location.pathname),
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script src="/js/src/autoload.js"></script>
+</body>
+</html>
