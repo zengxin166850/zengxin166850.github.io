@@ -86,19 +86,19 @@
 
 
 
-<meta name="description" content="给hexo加上live2d只能说是自己作为死宅的本能反应吧= =，在别人的网站上看过之后总是觉得羨ましい，然后到处找文章想给自己也加上，本来很简单的事情还用了大半天(I very vegetables)，这次把步骤写上来。也算做个备份吧，指不定那天忘了呢。">
+<meta name="description" content="给hexo加上live2d只能说是自己作为死宅的本能反应吧= =，在别人的网站上看过之后总是觉得羨ましい，然后到处找文章想给自己也加上，本来很简单的事情还用了大半天(I very vegetables)，这次把步骤写上来。也算做个备份吧，指不定那天忘了呢。 hexo的官方插件hexo的官方有提供名为hexo-helper-live2d的插件使用如下安装命令就可以安装  npm install –s">
 <meta name="keywords" content="随笔">
 <meta property="og:type" content="article">
 <meta property="og:title" content="我的live2d配置">
 <meta property="og:url" content="http://yoursite.com/2019/04/27/我的live2d配置/index.html">
 <meta property="og:site_name" content="北方轻巡舰的博客">
-<meta property="og:description" content="给hexo加上live2d只能说是自己作为死宅的本能反应吧= =，在别人的网站上看过之后总是觉得羨ましい，然后到处找文章想给自己也加上，本来很简单的事情还用了大半天(I very vegetables)，这次把步骤写上来。也算做个备份吧，指不定那天忘了呢。">
+<meta property="og:description" content="给hexo加上live2d只能说是自己作为死宅的本能反应吧= =，在别人的网站上看过之后总是觉得羨ましい，然后到处找文章想给自己也加上，本来很简单的事情还用了大半天(I very vegetables)，这次把步骤写上来。也算做个备份吧，指不定那天忘了呢。 hexo的官方插件hexo的官方有提供名为hexo-helper-live2d的插件使用如下安装命令就可以安装  npm install –s">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/hexo-live2d-default.png">
-<meta property="og:updated_time" content="2020-01-04T13:25:03.798Z">
+<meta property="og:updated_time" content="2021-03-07T02:58:12.659Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="我的live2d配置">
-<meta name="twitter:description" content="给hexo加上live2d只能说是自己作为死宅的本能反应吧= =，在别人的网站上看过之后总是觉得羨ましい，然后到处找文章想给自己也加上，本来很简单的事情还用了大半天(I very vegetables)，这次把步骤写上来。也算做个备份吧，指不定那天忘了呢。">
+<meta name="twitter:description" content="给hexo加上live2d只能说是自己作为死宅的本能反应吧= =，在别人的网站上看过之后总是觉得羨ましい，然后到处找文章想给自己也加上，本来很简单的事情还用了大半天(I very vegetables)，这次把步骤写上来。也算做个备份吧，指不定那天忘了呢。 hexo的官方插件hexo的官方有提供名为hexo-helper-live2d的插件使用如下安装命令就可以安装  npm install –s">
 <meta name="twitter:image" content="http://yoursite.com/images/hexo-live2d-default.png">
 
 
@@ -386,13 +386,14 @@
       
 
       
-        <p>给<code>hexo</code>加上<code>live2d</code>只能说是自己作为死宅的本能反应吧= =，在别人的网站上看过之后总是觉得羨ましい，然后到处找文章想给自己也加上，本来很简单的事情还用了大半天(I very vegetables)，这次把步骤写上来。也算做个备份吧，指不定那天忘了呢。<br><a id="more"></a></p>
+        <p>给<code>hexo</code>加上<code>live2d</code>只能说是自己作为死宅的本能反应吧= =，在别人的网站上看过之后总是觉得羨ましい，然后到处找文章想给自己也加上，本来很简单的事情还用了大半天(I very vegetables)，这次把步骤写上来。也算做个备份吧，指不定那天忘了呢。</p>
 <h3 id="hexo的官方插件"><a href="#hexo的官方插件" class="headerlink" title="hexo的官方插件"></a>hexo的官方插件</h3><p><code>hexo</code>的官方有提供名为<code>hexo-helper-live2d</code>的插件使用如下安装命令就可以安装</p>
 <blockquote>
 <p>npm install –save hexo-helper-live2d</p>
 </blockquote>
 <p>随后在Hexo的<code>_config.yml</code>文件中添加如下配置(据说是可以配在主题的<code>_config.yml</code>中的，但是我没试过呢orz).<br>示例:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">live2d:</span><br><span class="line"> enable: <span class="literal">true</span>   </span><br><span class="line"> scriptFrom: local</span><br><span class="line"> pluginRootPath: live2dw/</span><br><span class="line"> pluginJsPath: lib/</span><br><span class="line"> pluginModelPath: assets/</span><br><span class="line"> tagMode: <span class="literal">false</span></span><br><span class="line"> debug: <span class="literal">false</span></span><br><span class="line"> model:</span><br><span class="line">   use: live2d-widget-model-wanko  <span class="comment">//启用的模型目录</span></span><br><span class="line"> display:</span><br><span class="line">   position: right</span><br><span class="line">   width: <span class="number">150</span></span><br><span class="line">   height: <span class="number">300</span></span><br><span class="line"> mobile:</span><br><span class="line">   show: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <p> 这样一个默认的模型就配好了，默认是这样的:<br> <img src="/images/hexo-live2d-default.png" alt="hexo-default"></p>
 <h3 id="添加互动："><a href="#添加互动：" class="headerlink" title="添加互动："></a>添加互动：</h3><p>默认的模型只有很简单的动画，在别人网站里看到的都是能互动对话的，经过查阅找到了大佬的教程<a href="https://github.com/stevenjoezhang/live2d-widget" target="_blank" rel="noopener">把萌萌哒的看板娘抱回家</a>。  (到这里需要把之前配置文件中的live2d.enable修改为false)<br>根据步骤来，<code>jquery</code>在主题中是已经存在的直接跳过，将项目下载下来，将<code>autoload.js</code>、 <code>live2d.min.js</code>、<code>waifu-tips.js</code>、<code>waifu-tips.json</code>、<code>waifu.css</code>这几个文件放入到<code>next</code>主题中<code>/source/js/src</code>目录下，也可以将<code>json</code>和<code>css</code>文件放到对于的目录下，但是需要改动下<code>autoload</code>中的路径，我这里偷懒直接放到一起了orz</p>
 <pre><code>&lt;script src=&quot;/js/src/autoload.js&quot;&gt;&lt;/script&gt;
@@ -616,7 +617,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

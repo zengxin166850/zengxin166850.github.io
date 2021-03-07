@@ -86,20 +86,20 @@
 
 
 
-<meta name="description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。">
+<meta name="description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。 系统组件图 Master NodeMaster节点主要由负责API服务的apiserver、负责容器编排的controller-manager、以及负责调度的scheduler组成。整个集群的持久化数据，由apiserver处理后，交由etcd进行管理。  A">
 <meta name="keywords" content="容器,kubernetes">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes集群组件介绍">
 <meta property="og:url" content="http://yoursite.com/2019/07/20/kubernetes集群组件介绍/index.html">
 <meta property="og:site_name" content="北方轻巡舰的博客">
-<meta property="og:description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。">
+<meta property="og:description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。 系统组件图 Master NodeMaster节点主要由负责API服务的apiserver、负责容器编排的controller-manager、以及负责调度的scheduler组成。整个集群的持久化数据，由apiserver处理后，交由etcd进行管理。  A">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/kubernetes-component.png">
 <meta property="og:image" content="http://yoursite.com/images/modeganqing.jpg">
-<meta property="og:updated_time" content="2020-01-04T13:19:44.593Z">
+<meta property="og:updated_time" content="2021-03-07T03:02:10.082Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes集群组件介绍">
-<meta name="twitter:description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。">
+<meta name="twitter:description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。 系统组件图 Master NodeMaster节点主要由负责API服务的apiserver、负责容器编排的controller-manager、以及负责调度的scheduler组成。整个集群的持久化数据，由apiserver处理后，交由etcd进行管理。  A">
 <meta name="twitter:image" content="http://yoursite.com/images/kubernetes-component.png">
 
 
@@ -387,7 +387,7 @@
       
 
       
-        <p>一个<code>Kubernetes</code>集群，通常是由多个工作节点<code>Worker Node</code>加上一个集群控制者<code>Master</code>，以及集群状态存储系统<code>etcd</code>组成。<br><a id="more"></a></p>
+        <p>一个<code>Kubernetes</code>集群，通常是由多个工作节点<code>Worker Node</code>加上一个集群控制者<code>Master</code>，以及集群状态存储系统<code>etcd</code>组成。</p>
 <h3 id="系统组件图"><a href="#系统组件图" class="headerlink" title="系统组件图"></a>系统组件图</h3><p><img src="/images/kubernetes-component.png" alt="image"></p>
 <h4 id="Master-Node"><a href="#Master-Node" class="headerlink" title="Master Node"></a>Master Node</h4><p><code>Master</code>节点主要由负责API服务的<code>apiserver</code>、负责容器编排的<code>controller-manager</code>、以及负责调度的<code>scheduler</code>组成。整个集群的持久化数据，由<code>apiserver</code>处理后，交由<code>etcd</code>进行管理。</p>
 <ul>
@@ -399,6 +399,7 @@
 </li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">kubectl describe pod image-sign-deployment-59948dd446-8n8l7</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Events:</span><br><span class="line">  Type    Reason     Age   From               Message</span><br><span class="line">  ----    ------     ----  ----               -------</span><br><span class="line">  Normal  Scheduled  108s  default-scheduler  Successfully assigned default/image-sign-deployment-59948dd446-8n8l7 to node2</span><br><span class="line">  Normal  Pulled     107s  kubelet, node2     Container image &quot;image-sign&quot; already present on machine</span><br><span class="line">  Normal  Created    107s  kubelet, node2     Created container image-sign</span><br><span class="line">  Normal  Started    106s  kubelet, node2     Started container image-sign</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <h4 id="Worker-Node"><a href="#Worker-Node" class="headerlink" title="Worker Node"></a>Worker Node</h4><p>在<code>worker Node</code>中，最重要的则是<strong>kubelet</strong>，<strong>它所负责的是与容器运行时打交道（如docker项目）</strong>。他们交互所依赖的，是一个称作<code>CRI</code>的远程调用接口，这个接口定义了容器运行时的各项核心操作。如启动一个容器所需的所有参数。  </p>
 <p>也正是因为<code>CRI</code>的存在，<code>kubernetes</code>并不关系用户部署的容器运行时是<code>Docker</code>亦或是其它的（但默认的是<code>Docker</code>），只要这个容器运行时能运行标准的镜像，它就能通过实现<code>CRI</code>接入到<code>Kubernetes</code>中。  </p>
 <p>具体的容器运行时，像<code>Docker</code>则一般通过<code>OCI</code>这个容器运行时规范，与底层的<code>Linux</code>操作系统进行交互。即：将<code>CRI</code>请求翻译成对<code>Linux</code>系统的调用，操作系统的<code>NameSpace</code>和<code>CGroups</code>等。</p>
@@ -630,7 +631,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

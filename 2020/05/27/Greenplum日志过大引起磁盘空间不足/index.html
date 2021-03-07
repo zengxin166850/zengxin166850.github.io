@@ -86,21 +86,21 @@
 
 
 
-<meta name="description" content="日志过大，引起磁盘空间不足问题回顾：调度任务执行报错， GreenplumPooledSQLException：.........No space left on device (seg0 172.16.252.39:40000 pid=xxxxx).">
+<meta name="description" content="日志过大，引起磁盘空间不足问题回顾：调度任务执行报错， GreenplumPooledSQLException：.........No space left on device (seg0 172.16.252.39:40000 pid=xxxxx).  登录服务器，查看磁盘情况，发现占用率已经高达100%： 1234567891011[root@tdh39 ~]# df -h文件系统">
 <meta name="keywords" content="greenplum&#x2F;postgre">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Greenplum日志过大引起磁盘空间不足">
 <meta property="og:url" content="http://yoursite.com/2020/05/27/Greenplum日志过大引起磁盘空间不足/index.html">
 <meta property="og:site_name" content="北方轻巡舰的博客">
-<meta property="og:description" content="日志过大，引起磁盘空间不足问题回顾：调度任务执行报错， GreenplumPooledSQLException：.........No space left on device (seg0 172.16.252.39:40000 pid=xxxxx).">
+<meta property="og:description" content="日志过大，引起磁盘空间不足问题回顾：调度任务执行报错， GreenplumPooledSQLException：.........No space left on device (seg0 172.16.252.39:40000 pid=xxxxx).  登录服务器，查看磁盘情况，发现占用率已经高达100%： 1234567891011[root@tdh39 ~]# df -h文件系统">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/202005/nospace.png">
 <meta property="og:image" content="http://yoursite.com/images/202005/pg_log1.png">
 <meta property="og:image" content="http://yoursite.com/images/202005/pg_log2.png">
-<meta property="og:updated_time" content="2020-05-27T03:06:30.113Z">
+<meta property="og:updated_time" content="2021-03-07T03:02:00.829Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Greenplum日志过大引起磁盘空间不足">
-<meta name="twitter:description" content="日志过大，引起磁盘空间不足问题回顾：调度任务执行报错， GreenplumPooledSQLException：.........No space left on device (seg0 172.16.252.39:40000 pid=xxxxx).">
+<meta name="twitter:description" content="日志过大，引起磁盘空间不足问题回顾：调度任务执行报错， GreenplumPooledSQLException：.........No space left on device (seg0 172.16.252.39:40000 pid=xxxxx).  登录服务器，查看磁盘情况，发现占用率已经高达100%： 1234567891011[root@tdh39 ~]# df -h文件系统">
 <meta name="twitter:image" content="http://yoursite.com/images/202005/nospace.png">
 
 
@@ -388,13 +388,13 @@
       
 
       
-        <h3 id="日志过大，引起磁盘空间不足"><a href="#日志过大，引起磁盘空间不足" class="headerlink" title="日志过大，引起磁盘空间不足"></a>日志过大，引起磁盘空间不足</h3><p>问题回顾：调度任务执行报错， <code>GreenplumPooledSQLException：.........No space left on device (seg0 172.16.252.39:40000 pid=xxxxx)</code>.<br><a id="more"></a><br><img src="/images/202005/nospace.png" alt="image"></p>
+        <h3 id="日志过大，引起磁盘空间不足"><a href="#日志过大，引起磁盘空间不足" class="headerlink" title="日志过大，引起磁盘空间不足"></a>日志过大，引起磁盘空间不足</h3><p>问题回顾：调度任务执行报错， <code>GreenplumPooledSQLException：.........No space left on device (seg0 172.16.252.39:40000 pid=xxxxx)</code>.</p>
+<p><img src="/images/202005/nospace.png" alt="image"></p>
 <p>登录服务器，查看磁盘情况，发现占用率已经高达100%：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@tdh39 ~]# df -h</span><br><span class="line">文件系统                 容量  已用  可用 已用% 挂载点</span><br><span class="line">/dev/mapper/centos-root  592G  592G   20K  100% /</span><br><span class="line">devtmpfs                  32G     0   32G    0% /dev</span><br><span class="line">tmpfs                     32G     0   32G    0% /dev/shm</span><br><span class="line">tmpfs                     32G  533M   31G    2% /run</span><br><span class="line">tmpfs                     32G     0   32G    0% /sys/fs/cgroup</span><br><span class="line">/dev/sda1               1014M  169M  845M   17% /boot</span><br><span class="line">tmpfs                    6.3G   40K  6.3G    1% /run/user/0</span><br><span class="line">tmpfs                    6.3G     0  6.3G    0% /run/user/988</span><br><span class="line">tmpfs                    6.3G     0  6.3G    0% /run/user/1003</span><br></pre></td></tr></table></figure>
 <p>切换到根目录后，执行 <code>du -sh</code>，发现<code>data</code>目录占用高达<code>581G</code>：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@tdh39 ~]# cd /</span><br><span class="line">[root@tdh39 /]# du -sh *</span><br><span class="line">0	bin</span><br><span class="line">137M	boot</span><br><span class="line">581G	data</span><br><span class="line">0	dev</span><br><span class="line">37M	etc</span><br><span class="line">143M	hadoop</span><br><span class="line">3.8G	home</span><br><span class="line">.......</span><br></pre></td></tr></table></figure>
-<p>进一步跟踪目录占用后，发现目录为<code>gp510/gpdata</code>，而<code>gpdata</code>是<code>greenplum</code>存放数据的目录。再进入到<code>pg_log</code>，发现存放了大量的<code>csv</code>格式的日志文件：</p>
-<p><img src="/images/202005/pg_log1.png" alt="image"></p>
+<p>进一步跟踪目录占用后，发现目录为<code>gp510/gpdata</code>，而<code>gpdata</code>是<code>greenplum</code>存放数据的目录。再进入到<code>pg_log</code>，发现存放了大量的<code>csv</code>格式的日志文件：<br><a id="more"></a><br><img src="/images/202005/pg_log1.png" alt="image"></p>
 <p>在目录下发现甚至有19年的日志存在，并且由于此次从5月8日开始启用新系统的<code>ETL</code>工具，该系统的<code>ETL</code>方式大致为：</p>
 <ol>
 <li>查询源表数据；</li>
@@ -627,7 +627,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

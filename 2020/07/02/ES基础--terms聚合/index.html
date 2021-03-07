@@ -86,18 +86,18 @@
 
 
 
-<meta name="description" content="1.一般使用基于 es-7.2版本 Terms聚合一般情况下是针对字段类型为 keyword 的聚合（text 类型的字段需要开启 fielddata ），用于对指定字段进行唯一匹配，如下：">
+<meta name="description" content="1.一般使用基于 es-7.2版本 Terms聚合一般情况下是针对字段类型为 keyword 的聚合（text 类型的字段需要开启 fielddata ），用于对指定字段进行唯一匹配，如下： 1234567891011GET indexName/_search&amp;#123;    &amp;quot;aggs&amp;quot; : &amp;#123;        &amp;quot;terms_test&amp;quot; : &amp;#">
 <meta name="keywords" content="elasticsearch">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ES基础--terms聚合">
 <meta property="og:url" content="http://yoursite.com/2020/07/02/ES基础--terms聚合/index.html">
 <meta property="og:site_name" content="北方轻巡舰的博客">
-<meta property="og:description" content="1.一般使用基于 es-7.2版本 Terms聚合一般情况下是针对字段类型为 keyword 的聚合（text 类型的字段需要开启 fielddata ），用于对指定字段进行唯一匹配，如下：">
+<meta property="og:description" content="1.一般使用基于 es-7.2版本 Terms聚合一般情况下是针对字段类型为 keyword 的聚合（text 类型的字段需要开启 fielddata ），用于对指定字段进行唯一匹配，如下： 1234567891011GET indexName/_search&amp;#123;    &amp;quot;aggs&amp;quot; : &amp;#123;        &amp;quot;terms_test&amp;quot; : &amp;#">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-02T10:25:55.614Z">
+<meta property="og:updated_time" content="2021-03-07T03:01:09.758Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ES基础--terms聚合">
-<meta name="twitter:description" content="1.一般使用基于 es-7.2版本 Terms聚合一般情况下是针对字段类型为 keyword 的聚合（text 类型的字段需要开启 fielddata ），用于对指定字段进行唯一匹配，如下：">
+<meta name="twitter:description" content="1.一般使用基于 es-7.2版本 Terms聚合一般情况下是针对字段类型为 keyword 的聚合（text 类型的字段需要开启 fielddata ），用于对指定字段进行唯一匹配，如下： 1234567891011GET indexName/_search&amp;#123;    &amp;quot;aggs&amp;quot; : &amp;#123;        &amp;quot;terms_test&amp;quot; : &amp;#">
 
 
 
@@ -385,7 +385,8 @@
 
       
         <h3 id="1-一般使用"><a href="#1-一般使用" class="headerlink" title="1.一般使用"></a>1.一般使用</h3><p><strong>基于 es-7.2版本</strong></p>
-<p><code>Terms</code>聚合一般情况下是针对字段类型为 <code>keyword</code> 的聚合（<code>text</code> 类型的字段需要开启 <code>fielddata</code> ），用于对指定字段进行唯一匹配，如下：<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET indexName/_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;aggs&quot; : &#123;</span><br><span class="line">        &quot;terms_test&quot; : &#123;</span><br><span class="line">            &quot;terms&quot; : &#123;</span><br><span class="line">                &quot;field&quot; : &quot;fieldname&quot;,</span><br><span class="line">                &quot;size&quot;: 3</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>Terms</code>聚合一般情况下是针对字段类型为 <code>keyword</code> 的聚合（<code>text</code> 类型的字段需要开启 <code>fielddata</code> ），用于对指定字段进行唯一匹配，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET indexName/_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;aggs&quot; : &#123;</span><br><span class="line">        &quot;terms_test&quot; : &#123;</span><br><span class="line">            &quot;terms&quot; : &#123;</span><br><span class="line">                &quot;field&quot; : &quot;fieldname&quot;,</span><br><span class="line">                &quot;size&quot;: 3</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li><code>indexName</code> 为指定的索引名称；</li>
 <li><code>terms_test</code> 为自定义名称，后端程序<code>API</code>可以通过该名称获取到 <code>bucket</code> 结果集；</li>
@@ -393,6 +394,7 @@
 </ul>
 <p>其响应结果类似：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">&quot;aggregations&quot; : &#123;</span><br><span class="line">    &quot;test&quot; : &#123;</span><br><span class="line">      &quot;doc_count_error_upper_bound&quot; : 7,</span><br><span class="line">      &quot;sum_other_doc_count&quot; : 292,</span><br><span class="line">      &quot;buckets&quot; : [</span><br><span class="line">        &#123;</span><br><span class="line">          &quot;key&quot; : &quot;人民检察院&quot;,</span><br><span class="line">          &quot;doc_count&quot; : 114</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          &quot;key&quot; : &quot;党和国家&quot;,</span><br><span class="line">          &quot;doc_count&quot; : 105</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          &quot;key&quot; : &quot;菏泽市&quot;,</span><br><span class="line">          &quot;doc_count&quot; : 101</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <ul>
 <li><p><code>doc_count_error_upper_bound</code> 表示没有在这次聚合中返回、但是可能存在的潜在聚合结果，其数量为7，可能会排在最后；</p>
 </li>
@@ -667,7 +669,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
