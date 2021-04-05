@@ -96,7 +96,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/2019-04-23.png">
 <meta property="og:image" content="http://yoursite.com/images/2019-04-23-1.png">
-<meta property="og:updated_time" content="2021-03-07T02:58:59.309Z">
+<meta property="og:updated_time" content="2021-04-05T15:07:03.811Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="线程池">
 <meta name="twitter:description" content="为什么要使用线程池线程池是并发场景中比较常见的运用，几乎所有的异步或并发执行任务的程序都可以使用线程池。在开发中使用线程池能带来以下好处。  降低资源消耗。重复利用已创建的线程，降低线程创建和销毁造成的消耗。   提高响应速度。当任务到达时，任务可以不用等待线程的创建，直接执行。 提高线程的可管理性。线程是稀缺资源，不会无限制地创建。不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一">
@@ -391,10 +391,11 @@
 <ol>
 <li><strong>降低资源消耗</strong>。重复利用已创建的线程，降低线程创建和销毁造成的消耗。  </li>
 <li><strong>提高响应速度</strong>。当任务到达时，任务可以不用等待线程的创建，直接执行。</li>
-<li><strong>提高线程的可管理性</strong>。线程是稀缺资源，不会无限制地创建。不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一分配、调优和监控。</li>
+<li><strong>提高线程的可管理性</strong>。线程是稀缺资源，不会无限制地创建。不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一分配、调优和监控。<a id="more"></a>
+<h3 id="线程池的工作原理"><a href="#线程池的工作原理" class="headerlink" title="线程池的工作原理"></a>线程池的工作原理</h3>线程池的创建依赖于ThreadPoolExecutor，它的构造函数如下所示：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public ThreadPoolExecutor(int corePoolSize, <span class="comment">//核心线程数量</span></span><br><span class="line">             int maximumPoolSize, <span class="comment">//最大线程数</span></span><br><span class="line">             long keepAliveTime, <span class="comment">//超时时间,超出核心线程数量以外的线程空余存活时间</span></span><br><span class="line">             TimeUnit unit, <span class="comment">//存活时间单位</span></span><br><span class="line">             BlockingQueue&lt;Runnable&gt; workQueue, <span class="comment">//保存执行任务的队列</span></span><br><span class="line">           ThreadFactory threadFactory,<span class="comment">//创建新线程使用的工厂</span></span><br><span class="line">RejectedExecutionHandler handler <span class="comment">//当任务无法执行的时候的处理方式</span></span><br><span class="line">) &#123;</span><br><span class="line">  <span class="keyword">this</span>(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,</span><br><span class="line">    threadFactory, defaultHandler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
-<h3 id="线程池的工作原理"><a href="#线程池的工作原理" class="headerlink" title="线程池的工作原理"></a>线程池的工作原理</h3><p>线程池的创建依赖于ThreadPoolExecutor，它的构造函数如下所示：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public ThreadPoolExecutor(int corePoolSize, <span class="comment">//核心线程数量</span></span><br><span class="line">             int maximumPoolSize, <span class="comment">//最大线程数</span></span><br><span class="line">             long keepAliveTime, <span class="comment">//超时时间,超出核心线程数量以外的线程空余存活时间</span></span><br><span class="line">             TimeUnit unit, <span class="comment">//存活时间单位</span></span><br><span class="line">             BlockingQueue&lt;Runnable&gt; workQueue, <span class="comment">//保存执行任务的队列</span></span><br><span class="line">           ThreadFactory threadFactory,<span class="comment">//创建新线程使用的工厂</span></span><br><span class="line">RejectedExecutionHandler handler <span class="comment">//当任务无法执行的时候的处理方式</span></span><br><span class="line">) &#123;</span><br><span class="line">  <span class="keyword">this</span>(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,</span><br><span class="line">    threadFactory, defaultHandler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>创建线程池所需要的参数:<br><a id="more"></a></p>
+<p>创建线程池所需要的参数:</p>
 <ol>
 <li>corePoolSize(核心线程数量): 当提交一个任务到线程池中，线程池会创建一个线程来执行任务，即使其他空闲的基本线程能够执行任务也会创建新的线程，直到池中的线程数达到corePoolSize的大小就不再创建。</li>
 <li>workQueue(工作/任务队列)：用于保存等待执行的任务的阻塞队列。</li>
@@ -547,7 +548,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

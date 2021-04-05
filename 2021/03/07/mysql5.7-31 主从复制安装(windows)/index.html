@@ -94,7 +94,7 @@
 <meta property="og:site_name" content="北方轻巡舰的博客">
 <meta property="og:description" content="准备两个MySQL服务实例 windows上可以用压缩版本，例如mysql-5.7.31-winx64.zip，解压文件夹再复制一份，添加my.ini配置文件。假设一个叫mysql-5.7.31-winx64，一个叫mysql-5.7.31-winx64-2，以为分别配置其为主和从  修改主mysql-5.7.31-winx64的my.ini解压出来默认没有 my.ini 需要自己新建:12345">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-03-07T03:06:03.218Z">
+<meta property="og:updated_time" content="2021-04-05T15:04:51.758Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql5.7-31 主从复制安装(windows)">
 <meta name="twitter:description" content="准备两个MySQL服务实例 windows上可以用压缩版本，例如mysql-5.7.31-winx64.zip，解压文件夹再复制一份，添加my.ini配置文件。假设一个叫mysql-5.7.31-winx64，一个叫mysql-5.7.31-winx64-2，以为分别配置其为主和从  修改主mysql-5.7.31-winx64的my.ini解压出来默认没有 my.ini 需要自己新建:12345">
@@ -388,8 +388,8 @@
 <p>windows上可以用压缩版本，例如mysql-5.7.31-winx64.zip，解压文件夹再复制一份，添加my.ini配置文件。假设一个叫mysql-5.7.31-winx64，一个叫mysql-5.7.31-winx64-2，以为分别配置其为主和从</p>
 </blockquote>
 <h4 id="修改主mysql-5-7-31-winx64的my-ini"><a href="#修改主mysql-5-7-31-winx64的my-ini" class="headerlink" title="修改主mysql-5.7.31-winx64的my.ini"></a>修改主mysql-5.7.31-winx64的my.ini</h4><p>解压出来默认没有 <code>my.ini</code> 需要自己新建:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">basedir = ./</span><br><span class="line">datadir = ./data</span><br><span class="line">port = 3316</span><br><span class="line">server_id = 16</span><br><span class="line"></span><br><span class="line">sql_mode=&quot;STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION&quot;</span><br><span class="line">log_bin=mysql-bin</span><br><span class="line">binlog-format=Row</span><br></pre></td></tr></table></figure></p>
-<h4 id="修改从mysql-5-7-31-winx64-2的my-ini"><a href="#修改从mysql-5-7-31-winx64-2的my-ini" class="headerlink" title="修改从mysql-5.7.31-winx64-2的my.ini"></a>修改从mysql-5.7.31-winx64-2的my.ini</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">basedir = ./</span><br><span class="line">datadir = ./data</span><br><span class="line">port = 3326</span><br><span class="line">server_id = 26</span><br><span class="line"></span><br><span class="line">sql_mode=&quot;STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION&quot;</span><br><span class="line">log_bin=mysql-bin</span><br><span class="line">binlog-format=Row</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
+<h4 id="修改从mysql-5-7-31-winx64-2的my-ini"><a href="#修改从mysql-5-7-31-winx64-2的my-ini" class="headerlink" title="修改从mysql-5.7.31-winx64-2的my.ini"></a>修改从mysql-5.7.31-winx64-2的my.ini</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">basedir = ./</span><br><span class="line">datadir = ./data</span><br><span class="line">port = 3326</span><br><span class="line">server_id = 26</span><br><span class="line"></span><br><span class="line">sql_mode=&quot;STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION&quot;</span><br><span class="line">log_bin=mysql-bin</span><br><span class="line">binlog-format=Row</span><br></pre></td></tr></table></figure>
 <h4 id="分别到相应目录执行初始化"><a href="#分别到相应目录执行初始化" class="headerlink" title="分别到相应目录执行初始化"></a>分别到相应目录执行初始化</h4><p>如果本机已经安装过 <code>3306</code>的 <code>mysql</code> ,可以直接使用 <code>mysqld</code>命令 (需要环境变量)。<code>--initialize-insecure</code> 表示不给 <code>root</code> 设置密码,否则会生成一个随机的密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/mysqld.exe --defaults-file=my.ini --initialize-insecure</span><br></pre></td></tr></table></figure></p>
 <h4 id="启动实例并连接"><a href="#启动实例并连接" class="headerlink" title="启动实例并连接"></a>启动实例并连接</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">start ./bin/mysqld.exe</span><br></pre></td></tr></table></figure>
 <p>使用 <code>powershell</code> 分别连接到主库和从库:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root  -h 127.0.0.1 -P3316</span><br><span class="line">mysql -u root  -h 127.0.0.1 -P3326</span><br></pre></td></tr></table></figure></p>
@@ -441,6 +441,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/04/05/向着ECE努力/" rel="prev" title="向着ECE努力">
+                向着ECE努力 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -525,7 +529,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

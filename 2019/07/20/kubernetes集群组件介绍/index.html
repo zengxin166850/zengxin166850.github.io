@@ -96,7 +96,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/kubernetes-component.png">
 <meta property="og:image" content="http://yoursite.com/images/modeganqing.jpg">
-<meta property="og:updated_time" content="2021-03-07T03:02:10.082Z">
+<meta property="og:updated_time" content="2021-04-05T15:03:32.111Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes集群组件介绍">
 <meta name="twitter:description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。 系统组件图 Master NodeMaster节点主要由负责API服务的apiserver、负责容器编排的controller-manager、以及负责调度的scheduler组成。整个集群的持久化数据，由apiserver处理后，交由etcd进行管理。  A">
@@ -398,8 +398,8 @@
 <li><p><code>Scheduler</code>负责管理集群内各节点的资源状态。创建<code>Pod</code>时，根据合适的资源做出调度决策。在创建<code>Pod</code>的<code>Events</code>中可以看到，第一个<code>Event</code>便是<code>Schedule</code>。</p>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">kubectl describe pod image-sign-deployment-59948dd446-8n8l7</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Events:</span><br><span class="line">  Type    Reason     Age   From               Message</span><br><span class="line">  ----    ------     ----  ----               -------</span><br><span class="line">  Normal  Scheduled  108s  default-scheduler  Successfully assigned default/image-sign-deployment-59948dd446-8n8l7 to node2</span><br><span class="line">  Normal  Pulled     107s  kubelet, node2     Container image &quot;image-sign&quot; already present on machine</span><br><span class="line">  Normal  Created    107s  kubelet, node2     Created container image-sign</span><br><span class="line">  Normal  Started    106s  kubelet, node2     Started container image-sign</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">kubectl describe pod image-sign-deployment-59948dd446-8n8l7</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Events:</span><br><span class="line">  Type    Reason     Age   From               Message</span><br><span class="line">  ----    ------     ----  ----               -------</span><br><span class="line">  Normal  Scheduled  108s  default-scheduler  Successfully assigned default/image-sign-deployment-59948dd446-8n8l7 to node2</span><br><span class="line">  Normal  Pulled     107s  kubelet, node2     Container image &quot;image-sign&quot; already present on machine</span><br><span class="line">  Normal  Created    107s  kubelet, node2     Created container image-sign</span><br><span class="line">  Normal  Started    106s  kubelet, node2     Started container image-sign</span><br></pre></td></tr></table></figure>
 <h4 id="Worker-Node"><a href="#Worker-Node" class="headerlink" title="Worker Node"></a>Worker Node</h4><p>在<code>worker Node</code>中，最重要的则是<strong>kubelet</strong>，<strong>它所负责的是与容器运行时打交道（如docker项目）</strong>。他们交互所依赖的，是一个称作<code>CRI</code>的远程调用接口，这个接口定义了容器运行时的各项核心操作。如启动一个容器所需的所有参数。  </p>
 <p>也正是因为<code>CRI</code>的存在，<code>kubernetes</code>并不关系用户部署的容器运行时是<code>Docker</code>亦或是其它的（但默认的是<code>Docker</code>），只要这个容器运行时能运行标准的镜像，它就能通过实现<code>CRI</code>接入到<code>Kubernetes</code>中。  </p>
 <p>具体的容器运行时，像<code>Docker</code>则一般通过<code>OCI</code>这个容器运行时规范，与底层的<code>Linux</code>操作系统进行交互。即：将<code>CRI</code>请求翻译成对<code>Linux</code>系统的调用，操作系统的<code>NameSpace</code>和<code>CGroups</code>等。</p>
@@ -546,7 +546,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

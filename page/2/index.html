@@ -291,6 +291,156 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/27/Greenplum日志过大引起磁盘空间不足/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/05/27/Greenplum日志过大引起磁盘空间不足/" itemprop="url">Greenplum日志过大引起磁盘空间不足</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-27T10:25:19+08:00">
+                2020-05-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="日志过大，引起磁盘空间不足"><a href="#日志过大，引起磁盘空间不足" class="headerlink" title="日志过大，引起磁盘空间不足"></a>日志过大，引起磁盘空间不足</h3><p>问题回顾：调度任务执行报错， <code>GreenplumPooledSQLException：.........No space left on device (seg0 172.16.252.39:40000 pid=xxxxx)</code>.</p>
+<p><img src="/images/202005/nospace.png" alt="image"></p>
+<p>登录服务器，查看磁盘情况，发现占用率已经高达100%：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@tdh39 ~]# df -h</span><br><span class="line">文件系统                 容量  已用  可用 已用% 挂载点</span><br><span class="line">/dev/mapper/centos-root  592G  592G   20K  100% /</span><br><span class="line">devtmpfs                  32G     0   32G    0% /dev</span><br><span class="line">tmpfs                     32G     0   32G    0% /dev/shm</span><br><span class="line">tmpfs                     32G  533M   31G    2% /run</span><br><span class="line">tmpfs                     32G     0   32G    0% /sys/fs/cgroup</span><br><span class="line">/dev/sda1               1014M  169M  845M   17% /boot</span><br><span class="line">tmpfs                    6.3G   40K  6.3G    1% /run/user/0</span><br><span class="line">tmpfs                    6.3G     0  6.3G    0% /run/user/988</span><br><span class="line">tmpfs                    6.3G     0  6.3G    0% /run/user/1003</span><br></pre></td></tr></table></figure>
+<p>切换到根目录后，执行 <code>du -sh</code>，发现<code>data</code>目录占用高达<code>581G</code>：<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/05/27/Greenplum日志过大引起磁盘空间不足/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/04/对象存储服务minio/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -386,12 +536,7 @@
           <h2 id="我的第一印象"><a href="#我的第一印象" class="headerlink" title="我的第一印象"></a>我的第一印象</h2><p>去年7月份的大数据项目中使用的它做图片服务器，当时也就只听了个名字。这次需要涉及到视频处理和上传又用到了，所以来补一下知识点。</p>
 <p>简单、好用、方便快捷。</p>
 <h2 id="minio服务器"><a href="#minio服务器" class="headerlink" title="minio服务器"></a>minio服务器</h2><p><code>MinIO</code> 是一个基于<code>Apache License v2.0</code>开源协议的对象存储服务。<strong>它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据</strong>，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等，而一个对象文件可以是任意大小，从几kb到最大5T不等。</p>
-<p><code>MinIO</code>是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 <code>NodeJS</code>, <code>Redis</code> 或者 <code>MySQL</code>。（来自官方文档）</p>
-<h2 id="亚马逊S3云存储服务"><a href="#亚马逊S3云存储服务" class="headerlink" title="亚马逊S3云存储服务"></a>亚马逊S3云存储服务</h2><p>第一次看到这个词，怀着好奇心到<code>amazon</code>官网了解了一下，原介绍如下：</p>
-<p><strong>专为从任意位置存储和检索任意数量的数据而构建的对象存储</strong></p>
-<p><code>Amazon Simple Storage Service (Amazon S3)</code> 是一种对象存储服务，提供行业领先的可扩展性、数据可用性、安全性和性能。这意味着各种规模和行业的客户都可以使用它来存储和保护各种用例（如网站、移动应用程序、备份和还原、存档、企业应用程序、<code>IoT</code> 设备和大数据分析）的任意数量的数据。<code>Amazon S3</code> 提供了易于使用的管理功能，因此您可以组织数据并配置精细调整过的访问控制以满足特定的业务、组织和合规性要求。<strong>Amazon S3 可达到 99.999999999%（11 个 9）的持久性</strong>，并为全球各地的公司存储数百万个应用程序的数据。</p>
-<p>看起来有点长，简单的理解就是<code>amazon</code>提供了文件存储的服务，我们可以用它来做文件存储调<code></code>amazon`的接口，然后付钱即可。文件管理有他们来维护的这种感觉- -。</p>
-<h2 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h2><p><a href="https://min.io/download" target="_blank" rel="noopener">https://min.io/download</a><br>
+<p><code>MinIO</code>是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 <code>NodeJS</code>, <code>Redis</code> 或者 <code>MySQL</code>。（来自官方文档）<br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2020/01/04/对象存储服务minio/#more" rel="contents">
@@ -542,13 +687,6 @@
 <h3 id="gitlab-ci-cd"><a href="#gitlab-ci-cd" class="headerlink" title="gitlab-ci/cd"></a>gitlab-ci/cd</h3><p><code>gitlab-ci/cd</code>是基于<code>gitlab</code>的一套<code>ci/cd</code>工具，</p>
 <h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><h3 id="1-ci文件配置"><a href="#1-ci文件配置" class="headerlink" title="1.ci文件配置"></a>1.ci文件配置</h3><p><code>gitlab-ci</code>是<code>gitlab</code>自带的功能，只需在项目的根目录添加一个<code>.gitlab-ci.yml</code>的文件名即可。例如我所使用的这个：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">    - build</span><br><span class="line">    - qbjsonar</span><br><span class="line"></span><br><span class="line">build-job:</span><br><span class="line">    stage: build</span><br><span class="line">    only: </span><br><span class="line">        - dev</span><br><span class="line">    script:</span><br><span class="line">        - cd zhsfsjfw/ &amp;&amp; pwd</span><br><span class="line">        - mvn clean package</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sonar-job:</span><br><span class="line">    stage: qbjsonar</span><br><span class="line">    only: </span><br><span class="line">        - dev</span><br><span class="line">    script:</span><br><span class="line">        - echo &apos;准备对`qbj`项目代码做sonar的质量检查！</span><br><span class="line">        - cd zhsfsjfw/</span><br><span class="line">        - mvn compile</span><br><span class="line">        - mvn sonar:sonar -Dsonar.host.url=http://172.16.34.102:9000 -Dsonar.login=497a0e0e2fc07f64c4b54edc17bb47dfa251ba34</span><br></pre></td></tr></table></figure>
-<p>在上述这个<code>yml</code>文件中</p>
-<ul>
-<li><code>stages</code>为具体步骤，名称均为自定义。</li>
-<li><code>only</code>代表只对<code>dev</code>分支进行<code>ci/cd</code>操作，其余分支不触发</li>
-<li><code>script</code>代表具体执行的脚本</li>
-</ul>
-<p>在有了这个文件之后，<code>gitlab</code>便会去寻找与之绑定的<code>gitlab-runner</code>(即具体执行<code>script</code>的所在服务器)。<br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/12/21/gitlab-ci、cd初步使用及踩坑/#more" rel="contents">
@@ -696,12 +834,7 @@
         
           <h2 id="Mybatis整体工作流程介绍"><a href="#Mybatis整体工作流程介绍" class="headerlink" title="Mybatis整体工作流程介绍"></a>Mybatis整体工作流程介绍</h2><p>一个标准的<code>mybatis</code>查询通常如下所示,此处不考虑整合<code>spring</code>，总体思想是类似的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testSelectAll() throws IOException &#123;</span><br><span class="line">    Reader reader = null;</span><br><span class="line">    SqlSession sqlSession = null;</span><br><span class="line">    try &#123;</span><br><span class="line">        reader = Resources.getResourceAsReader(&quot;mybatis-config.xml&quot;);</span><br><span class="line">        sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);</span><br><span class="line">        sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">        List&lt;Country&gt; countryList = sqlSession.selectList(&quot;selectAll&quot;);</span><br><span class="line">        printCountryList(countryList);</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        if (reader != null)</span><br><span class="line">            reader.close();</span><br><span class="line">        if (sqlSession != null)</span><br><span class="line">            sqlSession.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <ul>
-<li>获取<code>Mybatis</code>的配置文件，内部通过<code>ClassLoader</code>加载文件流，这一步需要对<code>Classloader</code>有一定的理解</li>
-<li>创建<code>SqlSessionFactory</code>, 通过JDK内部的w3c解析配置文件的内容，封装到<code>Configration</code>对象中，最后通过<code>Configuration</code>来创建<code>DefaultSqlSessionFactory</code>.</li>
-<li>通过<code>SqlSessionFactory</code>创建<code>SqlSession</code>对象</li>
-<li>不同的<code>executor</code>内部的查询方法不同，分为<code>BatchExecutor</code>，<code>ReuseExecutor</code>，<code>SimpleExecutor</code>以及<code>CachingExecutor</code></li>
-<li><code>executor</code>的<code>query</code>方法将真正的查询交给具体实现类的<code>doQuery</code>来执行</li>
-<li><code>doquery</code>中会使用到的<code>StatementHandler</code>用于封装处理<code>jdbc</code>的<code>statement</code>，<code>ResultHandler</code>用于处理结果集。最后将结果返回为一个<code>List&lt;Object&gt;</code>，<code>selectOne</code>调用的还是<code>SelectList</code>,只是在取结果集的时候，返回了第一个元素。
+<li>获取<code>Mybatis</code>的配置文件，内部通过<code>ClassLoader</code>加载文件流，这一步需要对<code>Classloader</code>有一定的理解
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/11/30/mybatis插件开发/#more" rel="contents">
@@ -854,171 +987,10 @@
 </li>
 <li><p><code>ZAB</code> 协议定义：<code>ZAB</code> 协议是为分布式协调服务 <code>Zookeeper</code> 专门设计的一种支持 <strong>崩溃恢复</strong> 和 <strong>原子广播</strong> 协议。下面我们会重点讲这两个东西。</p>
 </li>
-<li><p>基于该协议，<code>Zookeeper</code> 实现了一种 <strong>主备模式</strong> 的系统架构来保持集群中各个副本之间数据一致性。具体如下图所示：<br><img src="https://note.youdao.com/yws/api/group/102464226/file/449607376?method=download&amp;inline=true&amp;version=1&amp;shareToken=92F0FC315E9F4C6D952CAC372113A4BF" alt="image"></p>
-</li>
-</ol>
-<p>上图显示了<code>Zookeeper</code> 如何处理集群中的数据。所有客户端写入数据都是写入到 主进程（称为 <code>Leader</code>）中，然后，由 <code>Leader</code> 复制到备份进程（称为 <code>Follower</code>）中。从而保证数据一致性。从设计上看，和 <code>Raft</code> 类似。</p>
-<p>那么复制过程又是如何的呢？复制过程类似 <code>2PC</code>，<code>ZAB</code> 只需要 <code>Follower</code> 有一半以上返回 <code>Ack</code> 信息就可以执行提交，大大减小了同步阻塞。也提高了可用性。<br>简单介绍完，开始重点介绍 <strong>消息广播</strong> 和 <strong>崩溃恢复</strong>。整个 <code>Zookeeper</code> 就是在这两个模式之间切换。 简而言之，当 <code>Leader</code> 服务可以正常使用，就进入消息广播模式，当 <code>Leader</code> 不可用时，则进入崩溃恢复模式。<br>
+<li><p>基于该协议，<code>Zookeeper</code> 实现了一种 <strong>主备模式</strong> 的系统架构来保持集群中各个副本之间数据一致性。具体如下图所示：</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/11/10/zookeeper一致性原理--ZAB协议/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/03/走近分布式协调服务--zookeeper/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="北方轻巡舰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/header.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="北方轻巡舰的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/03/走近分布式协调服务--zookeeper/" itemprop="url">走近分布式协调服务--zookeeper</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-03T16:31:36+08:00">
-                2019-11-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/分布式/" itemprop="url" rel="index">
-                    <span itemprop="name">分布式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="分布式环境的特点"><a href="#分布式环境的特点" class="headerlink" title="分布式环境的特点"></a>分布式环境的特点</h3><p><strong>并发性</strong><br>程序运行过程中，并发性操作是很常见的。比如同一个分布式系统中的多个节点，同时访问一个共享资源、数据库等。</p>
-<p><strong>分布性</strong>  </p>
-<p><strong>无序性</strong></p>
-<h3 id="分布式环境下面临的问题"><a href="#分布式环境下面临的问题" class="headerlink" title="分布式环境下面临的问题"></a>分布式环境下面临的问题</h3><p><strong>网络通信</strong><br>网络本身的不可靠性，因此会涉及到一些网络通信问题。  </p>
-<p><strong>分区容错</strong><br>当网络发生异常导致分布式系统中部分节点之间的网络延时不断增大，最终导致组成分布式架构的所有节点，只有部分节点能够正常通信。</p>
-<h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><p>C一致性：所有节点上的数据时刻保持一致。</p>
-<p>A可用性：每次请求都能收到响应，不管结果成功或失败。</p>
-<p>P分区容错性。<a href="https://note.youdao.com/" target="_blank" rel="noopener">cap介绍</a></p>
-<p>由于这三个指标不可能同时做到,在分区容错性是必须的情况下，只能选择取舍CP或AP其中一种。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(CAP理论仅适用于原子读写的Nosql场景，不适用于数据库系统？</span><br><span class="line">因为如果出现更新失败导致数据丢失的情况，无法恢复)</span><br></pre></td></tr></table></figure>
-<p><code>zookeeper</code>是CP理论的一种典型。</p>
-<p><img src="/images/zookeeper/cap.png" alt="image"><br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/11/03/走近分布式协调服务--zookeeper/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1110,7 +1082,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -100,7 +100,7 @@
 <meta property="og:image" content="http://yoursite.com/images/zookeeper/zkzab3.png">
 <meta property="og:image" content="http://yoursite.com/images/zookeeper/zkzab4.png">
 <meta property="og:image" content="http://yoursite.com/images/zookeeper/zkzab5.png">
-<meta property="og:updated_time" content="2021-03-07T03:00:37.430Z">
+<meta property="og:updated_time" content="2021-04-05T15:05:08.329Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="zookeeper一致性原理--ZAB协议(转)">
 <meta name="twitter:description" content="1.什么是ZAB协议，ZAB协议介绍 ZAB 协议全称：Zookeeper Atomic Broadcast（Zookeeper 原子广播协议）。  Zookeeper 是一个为分布式应用提供高效且可靠的分布式协调服务。在解决分布式一致性方面，Zookeeper 并没有使用 Paxos ，而是采用了 ZAB 协议。  ZAB 协议定义：ZAB 协议是为分布式协调服务 Zookeeper 专门设计的">
@@ -398,11 +398,13 @@
 </li>
 <li><p><code>ZAB</code> 协议定义：<code>ZAB</code> 协议是为分布式协调服务 <code>Zookeeper</code> 专门设计的一种支持 <strong>崩溃恢复</strong> 和 <strong>原子广播</strong> 协议。下面我们会重点讲这两个东西。</p>
 </li>
-<li><p>基于该协议，<code>Zookeeper</code> 实现了一种 <strong>主备模式</strong> 的系统架构来保持集群中各个副本之间数据一致性。具体如下图所示：<br><img src="https://note.youdao.com/yws/api/group/102464226/file/449607376?method=download&amp;inline=true&amp;version=1&amp;shareToken=92F0FC315E9F4C6D952CAC372113A4BF" alt="image"></p>
+<li><p>基于该协议，<code>Zookeeper</code> 实现了一种 <strong>主备模式</strong> 的系统架构来保持集群中各个副本之间数据一致性。具体如下图所示：</p>
+<a id="more"></a>
+<p><img src="https://note.youdao.com/yws/api/group/102464226/file/449607376?method=download&amp;inline=true&amp;version=1&amp;shareToken=92F0FC315E9F4C6D952CAC372113A4BF" alt="image"></p>
 </li>
 </ol>
 <p>上图显示了<code>Zookeeper</code> 如何处理集群中的数据。所有客户端写入数据都是写入到 主进程（称为 <code>Leader</code>）中，然后，由 <code>Leader</code> 复制到备份进程（称为 <code>Follower</code>）中。从而保证数据一致性。从设计上看，和 <code>Raft</code> 类似。</p>
-<p>那么复制过程又是如何的呢？复制过程类似 <code>2PC</code>，<code>ZAB</code> 只需要 <code>Follower</code> 有一半以上返回 <code>Ack</code> 信息就可以执行提交，大大减小了同步阻塞。也提高了可用性。<br>简单介绍完，开始重点介绍 <strong>消息广播</strong> 和 <strong>崩溃恢复</strong>。整个 <code>Zookeeper</code> 就是在这两个模式之间切换。 简而言之，当 <code>Leader</code> 服务可以正常使用，就进入消息广播模式，当 <code>Leader</code> 不可用时，则进入崩溃恢复模式。<br><a id="more"></a></p>
+<p>那么复制过程又是如何的呢？复制过程类似 <code>2PC</code>，<code>ZAB</code> 只需要 <code>Follower</code> 有一半以上返回 <code>Ack</code> 信息就可以执行提交，大大减小了同步阻塞。也提高了可用性。<br>简单介绍完，开始重点介绍 <strong>消息广播</strong> 和 <strong>崩溃恢复</strong>。整个 <code>Zookeeper</code> 就是在这两个模式之间切换。 简而言之，当 <code>Leader</code> 服务可以正常使用，就进入消息广播模式，当 <code>Leader</code> 不可用时，则进入崩溃恢复模式。</p>
 <h3 id="2-消息广播"><a href="#2-消息广播" class="headerlink" title="2.消息广播"></a>2.消息广播</h3><p><code>ZAB</code> 协议的消息广播过程使用的是一个原子广播协议，类似一个二阶段提交过程。对于客户端发送的写请求，全部由 <code>Leader</code> 接收，<code>Leader</code> 将请求封装成一个事务 <code>Proposal</code>，将其发送给所有 <code>Follower</code> ，然后，根据所有 <code>Follower</code> 的反馈，如果超过半数成功响应，则执行 <code>commit</code> 操作（先提交自己，再发送 <code>commit</code> 给所有 <code>Follwer</code>）。</p>
 <p><strong>基本上，整个广播流程分为 3 步骤：</strong></p>
 <p>1.将数据都复制到 <code>Follwer</code> 中</p>
@@ -560,7 +562,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

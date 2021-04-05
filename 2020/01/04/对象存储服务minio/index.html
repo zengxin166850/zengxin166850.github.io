@@ -94,7 +94,7 @@
 <meta property="og:site_name" content="北方轻巡舰的博客">
 <meta property="og:description" content="我的第一印象去年7月份的大数据项目中使用的它做图片服务器，当时也就只听了个名字。这次需要涉及到视频处理和上传又用到了，所以来补一下知识点。 简单、好用、方便快捷。 minio服务器MinIO 是一个基于Apache License v2.0开源协议的对象存储服务。它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等，而一个对象文">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-03-07T02:57:46.090Z">
+<meta property="og:updated_time" content="2021-04-05T15:06:02.348Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="对象存储服务minio">
 <meta name="twitter:description" content="我的第一印象去年7月份的大数据项目中使用的它做图片服务器，当时也就只听了个名字。这次需要涉及到视频处理和上传又用到了，所以来补一下知识点。 简单、好用、方便快捷。 minio服务器MinIO 是一个基于Apache License v2.0开源协议的对象存储服务。它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等，而一个对象文">
@@ -387,12 +387,12 @@
         <h2 id="我的第一印象"><a href="#我的第一印象" class="headerlink" title="我的第一印象"></a>我的第一印象</h2><p>去年7月份的大数据项目中使用的它做图片服务器，当时也就只听了个名字。这次需要涉及到视频处理和上传又用到了，所以来补一下知识点。</p>
 <p>简单、好用、方便快捷。</p>
 <h2 id="minio服务器"><a href="#minio服务器" class="headerlink" title="minio服务器"></a>minio服务器</h2><p><code>MinIO</code> 是一个基于<code>Apache License v2.0</code>开源协议的对象存储服务。<strong>它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据</strong>，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等，而一个对象文件可以是任意大小，从几kb到最大5T不等。</p>
-<p><code>MinIO</code>是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 <code>NodeJS</code>, <code>Redis</code> 或者 <code>MySQL</code>。（来自官方文档）</p>
+<p><code>MinIO</code>是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 <code>NodeJS</code>, <code>Redis</code> 或者 <code>MySQL</code>。（来自官方文档）<br><a id="more"></a></p>
 <h2 id="亚马逊S3云存储服务"><a href="#亚马逊S3云存储服务" class="headerlink" title="亚马逊S3云存储服务"></a>亚马逊S3云存储服务</h2><p>第一次看到这个词，怀着好奇心到<code>amazon</code>官网了解了一下，原介绍如下：</p>
 <p><strong>专为从任意位置存储和检索任意数量的数据而构建的对象存储</strong></p>
 <p><code>Amazon Simple Storage Service (Amazon S3)</code> 是一种对象存储服务，提供行业领先的可扩展性、数据可用性、安全性和性能。这意味着各种规模和行业的客户都可以使用它来存储和保护各种用例（如网站、移动应用程序、备份和还原、存档、企业应用程序、<code>IoT</code> 设备和大数据分析）的任意数量的数据。<code>Amazon S3</code> 提供了易于使用的管理功能，因此您可以组织数据并配置精细调整过的访问控制以满足特定的业务、组织和合规性要求。<strong>Amazon S3 可达到 99.999999999%（11 个 9）的持久性</strong>，并为全球各地的公司存储数百万个应用程序的数据。</p>
 <p>看起来有点长，简单的理解就是<code>amazon</code>提供了文件存储的服务，我们可以用它来做文件存储调<code></code>amazon`的接口，然后付钱即可。文件管理有他们来维护的这种感觉- -。</p>
-<h2 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h2><p><a href="https://min.io/download" target="_blank" rel="noopener">https://min.io/download</a><br><a id="more"></a></p>
+<h2 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h2><p><a href="https://min.io/download" target="_blank" rel="noopener">https://min.io/download</a></p>
 <h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>正常是应该使用<code>linux</code>服务器的，无奈家里的环境不满足，这里我只是初步试验，先用<code>windows</code>版试试水。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; minio.exe server F:\minio\data</span><br></pre></td></tr></table></figure>
 <p>启动后的输出结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Endpoint:  http://192.168.124.13:9000  http://127.0.0.1:9000</span><br><span class="line">AccessKey: minioadmin</span><br><span class="line">SecretKey: minioadmin</span><br><span class="line"></span><br><span class="line">Browser Access:</span><br><span class="line">     http://192.168.124.13:9000   http://127.0.0.1:9000</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">Detected default credentials &apos;minioadmin:minioadmin&apos;, please change the credentials immediately using &apos;MINIO_ACCESS_KEY&apos; and &apos;MINIO_SECRET_KEY&apos;</span><br></pre></td></tr></table></figure></p>
@@ -577,7 +577,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

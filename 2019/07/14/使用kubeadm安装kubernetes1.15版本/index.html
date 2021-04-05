@@ -94,7 +94,7 @@
 <meta property="og:site_name" content="北方轻巡舰的博客">
 <meta property="og:description" content="准备1.1 系统配置准备两台机器，关闭防火墙(这里列举的node1为192.168.110.130，node2为131)， 123cat /etc/hosts192.168.110.130 node1192.168.110.131 node2 systemctl stop firewalld 或按照https://kubernetes.io/docs/setup/independent/insta">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-03-07T02:57:54.028Z">
+<meta property="og:updated_time" content="2021-04-05T15:06:22.608Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用kubeadm安装kubernetes 1.15版本">
 <meta name="twitter:description" content="准备1.1 系统配置准备两台机器，关闭防火墙(这里列举的node1为192.168.110.130，node2为131)， 123cat /etc/hosts192.168.110.130 node1192.168.110.131 node2 systemctl stop firewalld 或按照https://kubernetes.io/docs/setup/independent/insta">
@@ -387,11 +387,10 @@
         <h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><h3 id="1-1-系统配置"><a href="#1-1-系统配置" class="headerlink" title="1.1 系统配置"></a>1.1 系统配置</h3><p>准备两台机器，关闭防火墙(这里列举的node1为192.168.110.130，node2为131)，</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/hosts</span><br><span class="line">192.168.110.130 node1</span><br><span class="line">192.168.110.131 node2</span><br></pre></td></tr></table></figure>
 <p><code>systemctl stop firewalld</code> 或按照<a href="https://note.youdao.com/" target="_blank" rel="noopener">https://kubernetes.io/docs/setup/independent/install-kubeadm/</a>说明，开放端口。</p>
-<p><strong>关闭selinux，然后reboot重启</strong>（selinux是 Linux历史上最杰出的新安全子系统）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setenforce 0                     ---- 0关闭，1启用</span><br><span class="line">vi /etc/selinux/config</span><br><span class="line">SELINUX=disabled</span><br></pre></td></tr></table></figure>
+<p><strong>关闭selinux，然后reboot重启</strong><br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setenforce 0                     ---- 0关闭，1启用</span><br><span class="line">vi /etc/selinux/config</span><br><span class="line">SELINUX=disabled</span><br></pre></td></tr></table></figure></p>
 <p>创建/etc/sysctl.d/k8s.conf文件，添加如下内容：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
+<!--more-->
 <p>执行命令使修改生效。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">modprobe br_netfilter             ----该指令用于向内核中加载/移除模块</span><br><span class="line">sysctl -p /etc/sysctl.d/k8s.conf    ----从指定文件加载系统参数</span><br></pre></td></tr></table></figure>
 <h3 id="1-2-kube-proxy开启ipvs的前置条件"><a href="#1-2-kube-proxy开启ipvs的前置条件" class="headerlink" title="1.2 kube-proxy开启ipvs的前置条件"></a>1.2 kube-proxy开启ipvs的前置条件</h3><p><strong>kube-proxy是kubernetes重要的组件，它的作用是虚拟出一个VIP，保证VIP无论后台服务（pod，Endpoint）如何变更都保持不变，起到一个负载均衡的功能</strong>。<br>kube-proxty有三种模式ipvs、userspace、iptables三种，这里安装时使用ipvs模式（IP VirtualServer），所以需要为它加载以下的内核模块：  </p>
@@ -608,7 +607,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

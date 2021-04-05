@@ -95,7 +95,7 @@
 <meta property="og:description" content="基本概念CI/CDCI全称为Continuous Integration代表持续集成的意思，通俗来说就是持续的自动构建（单元测试、打包等）。 CD全称为Continuous Deployment代表持续交付的意思，在代码构建完成后自动部署上线。 gitlab-ci/cdgitlab-ci/cd是基于gitlab的一套ci/cd工具， 配置方法1.ci文件配置gitlab-ci是gitlab自带的功">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/201912/gitlab-runner-runonnoTag.png">
-<meta property="og:updated_time" content="2021-03-07T03:01:51.605Z">
+<meta property="og:updated_time" content="2021-04-05T15:03:54.229Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="gitlab-ci、cd初步使用及踩坑">
 <meta name="twitter:description" content="基本概念CI/CDCI全称为Continuous Integration代表持续集成的意思，通俗来说就是持续的自动构建（单元测试、打包等）。 CD全称为Continuous Deployment代表持续交付的意思，在代码构建完成后自动部署上线。 gitlab-ci/cdgitlab-ci/cd是基于gitlab的一套ci/cd工具， 配置方法1.ci文件配置gitlab-ci是gitlab自带的功">
@@ -391,13 +391,14 @@
 <h3 id="gitlab-ci-cd"><a href="#gitlab-ci-cd" class="headerlink" title="gitlab-ci/cd"></a>gitlab-ci/cd</h3><p><code>gitlab-ci/cd</code>是基于<code>gitlab</code>的一套<code>ci/cd</code>工具，</p>
 <h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><h3 id="1-ci文件配置"><a href="#1-ci文件配置" class="headerlink" title="1.ci文件配置"></a>1.ci文件配置</h3><p><code>gitlab-ci</code>是<code>gitlab</code>自带的功能，只需在项目的根目录添加一个<code>.gitlab-ci.yml</code>的文件名即可。例如我所使用的这个：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">    - build</span><br><span class="line">    - qbjsonar</span><br><span class="line"></span><br><span class="line">build-job:</span><br><span class="line">    stage: build</span><br><span class="line">    only: </span><br><span class="line">        - dev</span><br><span class="line">    script:</span><br><span class="line">        - cd zhsfsjfw/ &amp;&amp; pwd</span><br><span class="line">        - mvn clean package</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sonar-job:</span><br><span class="line">    stage: qbjsonar</span><br><span class="line">    only: </span><br><span class="line">        - dev</span><br><span class="line">    script:</span><br><span class="line">        - echo &apos;准备对`qbj`项目代码做sonar的质量检查！</span><br><span class="line">        - cd zhsfsjfw/</span><br><span class="line">        - mvn compile</span><br><span class="line">        - mvn sonar:sonar -Dsonar.host.url=http://172.16.34.102:9000 -Dsonar.login=497a0e0e2fc07f64c4b54edc17bb47dfa251ba34</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>在上述这个<code>yml</code>文件中</p>
 <ul>
 <li><code>stages</code>为具体步骤，名称均为自定义。</li>
 <li><code>only</code>代表只对<code>dev</code>分支进行<code>ci/cd</code>操作，其余分支不触发</li>
 <li><code>script</code>代表具体执行的脚本</li>
 </ul>
-<p>在有了这个文件之后，<code>gitlab</code>便会去寻找与之绑定的<code>gitlab-runner</code>(即具体执行<code>script</code>的所在服务器)。<br><a id="more"></a></p>
+<p>在有了这个文件之后，<code>gitlab</code>便会去寻找与之绑定的<code>gitlab-runner</code>(即具体执行<code>script</code>的所在服务器)。</p>
 <h3 id="安装runner"><a href="#安装runner" class="headerlink" title="安装runner"></a>安装runner</h3><p>这里我是用的是<code>docker</code>来运行<code>gitlab-runner</code>，命令为各处都能搜索到的：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run -d --name gitlab-runner --restart always \</span><br><span class="line">    -v /srv/gitlab-runner/config:/etc/gitlab-runner \</span><br><span class="line">    -v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">    gitlab/gitlab-runner:latest</span><br></pre></td></tr></table></figure>
 <p>运行成功后<code>runner</code>就安装成功了，接下来需要配置与<code>gitlab-ci</code>的连接信息，进入容器进行注册：</p>
@@ -551,7 +552,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
