@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[DAY02]]></title>
+    <url>%2F2021%2F04%2F06%2FDAY02%2F</url>
+    <content type="text"><![CDATA[熟悉文档的大模块： 阅读文档的以下模块 Getting started with Elasticsearch，安装部署 12GET /_cat/health?vGET /_cat/indices?v term Aggregations，term聚合 Important Elasticsearch Configuration，重要的设置项 Documents API ，增删改查复习 夜空の流桜 –&gt;]]></content>
+      <categories>
+        <category>杂谈</category>
+      </categories>
+      <tags>
+        <tag>随笔：</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[向着ECE努力]]></title>
     <url>%2F2021%2F04%2F05%2F%E5%90%91%E7%9D%80ECE%E5%8A%AA%E5%8A%9B%2F</url>
-    <content type="text"><![CDATA[果然一个人的学习自制力是很差的，不逼自己一把也不清楚自有多大的能耐，趁着这次官方团购优惠，报名了ECE认证。 未来的两个月内会坚持每天打卡，记录下认证准备的过程~，目前的大致目标如下： 4月熟悉官方文档，复习考点知识及相关原理 5月模拟题演练、实战记录 6月再巩固一小短时间，月内拿下认证（7月之后的考试版本就升级了）。 明日香 –&gt;]]></content>
+    <content type="text"><![CDATA[果然一个人的学习自制力是很差的，趁着这次官方团购优惠报名了ECE认证。算是以考代学逼自己一把。 未来的两个月内会坚持每天打卡，记录下认证准备的过程~，目前的大致目标如下： 4月熟悉官方文档，复习考点知识及相关原理 5月模拟题演练、实战记录 6月再巩固一小短时间，月内拿下认证（7月之后的考试版本就升级了）。 明日香 –&gt;]]></content>
       <categories>
         <category>杂谈</category>
       </categories>
