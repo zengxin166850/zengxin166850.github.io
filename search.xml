@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[DAY04]]></title>
+    <url>%2F2021%2F04%2F08%2FDAY04%2F</url>
+    <content type="text"><![CDATA[文档阅读，今日笔记总结 Index,update,delete,bulk 请求支持 手动刷新?refresh参数，可选值包含空字符串 /true，也可以设置 wait_for 或 false,默认为 false； refresh_interval 、index.write.wait_for_active_shards 的默认值都为1，后者表示主分片写入即返回成功。增大该参数后。如果处于正常状态的分片数量达不到要求，写入会失败； GET API 默认是 realtime 的，会查询到尚未被 refresh_interval 刷到磁盘的内容，通过 ?realtime=false 参数可以关闭； delete 的实际删除时间，默认是在 60s 后。index.gc_deletes 可以设置该时间; routing 可以设置在 mapping 中，设置之后，请求都需要带上 routing 才行。在只有一个分片的情况下，该参数没有效果; delete_by_query 也可以设置 routing，删除指定分片上的内容，默认 scroll_size为1000 ,通过 slice_scroll 可以分段并发的删除; script 在 update API中的使用: 1234567891011121314151617181920212223242526272829303132333435PUT test/_doc/1&#123; &quot;counter&quot; : 1, &quot;tags&quot; : [&quot;red&quot;]&#125;//script更新POST test/_update/1&#123; &quot;script&quot;:&#123; &quot;source&quot;: &quot;&quot;&quot; ctx._source.counter += params.count; ctx._source.tags.add(params.tag); if(ctx._source.tags.length==2)&#123; ctx._source.tags.add(3); ctx._source.tags.add(4); ctx._source.tags.remove(ctx._source.tags.indexOf(&quot;red&quot;)); &#125; ctx._source.new_field1=&apos;new_field1&apos;; ctx._source.new_field9=&apos;new_field9&apos;; ctx._source.remove(&apos;new_field1&apos;); ctx._source.indexname=ctx._index; ctx._source.type=ctx._type; ctx._source.id=ctx._id; ctx._source.version=ctx._version; ctx._source.routing=ctx._routing; if (ctx._source.tags.contains(params.tag)) &#123; ctx.op = &apos;delete&apos; &#125; else &#123; ctx.op = &apos;none&apos; &#125; //_now需要格式化 &quot;&quot;&quot;, &quot;lang&quot;: &quot;painless&quot;, &quot;params&quot;: &#123; &quot;count&quot;:4, &quot;tag&quot;: &quot;blue&quot; &#125; &#125;&#125; 和服 Alter –&gt; ·]]></content>
+      <categories>
+        <category>学习打卡</category>
+      </categories>
+      <tags>
+        <tag>学习：</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[ES集群滚动升级]]></title>
+    <url>%2F2021%2F04%2F07%2FES%E9%9B%86%E7%BE%A4%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7%2F</url>
+    <content type="text"><![CDATA[滚动升级滚动升级即每次升级一个集群节点，但有以下的注意事项： 先升级普通的数据节点，最后升级 master ，否则老版本的节点之间会重新选主，同时由于老版本的 node 无法加入到新版本集群中，集群就分裂开了！ 支持滚动升级的版本为：mirror 版本之间，跨大版本之间只支 持 5.6---&gt;6.8， 6.8---&gt;7.2.1，其余情况需要 full cluster restart，或者多次升级。 升级准备 检查 deprecation log，确认是否有使用涉及到已过期的功能，需要对数据进行变更处理的修改这部分内容！ 必要时需修改相关应用的 code 和配置！ 对使用了插件的，需要确认升级后的版本，也具有相应版本的插件，例如 ik！ 升级集群之前，现在测试环境中进行。不要直接对生产环境操作！ 通过 snapshot 备份好数据! 升级1. 停止分片分配：当一个节点下线时， allocation 的进程会等待 index.unassigned.node_left.delayed_timeout 默认一分钟 ，然后开始将该节点上的分片移动到其他节点上。这个过程会消耗较大的 I/O 资源。由于滚动升级很快就会重新启动该节点，为了避免这个过程，可以通过如下配置，停止分片的 allocation，详细说明见 Modules[shard allocation] 模块。 all ,允许所有分片（主、副）的分片 primaries ，只允许主分片 new_primaries ，只允许主分片，并且需要是新建的索引 none ，不允许所有分片分配 1234567//primaries表示只对主分片进行allocation，确保数据不丢失，副本可以不处理。PUT _cluster/settings&#123; &quot;persistent&quot;: &#123; &quot;cluster.routing.allocation.enable&quot;: &quot;primaries&quot; &#125;&#125; 2. 停止不必要的indexing操作，启用同步flush（非必要）sync flush 是 Elasticsearch 提供的一种机制，当一个分片在 5 分钟内没有收到任何 indexing 操作时，会被标记为 inactive 非活跃状态，然后启用 synced flush，给每一个分配标记一个唯一的 sync_id,这个 id 在集群恢复（或者重启时）可以快速检测两个分配是否相同，在这种情况下，可以无需复制 segment 段文件，以加快恢复速度。synced_flush说明 对于无需更新，或者很少更新的数据会很有用12345678//检查是否有syncid 标记GET index_name/_stats?filter_path=**.commit&amp;level=shards //手动执行synced flush，无需等待5分钟POST _flush/synced//指定索引名称POST kimchy,elasticsearch/_flush/synced 手动执行 synced flush 后会返回成功数量、失败数量 3.临时停止活动中的 ML 任务（可选）4.停止需要升级的节点123456sudo systemctl stop elasticsearch.servicesudo -i service elasticsearch stop//最好不要用kill -9，可能会造成某些操作来不及做kill $(cat pid) 5. 解压或安装新版本的Elasticsearch 解压新版本到新的目录下，修改 jvm.options 设置 设置 path.data、path.logs 指向原来的目录，或者通过 copy 覆盖当前目录 无需设置 cluster.initial_master_nodes,滚动升级的节点都是加入到已经存在的集群中，所以无需设置 需要在每个节点设置 discovery.seed_hosts 或 discovery.seed_providers中的一个 6. 升级插件7. Realm Settings8.启动节点，并确保加入到了集群中1GET _cat/nodes 9. 打开 shard allocation123456PUT _cluster/settings&#123; &quot;persistent&quot;: &#123; &quot;cluster.routing.allocation.enable&quot;: null &#125;&#125; 10. 等待集群恢复在升级下一个节点之前，先等待集群健康恢复为绿色。1GET _cat/health?v 在滚动升级期间，运行新版本的节点的主分片无法分配副本给具有旧版本的节点。因为新版本可能具有旧版本无法理解的其他数据格式 如果无法将副本分片分配给另一个节点（集群中只有一个升级的节点），则副本分片将保持未分配状态，并且状态显示为 yellow 是正常情况，升级第二个节点后就可以变为 green 了。 没有使用 synced flush 的分片恢复将会更慢，通过如下请求，可以查看恢复进度 GET _cat/recovery 11. 重复上述步骤，知道整个集群升级完成、最后，重启 ML 任务官方文档链接]]></content>
+      <categories>
+        <category>ELK</category>
+      </categories>
+      <tags>
+        <tag>elasticsearch：</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[DAY03]]></title>
+    <url>%2F2021%2F04%2F07%2FDAY03%2F</url>
+    <content type="text"><![CDATA[熟悉文档的大模块： 阅读文档的以下模块 集群升级模块 12345GET _cat/health?vGET _cat/recoveryGET _cat/nodes?v reindex inplace和 reindex remote API conventions，时间函数支持、通用参数设置等 IndexAPI、HEAD、delete_by_query、update_by_query 坠落之物 –&gt;]]></content>
+      <categories>
+        <category>学习打卡</category>
+      </categories>
+      <tags>
+        <tag>学习：</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[DAY02]]></title>
     <url>%2F2021%2F04%2F06%2FDAY02%2F</url>
     <content type="text"><![CDATA[熟悉文档的大模块： 阅读文档的以下模块 Getting started with Elasticsearch，安装部署 12GET /_cat/health?vGET /_cat/indices?v term Aggregations，term聚合 Important Elasticsearch Configuration，重要的设置项 Documents API ，增删改查复习 夜空の流桜 –&gt;]]></content>
