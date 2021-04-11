@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[DAY04]]></title>
-    <url>%2F2021%2F04%2F08%2FDAY04%2F</url>
-    <content type="text"><![CDATA[文档阅读，今日笔记总结 Index,update,delete,bulk 请求支持 手动刷新?refresh参数，可选值包含空字符串 /true，也可以设置 wait_for 或 false,默认为 false； refresh_interval 、index.write.wait_for_active_shards 的默认值都为1，后者表示主分片写入即返回成功。增大该参数后。如果处于正常状态的分片数量达不到要求，写入会失败； GET API 默认是 realtime 的，会查询到尚未被 refresh_interval 刷到磁盘的内容，通过 ?realtime=false 参数可以关闭； delete 的实际删除时间，默认是在 60s 后。index.gc_deletes 可以设置该时间; routing 可以设置在 mapping 中，设置之后，请求都需要带上 routing 才行。在只有一个分片的情况下，该参数没有效果; delete_by_query 也可以设置 routing，删除指定分片上的内容，默认 scroll_size为1000 ,通过 slice_scroll 可以分段并发的删除; script 在 update API中的使用: 1234567891011121314151617181920212223242526272829303132333435PUT test/_doc/1&#123; &quot;counter&quot; : 1, &quot;tags&quot; : [&quot;red&quot;]&#125;//script更新POST test/_update/1&#123; &quot;script&quot;:&#123; &quot;source&quot;: &quot;&quot;&quot; ctx._source.counter += params.count; ctx._source.tags.add(params.tag); if(ctx._source.tags.length==2)&#123; ctx._source.tags.add(3); ctx._source.tags.add(4); ctx._source.tags.remove(ctx._source.tags.indexOf(&quot;red&quot;)); &#125; ctx._source.new_field1=&apos;new_field1&apos;; ctx._source.new_field9=&apos;new_field9&apos;; ctx._source.remove(&apos;new_field1&apos;); ctx._source.indexname=ctx._index; ctx._source.type=ctx._type; ctx._source.id=ctx._id; ctx._source.version=ctx._version; ctx._source.routing=ctx._routing; if (ctx._source.tags.contains(params.tag)) &#123; ctx.op = &apos;delete&apos; &#125; else &#123; ctx.op = &apos;none&apos; &#125; //_now需要格式化 &quot;&quot;&quot;, &quot;lang&quot;: &quot;painless&quot;, &quot;params&quot;: &#123; &quot;count&quot;:4, &quot;tag&quot;: &quot;blue&quot; &#125; &#125;&#125; 和服 Alter –&gt; ·]]></content>
+    <title><![CDATA[Week01总结]]></title>
+    <url>%2F2021%2F04%2F10%2FWeek01%2F</url>
+    <content type="text"><![CDATA[1. 检索结构复习（所有的设计都是 trade off）: 线性检索，数组与链表效率分析，二分查找法，对于有序数组的范围查找 [x,y]，先二分法定位 x，缩小区间后在 [x,max] 之间再二分找到 y 是比较好的方式，数组可以利用内存局部性原理加快查询，小数据量下的插入操作可以使用到内存拷贝，也不会很慢。 非线性结构，链表 O(N) –&gt; 二叉排序树 (OlogN)，是为了增加链表的检索效率。由于存在树退化的可能，引申出了 红黑树、二叉平衡树等平衡结构，Set、Map的底层就用到了红黑树； 跳表（链表的二分查找），空间换时间的一种结构。采用分层存储的方式，缩小检索范围，大数据量下趋于 O(logn)，小数据量下检索效率不稳定。因为跳表在实际存储时并不是按照 2^n 步长维护的，否则新增节点会修改已有的大部分指针； Redis 为什么使用跳表实现 Sorted Set 操作？（严格来说，不同数据量下 redis 采用的数据结构是不同的，数据少时，Sorted Set 使用的是压缩列表） 1.set支持范围操作，而跳表在范围查找上的效率高于红黑树。(树的局部中序遍历，不太好操作，否则就是全局中序判断是否相等) 2.跳表在思想上相对于红黑树来说更易理解（实现其实都不简单，并且红黑树有现成的，跳表还得自己写。。雾） 3.跳表更加灵活，调节步长可以灵活控制内存消耗及平衡策略。 Hash 表冲突的解决方式：开放寻址法（对比时总是被吊打，应用场景：以及位图思想，布隆过滤等），链式 hash 法 开发寻址法的优化策略：“双散列，求多个 hash 值”（布隆过滤），布隆过滤在删除一个元素时，不能直接置为0（可以采用计数法，或者定时重建） 1计算最优哈希函数个数的数学公式: 哈希函数个数 k = (m/n) * ln(2)。其中 m 为 bit 数组长度，n 为要存入的对象的个数。实际上，如果哈希函数个数为 1，且数组长度足够，布隆过滤器就可以退化成一个位图。所以，我们可以认为“位图是只有一个特殊的哈希函数，且没有被压缩长度的布隆过滤器 倒排索引与正排索引。 2. 文档阅读： Getting started with Elasticsearch，安装部署 1234GET /_cat/health?vGET /_cat/indices?vGET /_cat/recoveryGET /_cat/nodes?v term Aggregations，term 聚合 Important Elasticsearch Configuration，重要的设置项 Documents API ，增删改查复习 集群升级模块 API conventions，时间函数支持、通用参数设置等 IndexAPI、HEAD、delete_by_query、update_by_query、reindex script 在 update、update_by_query、reindex 中的应用 highlight 与 highlight_query 3. 以前忽略的小知识总结 Index,update,delete,bulk 请求支持 手动刷新?refresh参数，可选值包含空字符串 (= true)，也可以设置 wait_for 或 false,默认为 false； refresh_interval 、index.write.wait_for_active_shards 的默认值都为1，后者表示主分片写入即返回成功。增大该参数后。如果处于正常状态的分片数量达不到要求，写入会失败； GET API 默认是 realtime 的，会查询到尚未被 refresh_interval 刷到磁盘的内容，通过 ?realtime=false 参数可以关闭； delete 的实际删除时间，默认是在 60s 后。index.gc_deletes 可以设置该时间; routing 可以设置在 mapping 中，设置之后，请求都需要带上 routing 才行。在只有一个分片的情况下，该参数没有效果; delete_by_query、update_by_query 都可以设置 routing，操作指定分片上的内容，默认 scroll_size为1000 ,通过 slice_scroll 可以分段并发的删除; 乐观并发控制version，新版本增加了 if_seq_no 、if_primery_term； reindex 可以通过query、sort、size等查询参数指定范围，通过ingest/pipeline、script 进行数据处理；不支持跨大版本进行 reindex version_type: external 创建缺失的文档，并更新target中版本号更低的，默认 internal op_type: create 只创建缺失文档 ，默认全覆盖 跨集群操作 reindex，需要在 yml 文件中增加 配置 reindex.remote.whitelist: localhost:*,....。此外，跨集群操作使用的堆缓冲区大小默认为100M，批量操作不能太大; Search API，字段映射时 doc_values : false 可以被搜索到，但不能用于排序聚合，script 操作; collapse 可以对结果进行折叠(可以二次折叠)，排序会影响折叠后得展示结果，hits 命中数是折叠之前的总数（必须是 keyword 或数值类型）。inner_hits 可以返回折叠的详细内容; 不支持与scroll、search_after（from分页是可以的）、rescore 一起使用 4. 脚本记录1. script操作1234567891011121314151617181920212223242526272829303132333435PUT test/_doc/1&#123; &quot;counter&quot; : 1, &quot;tags&quot; : [&quot;red&quot;]&#125;//script更新POST test/_update/1&#123; &quot;script&quot;:&#123; &quot;source&quot;: &quot;&quot;&quot; ctx._source.counter += params.count; ctx._source.tags.add(params.tag); if(ctx._source.tags.length==2)&#123; ctx._source.tags.add(3); ctx._source.tags.add(4); ctx._source.tags.remove(ctx._source.tags.indexOf(&quot;red&quot;)); &#125; ctx._source.new_field1=&apos;new_field1&apos;; ctx._source.new_field9=&apos;new_field9&apos;; ctx._source.remove(&apos;new_field1&apos;); ctx._source.indexname=ctx._index; ctx._source.type=ctx._type; ctx._source.id=ctx._id; ctx._source.version=ctx._version; ctx._source.routing=ctx._routing; if (ctx._source.tags.contains(params.tag)) &#123; ctx.op = &apos;delete&apos; &#125; else &#123; ctx.op = &apos;none&apos; &#125; //_now需要格式化 &quot;&quot;&quot;, &quot;lang&quot;: &quot;painless&quot;, &quot;params&quot;: &#123; &quot;count&quot;:4, &quot;tag&quot;: &quot;blue&quot; &#125; &#125;&#125; 2. collapse123456789101112131415161718192021222324252627GET /twitter/_search&#123; &quot;query&quot;: &#123; &quot;match&quot;: &#123; &quot;message&quot;: &quot;elasticsearch&quot; &#125; &#125;, &quot;collapse&quot; : &#123; &quot;field&quot; : &quot;user&quot;, //支持数组，多种排序返回 &quot;inner_hits&quot;: [ &#123; &quot;name&quot;: &quot;most_liked&quot;, &quot;size&quot;: 3, &quot;sort&quot;: [&quot;likes&quot;] &#125;, &#123; &quot;name&quot;: &quot;most_recent&quot;, &quot;size&quot;: 3, &quot;sort&quot;: [&#123; &quot;date&quot;: &quot;asc&quot; &#125;] &#125; ], //innerhits本身是类似于发送了子查询的，该参数用于控制并发的数量，默认基于节点数和搜索线程池的大小判断 &quot;max_concurrent_group_searches&quot;: 4 &#125;, &quot;sort&quot;: [&quot;likes&quot;]&#125; 和服 Alter]]></content>
       <categories>
         <category>学习打卡</category>
       </categories>
@@ -20,28 +20,6 @@
       </categories>
       <tags>
         <tag>elasticsearch：</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[DAY03]]></title>
-    <url>%2F2021%2F04%2F07%2FDAY03%2F</url>
-    <content type="text"><![CDATA[熟悉文档的大模块： 阅读文档的以下模块 集群升级模块 12345GET _cat/health?vGET _cat/recoveryGET _cat/nodes?v reindex inplace和 reindex remote API conventions，时间函数支持、通用参数设置等 IndexAPI、HEAD、delete_by_query、update_by_query 坠落之物 –&gt;]]></content>
-      <categories>
-        <category>学习打卡</category>
-      </categories>
-      <tags>
-        <tag>学习：</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[DAY02]]></title>
-    <url>%2F2021%2F04%2F06%2FDAY02%2F</url>
-    <content type="text"><![CDATA[熟悉文档的大模块： 阅读文档的以下模块 Getting started with Elasticsearch，安装部署 12GET /_cat/health?vGET /_cat/indices?v term Aggregations，term聚合 Important Elasticsearch Configuration，重要的设置项 Documents API ，增删改查复习 夜空の流桜 –&gt;]]></content>
-      <categories>
-        <category>杂谈</category>
-      </categories>
-      <tags>
-        <tag>随笔：</tag>
       </tags>
   </entry>
   <entry>

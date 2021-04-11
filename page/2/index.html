@@ -291,307 +291,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/03/07/mysql5.7-31 主从复制安装(windows)/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="北方轻巡舰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/header.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="北方轻巡舰的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/03/07/mysql5.7-31 主从复制安装(windows)/" itemprop="url">mysql5.7-31 主从复制安装(windows)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-07T10:52:54+08:00">
-                2021-03-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/数据库/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="准备两个MySQL服务实例"><a href="#准备两个MySQL服务实例" class="headerlink" title="准备两个MySQL服务实例"></a>准备两个MySQL服务实例</h4><blockquote>
-<p>windows上可以用压缩版本，例如mysql-5.7.31-winx64.zip，解压文件夹再复制一份，添加my.ini配置文件。假设一个叫mysql-5.7.31-winx64，一个叫mysql-5.7.31-winx64-2，以为分别配置其为主和从</p>
-</blockquote>
-<h4 id="修改主mysql-5-7-31-winx64的my-ini"><a href="#修改主mysql-5-7-31-winx64的my-ini" class="headerlink" title="修改主mysql-5.7.31-winx64的my.ini"></a>修改主mysql-5.7.31-winx64的my.ini</h4><p>解压出来默认没有 <code>my.ini</code> 需要自己新建:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">basedir = ./</span><br><span class="line">datadir = ./data</span><br><span class="line">port = 3316</span><br><span class="line">server_id = 16</span><br><span class="line"></span><br><span class="line">sql_mode=&quot;STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION&quot;</span><br><span class="line">log_bin=mysql-bin</span><br><span class="line">binlog-format=Row</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2021/03/07/mysql5.7-31 主从复制安装(windows)/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/02/无锁队列简单实现及ConcurrentLinkedQueue源码解析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="北方轻巡舰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/header.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="北方轻巡舰的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/09/02/无锁队列简单实现及ConcurrentLinkedQueue源码解析/" itemprop="url">无锁队列的简单实现及ConcurrentLinkedQueue源码解析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-02T09:51:19+08:00">
-                2020-09-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/深入java/" itemprop="url" rel="index">
-                    <span itemprop="name">深入java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="无锁队列"><a href="#无锁队列" class="headerlink" title="无锁队列"></a>无锁队列</h2><p>无锁也称为 <code>LockFree</code>，其实现原理是基于 <code>CAS( compare and swap)</code>  原子操作来保证多线程下共享资源的线程安全问题。</p>
-<ul>
-<li><code>CAS(V,E,N)</code> 代表的是要更新的值 <code>V</code>，预期值 <code>E</code>，当且仅当要更新的值等于预期值时<code>(V=E)</code>，将 <code>V</code> 的值设为 <code>N</code>。</li>
-<li><code>CAS</code> 操作会返回一个 <code>boolean</code> 值，<code>true</code> 表示交换成功，失败时进入循环，重新进行下一轮操作。</li>
-</ul>
-<p>无锁队列则是使用 <code>CAS</code> 来实现的，且支持并发操作的队列。在阅读源码之前，我使用 <code>Atomic</code> 包里的原子类及网上的一些参考信息编写了一个使用数组实现的简易无锁队列。</p>
-<p>代码如下：<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/09/02/无锁队列简单实现及ConcurrentLinkedQueue源码解析/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/05/ES基础--常用知识梳理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1025,6 +724,305 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/04/对象存储服务minio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/01/04/对象存储服务minio/" itemprop="url">对象存储服务minio</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-04T21:11:44+08:00">
+                2020-01-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/存储服务/" itemprop="url" rel="index">
+                    <span itemprop="name">存储服务</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="我的第一印象"><a href="#我的第一印象" class="headerlink" title="我的第一印象"></a>我的第一印象</h2><p>去年7月份的大数据项目中使用的它做图片服务器，当时也就只听了个名字。这次需要涉及到视频处理和上传又用到了，所以来补一下知识点。</p>
+<p>简单、好用、方便快捷。</p>
+<h2 id="minio服务器"><a href="#minio服务器" class="headerlink" title="minio服务器"></a>minio服务器</h2><p><code>MinIO</code> 是一个基于<code>Apache License v2.0</code>开源协议的对象存储服务。<strong>它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据</strong>，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等，而一个对象文件可以是任意大小，从几kb到最大5T不等。</p>
+<p><code>MinIO</code>是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 <code>NodeJS</code>, <code>Redis</code> 或者 <code>MySQL</code>。（来自官方文档）<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/01/04/对象存储服务minio/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/21/gitlab-ci、cd初步使用及踩坑/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/21/gitlab-ci、cd初步使用及踩坑/" itemprop="url">gitlab-ci、cd初步使用及踩坑</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-21T16:30:18+08:00">
+                2019-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/devops/" itemprop="url" rel="index">
+                    <span itemprop="name">devops</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="CI-CD"><a href="#CI-CD" class="headerlink" title="CI/CD"></a>CI/CD</h3><p>CI全称为<code>Continuous Integration</code>代表持续集成的意思，通俗来说就是持续的自动构建（单元测试、打包等）。</p>
+<p>CD全称为<code>Continuous Deployment</code>代表持续交付的意思，在代码构建完成后自动部署上线。</p>
+<h3 id="gitlab-ci-cd"><a href="#gitlab-ci-cd" class="headerlink" title="gitlab-ci/cd"></a>gitlab-ci/cd</h3><p><code>gitlab-ci/cd</code>是基于<code>gitlab</code>的一套<code>ci/cd</code>工具，</p>
+<h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><h3 id="1-ci文件配置"><a href="#1-ci文件配置" class="headerlink" title="1.ci文件配置"></a>1.ci文件配置</h3><p><code>gitlab-ci</code>是<code>gitlab</code>自带的功能，只需在项目的根目录添加一个<code>.gitlab-ci.yml</code>的文件名即可。例如我所使用的这个：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">    - build</span><br><span class="line">    - qbjsonar</span><br><span class="line"></span><br><span class="line">build-job:</span><br><span class="line">    stage: build</span><br><span class="line">    only: </span><br><span class="line">        - dev</span><br><span class="line">    script:</span><br><span class="line">        - cd zhsfsjfw/ &amp;&amp; pwd</span><br><span class="line">        - mvn clean package</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sonar-job:</span><br><span class="line">    stage: qbjsonar</span><br><span class="line">    only: </span><br><span class="line">        - dev</span><br><span class="line">    script:</span><br><span class="line">        - echo &apos;准备对`qbj`项目代码做sonar的质量检查！</span><br><span class="line">        - cd zhsfsjfw/</span><br><span class="line">        - mvn compile</span><br><span class="line">        - mvn sonar:sonar -Dsonar.host.url=http://172.16.34.102:9000 -Dsonar.login=497a0e0e2fc07f64c4b54edc17bb47dfa251ba34</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/12/21/gitlab-ci、cd初步使用及踩坑/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1079,7 +1077,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
