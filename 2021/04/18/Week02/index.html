@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="学习," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 文档学习本周文档阅读内容大模块为 Search API ,重点章节包含以下模块  Request_Body_search；  rescore query、script_fields  ；  scroll、search_after、rescore ；  suggesters；  search_template、profile_API。">
+<meta name="keywords" content="学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Week02总结">
+<meta property="og:url" content="http://yoursite.com/2021/04/18/Week02/index.html">
+<meta property="og:site_name" content="北方轻巡舰的博客">
+<meta property="og:description" content="1. 文档学习本周文档阅读内容大模块为 Search API ,重点章节包含以下模块  Request_Body_search；  rescore query、script_fields  ；  scroll、search_after、rescore ；  suggesters；  search_template、profile_API。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/202104/index-doc_values-store.png">
+<meta property="og:image" content="http://yoursite.com/images/202104/search_template.png">
+<meta property="og:image" content="http://yoursite.com/images/202104/souji%20okita.png">
+<meta property="og:updated_time" content="2021-04-20T09:20:07.119Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Week02总结">
+<meta name="twitter:description" content="1. 文档学习本周文档阅读内容大模块为 Search API ,重点章节包含以下模块  Request_Body_search；  rescore query、script_fields  ；  scroll、search_after、rescore ；  suggesters；  search_template、profile_API。">
+<meta name="twitter:image" content="http://yoursite.com/images/202104/index-doc_values-store.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/04/18/Week02/"/>
+
+
+
+
+
+  <title>Week02总结 | 北方轻巡舰的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">北方轻巡舰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/04/18/Week02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Week02总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-18T18:40:32+08:00">
+                2021-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习打卡/" itemprop="url" rel="index">
+                    <span itemprop="name">学习打卡</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-文档学习"><a href="#1-文档学习" class="headerlink" title="1. 文档学习"></a>1. 文档学习</h2><p>本周文档阅读内容大模块为 <code>Search API</code> ,重点章节包含以下模块</p>
+<ul>
+<li><p><code>Request_Body_search</code>；</p>
+</li>
+<li><p><code>rescore query、script_fields</code>  ；</p>
+</li>
+<li><p><code>scroll、search_after</code>、<code>rescore</code> ；</p>
+</li>
+<li><p><code>suggesters</code>；</p>
+</li>
+<li><p><code>search_template、profile_API</code>。</p>
+<a id="more"></a>
+</li>
+</ul>
+<h2 id="2-不熟悉的小知识点总结"><a href="#2-不熟悉的小知识点总结" class="headerlink" title="2.不熟悉的小知识点总结"></a>2.不熟悉的小知识点总结</h2><h4 id="2-1-index、doc-values、store-的区别"><a href="#2-1-index、doc-values、store-的区别" class="headerlink" title="2.1 index、doc_values、store 的区别"></a>2.1 index、doc_values、store 的区别</h4><p><img src="/images/202104/index-doc_values-store.png" alt=""></p>
+<h4 id="2-2-rescore-query"><a href="#2-2-rescore-query" class="headerlink" title="2.2 rescore query"></a>2.2 rescore query</h4><p>重新查询，默认与 <code>query</code>中的得分进行加法计算，使用<code>multi_rescore</code> 时，后者会看到前一个 <code>rescore</code> 算分后的结果集，所以通常会先给定一个大的 <code>window_size</code>，第二个 <code>rescore</code> 再缩小 <code>window_size</code> 的方式。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">GET twitter/_search</span><br><span class="line">&#123;</span><br><span class="line">   &quot;query&quot; : &#123;</span><br><span class="line">      &quot;match&quot; : &#123;</span><br><span class="line">         &quot;message&quot; : &#123;</span><br><span class="line">            &quot;operator&quot; : &quot;or&quot;,</span><br><span class="line">            &quot;query&quot; : &quot;the quick brown&quot;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;,</span><br><span class="line">   &quot;rescore&quot; : [ &#123;</span><br><span class="line">      &quot;window_size&quot; : 100,</span><br><span class="line">      &quot;query&quot; : &#123;</span><br><span class="line">         &quot;rescore_query&quot; : &#123;</span><br><span class="line">            &quot;match_phrase&quot; : &#123;</span><br><span class="line">               &quot;message&quot; : &#123;</span><br><span class="line">                  &quot;query&quot; : &quot;the quick brown&quot;,</span><br><span class="line">                  &quot;slop&quot; : 2</span><br><span class="line">               &#125;</span><br><span class="line">            &#125;</span><br><span class="line">         &#125;,</span><br><span class="line">         &quot;query_weight&quot; : 0.7,</span><br><span class="line">         &quot;rescore_query_weight&quot; : 1.2</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;, &#123;</span><br><span class="line">      &quot;window_size&quot; : 10,</span><br><span class="line">      &quot;query&quot; : &#123;</span><br><span class="line">         &quot;score_mode&quot;: &quot;multiply&quot;,</span><br><span class="line">         &quot;rescore_query&quot; : &#123;</span><br><span class="line">            &quot;function_score&quot; : &#123;</span><br><span class="line">               &quot;script_score&quot;: &#123;</span><br><span class="line">                  &quot;script&quot;: &#123;</span><br><span class="line">                    &quot;source&quot;: &quot;Math.log10(doc.likes.value + 2)&quot;</span><br><span class="line">                  &#125;</span><br><span class="line">               &#125;</span><br><span class="line">            &#125;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125; ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-script-fields的取值方式"><a href="#2-3-script-fields的取值方式" class="headerlink" title="2.3 script_fields的取值方式"></a>2.3 script_fields的取值方式</h4><p><code>script_fields</code> 有两种取值方式 ,<code>doc[&#39;my_field&#39;].value</code>的方式会通过 <code>term</code> 加载整个字段到缓存中，使得 <code>script</code> 的执行更快，但占用的内存也更多，<strong>同时这种写法也只支持简单的值字段，无法取到 <code>JSON Object</code> 对象</strong>。官方的推荐做法仍旧是使用 <code>doc[...]</code>，因为<code>params[&#39;_source&#39;][&#39;my_field&#39;]</code> 的方式在每次处理时都会去加载 <code>_source</code>,执行会慢很多。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">POST test/_doc</span><br><span class="line">&#123;</span><br><span class="line">  &quot;request&quot;:&#123;</span><br><span class="line">    &quot;uri&quot;:&quot;http://www.baidu.com&quot;,</span><br><span class="line">    &quot;param&quot;:&#123;</span><br><span class="line">      &quot;id&quot;:&quot;1&quot;,</span><br><span class="line">      &quot;name&quot;:&quot;测试&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">//查询会失败，无法获取</span><br><span class="line">GET test/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match_all&quot;: &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;script_fields&quot;: &#123;</span><br><span class="line">    &quot;test1&quot;: &#123;</span><br><span class="line">      &quot;script&quot;: &#123;</span><br><span class="line">        &quot;lang&quot;: &quot;painless&quot;,</span><br><span class="line">        //查询会失败，无法取到request对象</span><br><span class="line">        &quot;source&quot;: &quot;doc[&apos;request&apos;].value&quot;</span><br><span class="line">        //可以使用如下方式, value 可以不需要，text字段需要指定fielddata或keyword</span><br><span class="line">        //&quot;source&quot;: &quot;doc[&apos;request.uri.keyword&apos;]&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//方式二可以取到 json object</span><br><span class="line">GET test/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match_all&quot;: &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;script_fields&quot;: &#123;</span><br><span class="line">    &quot;test2&quot;: &#123;</span><br><span class="line">      &quot;script&quot;: &#123;</span><br><span class="line">        &quot;lang&quot;: &quot;painless&quot;,</span><br><span class="line">        &quot;source&quot;: &quot;params[&apos;_source&apos;][&apos;request&apos;]&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-4-search-after需要指定唯一字段为排序依据，否则同分值的会被过滤掉"><a href="#2-4-search-after需要指定唯一字段为排序依据，否则同分值的会被过滤掉" class="headerlink" title="2.4 search_after需要指定唯一字段为排序依据，否则同分值的会被过滤掉"></a>2.4 search_after需要指定唯一字段为排序依据，否则同分值的会被过滤掉</h4><p>如下所示的<code>search_after</code> 是通过 <code>taxful_total_size</code> 排序后的数值进行翻页，当出现金额相同的情况时，两条数据都会被过滤掉，所以应该在 <code>sort</code> 和 <code>search_after</code> 中都加上类似 <code>id</code> 的唯一字段作区分。</p>
+<p><img src="/images/202104/search_template.png" alt=""></p>
+<h4 id="2-5-Nested、Join、Object类型的区别"><a href="#2-5-Nested、Join、Object类型的区别" class="headerlink" title="2.5 Nested、Join、Object类型的区别"></a>2.5 Nested、Join、Object类型的区别</h4><h5 id="创建映射mapping，两个字段分别为-nested-和-object"><a href="#创建映射mapping，两个字段分别为-nested-和-object" class="headerlink" title="创建映射mapping，两个字段分别为 nested 和 object"></a>创建映射mapping，两个字段分别为 nested 和 object</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">PUT nested_object_test</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">    &quot;properties&quot;: &#123;</span><br><span class="line">      &quot;my_object&quot;: &#123;</span><br><span class="line">        &quot;type&quot;: &quot;object&quot;,</span><br><span class="line">        &quot;properties&quot;: &#123;</span><br><span class="line">          &quot;username&quot;: &#123;</span><br><span class="line">            &quot;type&quot;: &quot;text&quot;</span><br><span class="line">          &#125;,</span><br><span class="line">          &quot;age&quot;: &#123;</span><br><span class="line">            &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;my_nested&quot;: &#123;</span><br><span class="line">        &quot;type&quot;: &quot;nested&quot;,</span><br><span class="line">        &quot;properties&quot;: &#123;</span><br><span class="line">          &quot;username&quot;: &#123;</span><br><span class="line">            &quot;type&quot;: &quot;text&quot;</span><br><span class="line">          &#125;,</span><br><span class="line">          &quot;age&quot;: &#123;</span><br><span class="line">            &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="索引一条数据"><a href="#索引一条数据" class="headerlink" title="索引一条数据"></a>索引一条数据</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">//采用数组格式，分别放两个字段存入一条数据</span><br><span class="line">POST nested_object_test/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;my_object&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;username&quot;: &quot;Tom smith&quot;,</span><br><span class="line">      &quot;age&quot;: 20</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;username&quot;: &quot;William smith&quot;,</span><br><span class="line">      &quot;age&quot;: 30</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;my_nested&quot;:[</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;username&quot;: &quot;Tom smith&quot;,</span><br><span class="line">      &quot;age&quot;: 20</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;username&quot;: &quot;William smith&quot;,</span><br><span class="line">      &quot;age&quot;: 30</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="搜索对比"><a href="#搜索对比" class="headerlink" title="搜索对比"></a>搜索对比</h5><p>检索同时满足 <code>username = Tom ，age=30</code> 条件的数据，正常情况下是没有结果的，而 <code>object</code> 字段的检索会返回结果，其本质原因是 <code>object</code> 类型在存储时会进行扁平化处理，即上述测试数据在存储时被处理为了：</p>
+<blockquote>
+<p>username: [“Tom smith” , “William smith”], age: [20,30]</p>
+</blockquote>
+<p>使用  <code>Nested</code>  嵌套对象时则不会出现该情况，<code>Nested</code> 数据类型允许对象数组中的对象被独立索引，存储时会分为多条 <code>lucene</code> 文档 (即，上述的测试数据会分为两个隐藏文档 ，每一个都存储着对应的 <code>username</code> 和 <code>age</code> ，最后召回时进行 <code>join</code>，所以效率也相对更低)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">//错误结果</span><br><span class="line">GET nested_object_test/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;bool&quot;: &#123;</span><br><span class="line">      &quot;must&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">          &quot;match&quot;: &#123;</span><br><span class="line">            &quot;my_object.username&quot;: &quot;Tom&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          &quot;term&quot;: &#123;</span><br><span class="line">            &quot;my_object.age&quot;: 30</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">//预期结果</span><br><span class="line">GET nested_object_test/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;nested&quot;: &#123;</span><br><span class="line">      &quot;path&quot;: &quot;my_nested&quot;,</span><br><span class="line">      &quot;query&quot;: &#123;</span><br><span class="line">        &quot;bool&quot;: &#123;</span><br><span class="line">          &quot;must&quot;: [</span><br><span class="line">            &#123;</span><br><span class="line">              &quot;match&quot;: &#123;</span><br><span class="line">                &quot;my_nested.username&quot;: &quot;Tom&quot;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">              &quot;term&quot;: &#123;</span><br><span class="line">                &quot;my_nested.age&quot;: 30</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Join</code>类型 的性能不太好，<code>nested</code> 与 <code>object</code> 相比性能会低几倍，<code>join</code> 在 <code>nested</code>基础上会再低几倍。</p>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>Object</th>
+<th>Nested</th>
+<th>Join</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>优点</td>
+<td>速度快，性能好</td>
+<td>文档存储在一起，性能较好</td>
+<td>父子文档独立更新，互不影响</td>
+</tr>
+<tr>
+<td>缺点</td>
+<td>不支持数组字段的组合检索</td>
+<td>更新时需要整个文档一起更新</td>
+<td>内存占用多，读取性能差</td>
+</tr>
+<tr>
+<td>场景</td>
+<td>不需要对object数组查询、聚合</td>
+<td>查询多，子文档偶尔更新</td>
+<td>子文档更新频繁</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>nested</code> 的查询。聚合都需要使用 <code>nested_query</code>;</p>
+<p><code>Join</code> 需要通过 <code>parent_id</code>、<code>has_parent</code>、<code>has_child</code> 查询，且父子文档需要在同一分片上（使用<code>routing</code>）</p>
+</blockquote>
+<h4 id="2-6-search-template-与-render-template"><a href="#2-6-search-template-与-render-template" class="headerlink" title="2.6 search_template 与 render template"></a>2.6 search_template 与 render template</h4><p><code>search_template</code> 的功能主要是用于工程代码和搜索解耦，维护人员定好 <code>search_template</code> 的基础结构和参数后，程序即可编写，当涉及到搜索调整，在参数没有更改的情况下，只需要调整  <code>template</code> 即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">POST _bulk</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;shirts&quot;,&quot;_id&quot;:&quot;1&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;brand&quot;:&quot;gucci&quot;,&quot;color&quot;:&quot;red&quot;,&quot;model&quot;:&quot;slim&quot;&#125;</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;test&quot;,&quot;_id&quot;:&quot;2&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;brand&quot;:&quot;gucci&quot;,&quot;color&quot;:&quot;black&quot;,&quot;model&quot;:&quot;slim&quot;&#125;</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;test&quot;,&quot;_id&quot;:&quot;3&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;brand&quot;:&quot;gucci&quot;,&quot;color&quot;:&quot;black&quot;,&quot;model&quot;:&quot;ntrms&quot;&#125;</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;test&quot;,&quot;_id&quot;:&quot;4&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;brand&quot;:&quot;gucci&quot;,&quot;color&quot;:&quot;black&quot;,&quot;model&quot;:&quot;ntrms&quot;&#125;</span><br><span class="line"></span><br><span class="line"># 0.直接使用search_template</span><br><span class="line">GET shirts/_search/template</span><br><span class="line">&#123;</span><br><span class="line">  &quot;source&quot;:&#123;</span><br><span class="line">    &quot;query&quot;:&#123;</span><br><span class="line">      &quot;match&quot;:&#123;</span><br><span class="line">        &quot;&#123;&#123;my_field&#125;&#125;&quot;:&quot;&#123;&#123;my_value&#125;&#125;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;params&quot;: &#123;</span><br><span class="line">    &quot;my_field&quot;:&quot;color&quot;,</span><br><span class="line">    &quot;my_value&quot;:&quot;black&quot;,</span><br><span class="line">    &quot;my_size&quot;: 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">DELETE _scripts/shirts_template</span><br><span class="line"></span><br><span class="line">#1.script存储 search_template,使用 mustache 模板语法</span><br><span class="line">POST _scripts/shirts_template</span><br><span class="line">&#123;</span><br><span class="line">  &quot;script&quot;: &#123;</span><br><span class="line">    &quot;lang&quot;: &quot;mustache&quot;,</span><br><span class="line">    &quot;source&quot;: &#123;</span><br><span class="line">      &quot;query&quot;:&#123;</span><br><span class="line">      &quot;match&quot;:&#123;</span><br><span class="line">        &quot;&#123;&#123;my_field&#125;&#125;&quot;:&quot;&#123;&#123;my_value&#125;&#125;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;size&quot;:&quot;&#123;&#123;my_size&#125;&#125;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#2.使用模板（id只能在dsl里声明）</span><br><span class="line">GET _search/template</span><br><span class="line">&#123;</span><br><span class="line">  &quot;id&quot;:&quot;shirts_template&quot;,</span><br><span class="line">  &quot;explain&quot;: true,</span><br><span class="line">  &quot;params&quot;: &#123;</span><br><span class="line">    &quot;my_size&quot;: &quot;1&quot;,</span><br><span class="line">    &quot;my_field&quot;:&quot;color&quot;,</span><br><span class="line">    &quot;my_value&quot;:&quot;black&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"># render template 模板渲染测试</span><br><span class="line">GET _render/template</span><br><span class="line">&#123;</span><br><span class="line">  &quot;source&quot;: &#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">      &quot;match&quot;: &#123;</span><br><span class="line">        &quot;&#123;&#123;my_field&#125;&#125;&quot;: &quot;&#123;&#123;my_value&#125;&#125;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;params&quot;: &#123;</span><br><span class="line">    &quot;my_field&quot;: &quot;color&quot;,</span><br><span class="line">    &quot;my_value&quot;: &quot;black&quot;,</span><br><span class="line">    &quot;my_size&quot;: 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">#或者带上模板id渲染</span><br><span class="line">GET _render/template/shirts_template</span><br><span class="line">&#123;</span><br><span class="line">  &quot;params&quot;: &#123;</span><br><span class="line">    &quot;my_field&quot;: &quot;color&quot;,</span><br><span class="line">    &quot;my_value&quot;: &quot;black&quot;,</span><br><span class="line">    &quot;my_size&quot;: 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"># 整体渲染</span><br><span class="line">GET _render/template</span><br><span class="line">&#123;</span><br><span class="line">    &quot;source&quot;: &quot;&#123;\&quot;query\&quot;:&#123;\&quot;bool\&quot;:&#123;\&quot;must\&quot;: &#123;&#123;#toJson&#125;&#125;clauses&#123;&#123;/toJson&#125;&#125; &#125;&#125;&#125;&quot;,</span><br><span class="line">    &quot;params&quot;: &#123;</span><br><span class="line">        &quot;clauses&quot;: [</span><br><span class="line">            &#123; &quot;term&quot;: &#123; &quot;user&quot; : &quot;foo&quot; &#125; &#125;,</span><br><span class="line">            &#123; &quot;term&quot;: &#123; &quot;user&quot; : &quot;bar&quot; &#125; &#125;</span><br><span class="line">        ]</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-7-tips"><a href="#2-7-tips" class="headerlink" title="2.7 tips"></a>2.7 tips</h4><ul>
+<li>es 7.x为了提高性能，在命中数据大于1000时，不会返回准确的命中总数，并指出数据总量是 <code>gte 10000</code>的，设置 <code>track_total_hits:true</code> 可以解决该问题，也可以将该参数设置为一个固定的数值，<code>ES</code> 会返回 <code>gte</code> 该数值的说明；</li>
+<li>返回 <code>version</code>，可以设置 <code>version:true</code>；</li>
+<li><code>sort</code>  可以对数组类型进行排序，例如：返回数组的平均值。或最小值；</li>
+<li>副本虽然影响写入速度，但是可以增加查询速度和数据安全性，因为查询可以在任一副本上获取到结果。</li>
+</ul>
+<hr>
+<p><img src="/images/202104/souji okita.png" alt="Alt"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/学习/" rel="tag"><i class="fa fa-tag"></i> 学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/10/Week01/" rel="next" title="Week01总结">
+                <i class="fa fa-chevron-left"></i> Week01总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div id="gitalk-container">
+	</div>
+	
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/header.png"
+                alt="北方轻巡舰" />
+            
+              <p class="site-author-name" itemprop="name">北方轻巡舰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zengxin166850" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-文档学习"><span class="nav-text">1. 文档学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-不熟悉的小知识点总结"><span class="nav-text">2.不熟悉的小知识点总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-index、doc-values、store-的区别"><span class="nav-text">2.1 index、doc_values、store 的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-rescore-query"><span class="nav-text">2.2 rescore query</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-script-fields的取值方式"><span class="nav-text">2.3 script_fields的取值方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-search-after需要指定唯一字段为排序依据，否则同分值的会被过滤掉"><span class="nav-text">2.4 search_after需要指定唯一字段为排序依据，否则同分值的会被过滤掉</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-Nested、Join、Object类型的区别"><span class="nav-text">2.5 Nested、Join、Object类型的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#创建映射mapping，两个字段分别为-nested-和-object"><span class="nav-text">创建映射mapping，两个字段分别为 nested 和 object</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#索引一条数据"><span class="nav-text">索引一条数据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#搜索对比"><span class="nav-text">搜索对比</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-search-template-与-render-template"><span class="nav-text">2.6 search_template 与 render template</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-tips"><span class="nav-text">2.7 tips</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">北方轻巡舰</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="/css/gitalk.css">
+  <script src="/js/src/md5.min.js"></script>
+  <script src="/js/src/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '4d8264bae956afc03d03',
+		  clientSecret: 'cd2ea936a06ea5daf08bc14cd5538ae1f7eb491e',
+		  repo: 'hoppoComments',
+		  owner: 'zengxin166850',
+		  admin: ['zengxin166850'], 
+		  id: md5(location.pathname),
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script src="/js/src/autoload.js"></script>
+</body>
+</html>
