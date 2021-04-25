@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="容器,kubernetes," />
+  <meta name="keywords" content="学习," />
 
 
 
@@ -86,21 +86,23 @@
 
 
 
-<meta name="description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。 系统组件图 Master NodeMaster节点主要由负责API服务的apiserver、负责容器编排的controller-manager、以及负责调度的scheduler组成。整个集群的持久化数据，由apiserver处理后，交由etcd进行管理。  A">
-<meta name="keywords" content="容器,kubernetes">
+<meta name="description" content="1. 位图与布隆过滤器位图通常用于状态检索，通过与或操作来判断，检索效率为 O(1)。相比数组而言，虽然检索效率相同，但可以减小内存占用，一个 2^32=40亿 的位图占用为 512M，同样的情况下数组在使用 boolean 类型时内存占用为位图的 8 倍，而使用 int32 时占用为 4 字节，内存占用是位图的 32 倍；">
+<meta name="keywords" content="学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="kubernetes集群组件介绍">
-<meta property="og:url" content="http://yoursite.com/2019/07/20/kubernetes集群组件介绍/index.html">
+<meta property="og:title" content="倒排索引---联合查询加速">
+<meta property="og:url" content="http://yoursite.com/2021/04/24/倒排索引---联合查询加速/index.html">
 <meta property="og:site_name" content="北方轻巡舰的博客">
-<meta property="og:description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。 系统组件图 Master NodeMaster节点主要由负责API服务的apiserver、负责容器编排的controller-manager、以及负责调度的scheduler组成。整个集群的持久化数据，由apiserver处理后，交由etcd进行管理。  A">
+<meta property="og:description" content="1. 位图与布隆过滤器位图通常用于状态检索，通过与或操作来判断，检索效率为 O(1)。相比数组而言，虽然检索效率相同，但可以减小内存占用，一个 2^32=40亿 的位图占用为 512M，同样的情况下数组在使用 boolean 类型时内存占用为位图的 8 倍，而使用 int32 时占用为 4 字节，内存占用是位图的 32 倍；">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/kubernetes-component.png">
-<meta property="og:image" content="http://yoursite.com/images/modeganqing.jpg">
-<meta property="og:updated_time" content="2021-04-05T15:03:32.111Z">
+<meta property="og:image" content="http://yoursite.com/images/202104/bloomfilter.png">
+<meta property="og:image" content="http://yoursite.com/images/202104/倒排索引.png">
+<meta property="og:image" content="http://yoursite.com/images/202104/roaringbitmap.jpg">
+<meta property="og:image" content="http://yoursite.com/images/202104/夜灯与樱花.png">
+<meta property="og:updated_time" content="2021-04-24T11:22:44.524Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="kubernetes集群组件介绍">
-<meta name="twitter:description" content="一个Kubernetes集群，通常是由多个工作节点Worker Node加上一个集群控制者Master，以及集群状态存储系统etcd组成。 系统组件图 Master NodeMaster节点主要由负责API服务的apiserver、负责容器编排的controller-manager、以及负责调度的scheduler组成。整个集群的持久化数据，由apiserver处理后，交由etcd进行管理。  A">
-<meta name="twitter:image" content="http://yoursite.com/images/kubernetes-component.png">
+<meta name="twitter:title" content="倒排索引---联合查询加速">
+<meta name="twitter:description" content="1. 位图与布隆过滤器位图通常用于状态检索，通过与或操作来判断，检索效率为 O(1)。相比数组而言，虽然检索效率相同，但可以减小内存占用，一个 2^32=40亿 的位图占用为 512M，同样的情况下数组在使用 boolean 类型时内存占用为位图的 8 倍，而使用 int32 时占用为 4 字节，内存占用是位图的 32 倍；">
+<meta name="twitter:image" content="http://yoursite.com/images/202104/bloomfilter.png">
 
 
 
@@ -130,13 +132,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/07/20/kubernetes集群组件介绍/"/>
+  <link rel="canonical" href="http://yoursite.com/2021/04/24/倒排索引---联合查询加速/"/>
 
 
 
 
 
-  <title>kubernetes集群组件介绍 | 北方轻巡舰的博客</title>
+  <title>倒排索引---联合查询加速 | 北方轻巡舰的博客</title>
   
 
 
@@ -298,7 +300,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/20/kubernetes集群组件介绍/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/04/24/倒排索引---联合查询加速/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="北方轻巡舰">
@@ -315,7 +317,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">kubernetes集群组件介绍</h1>
+          <h1 class="post-title" itemprop="name headline">倒排索引---联合查询加速</h1>
         
 
         <div class="post-meta">
@@ -327,8 +329,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-20T23:05:42+08:00">
-                2019-07-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-24T19:11:15+08:00">
+                2021-04-24
               </time>
             
 
@@ -350,8 +352,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/devops/" itemprop="url" rel="index">
-                    <span itemprop="name">devops</span>
+                  <a href="/categories/学习打卡/" itemprop="url" rel="index">
+                    <span itemprop="name">学习打卡</span>
                   </a>
                 </span>
 
@@ -387,36 +389,76 @@
       
 
       
-        <p>一个<code>Kubernetes</code>集群，通常是由多个工作节点<code>Worker Node</code>加上一个集群控制者<code>Master</code>，以及集群状态存储系统<code>etcd</code>组成。</p>
-<h3 id="系统组件图"><a href="#系统组件图" class="headerlink" title="系统组件图"></a>系统组件图</h3><p><img src="/images/kubernetes-component.png" alt="image"></p>
-<h4 id="Master-Node"><a href="#Master-Node" class="headerlink" title="Master Node"></a>Master Node</h4><p><code>Master</code>节点主要由负责API服务的<code>apiserver</code>、负责容器编排的<code>controller-manager</code>、以及负责调度的<code>scheduler</code>组成。整个集群的持久化数据，由<code>apiserver</code>处理后，交由<code>etcd</code>进行管理。</p>
-<ul>
-<li><p><code>API server</code>负责<code>Restful</code>风格的<code>kubernetes API</code>，负责接收、响应、校验发入集群的所有<code>REST</code>请求。</p>
-</li>
-<li><p><code>Controller Manager</code> 负责维护集群的状态，包括很多资源的控制器，是保证 <code>Kubernetes</code>声明式 API 工作的大脑，比如故障检测、自动扩展、滚动更新等。</p>
-</li>
-<li><p><code>Scheduler</code>负责管理集群内各节点的资源状态。创建<code>Pod</code>时，根据合适的资源做出调度决策。在创建<code>Pod</code>的<code>Events</code>中可以看到，第一个<code>Event</code>便是<code>Schedule</code>。</p>
-</li>
-</ul>
+        <h3 id="1-位图与布隆过滤器"><a href="#1-位图与布隆过滤器" class="headerlink" title="1. 位图与布隆过滤器"></a>1. 位图与布隆过滤器</h3><p>位图通常用于状态检索，通过与或操作来判断，检索效率为 <code>O(1)</code>。相比数组而言，虽然检索效率相同，但可以减小内存占用，一个 <code>2^32=40亿</code> 的位图占用为 <code>512M</code>，同样的情况下数组在使用 <code>boolean</code> 类型时内存占用为位图的 <code>8</code> 倍，而使用 <code>int32</code> 时占用为 <code>4</code> 字节，内存占用是位图的 <code>32</code> 倍；</p>
 <a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">kubectl describe pod image-sign-deployment-59948dd446-8n8l7</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Events:</span><br><span class="line">  Type    Reason     Age   From               Message</span><br><span class="line">  ----    ------     ----  ----               -------</span><br><span class="line">  Normal  Scheduled  108s  default-scheduler  Successfully assigned default/image-sign-deployment-59948dd446-8n8l7 to node2</span><br><span class="line">  Normal  Pulled     107s  kubelet, node2     Container image &quot;image-sign&quot; already present on machine</span><br><span class="line">  Normal  Created    107s  kubelet, node2     Created container image-sign</span><br><span class="line">  Normal  Started    106s  kubelet, node2     Started container image-sign</span><br></pre></td></tr></table></figure>
-<h4 id="Worker-Node"><a href="#Worker-Node" class="headerlink" title="Worker Node"></a>Worker Node</h4><p>在<code>worker Node</code>中，最重要的则是<strong>kubelet</strong>，<strong>它所负责的是与容器运行时打交道（如docker项目）</strong>。他们交互所依赖的，是一个称作<code>CRI</code>的远程调用接口，这个接口定义了容器运行时的各项核心操作。如启动一个容器所需的所有参数。  </p>
-<p>也正是因为<code>CRI</code>的存在，<code>kubernetes</code>并不关系用户部署的容器运行时是<code>Docker</code>亦或是其它的（但默认的是<code>Docker</code>），只要这个容器运行时能运行标准的镜像，它就能通过实现<code>CRI</code>接入到<code>Kubernetes</code>中。  </p>
-<p>具体的容器运行时，像<code>Docker</code>则一般通过<code>OCI</code>这个容器运行时规范，与底层的<code>Linux</code>操作系统进行交互。即：将<code>CRI</code>请求翻译成对<code>Linux</code>系统的调用，操作系统的<code>NameSpace</code>和<code>CGroups</code>等。</p>
-<p>此外，<strong>kubelet 还通过 gRPC 协议同一个叫作 Device Plugin 的插件进行交互</strong>。这个插件，是 <code>Kubernetes</code> 项目用来管理 <code>GPU</code> 等宿主机物理设备的主要组件，也<strong>是基于 Kubernetes 项目进行机器学习训练、高性能作业支持等工作必须关注的功能</strong>。</p>
-<p><strong>kubelet 的另一个重要功能，则是调用网络插件和存储插件为容器配置网络和持久化存储</strong>。这两个插件与 <code>kubelet</code> 进行交互的接口，分别是 <code>CNI（Container Networking Interface）</code>和 <code>CSI（Container Storage Interface）</code>。</p>
-<p>而<code>kube-proxy</code>，它所负责的是能够按需为<code>Service</code>资源对象创建<code>iptables</code>或<code>ipvs</code>规则。从而捕获访问当前访问<code>Service</code>的请求，将其转发至正确的<code>Pod</code>对象</p>
-<h4 id="核心附件"><a href="#核心附件" class="headerlink" title="核心附件"></a>核心附件</h4><p><code>kubernetes</code>还需要依赖一组称为“附件”的组件来提供完整的功能。这些组件通常由第三方提供，运行在<code>kubernetes</code>集群上。</p>
+<p>由于位图所使用的单元已经是最小的单位 <code>bit</code>，为了再次缩小位图空间，想到的办法是压缩数据（<code>Hash</code>之后再存储），缩小元素个数。但是压缩数据势必会引起 <code>Hash</code> 冲突，压缩的越小，冲突越大。于是又回到了 <code>Hash</code> 冲突解决法： 开放寻址、链式 <code>Hash</code> ；</p>
+<p>链式 <code>Hash</code> 无法减小空间（why？），而开放寻址有一种优化策略：“双散列”。其原理是使用多个 <code>Hash</code> 函数分别求 <code>Hash</code> 值，得到多个下标，将对应的下标位置均置为 1 ，而这其实就是 “布隆过滤器” 的设计思想，通过多个下标来判断，就减小了Hash冲突，当然也带来一个问题 —&gt; 布隆过滤器的删除，需要通过计数器，或者定时重建才行，不能直接将对应位置置为 0；</p>
+<p>同样的，“布隆过滤器” 也有自己的缺点：即使任何两个元素的哈希值不冲突，而且我们查询对象的 k 个位置的值都是 1，查询结果为存在，这个结果也可能是错误的。<strong>这也称为是布隆过滤器的错误率</strong>（通常来说，误判可以当成实际存在来处理，大部分情况是不影响业务的。例如用户注册时，需要检测用户名是否已存在，已存在的话需要更换用户名重新注册）</p>
+<p>偷来的图：</p>
+<p><img src="/images/202104/bloomfilter.png" alt="bloomfilter.png"></p>
+<p><span style="color:red">位图是只有一个特殊的哈希函数，且没有被压缩长度的布隆过滤器。</span></p>
+<h3 id="2-倒排索引"><a href="#2-倒排索引" class="headerlink" title="2. 倒排索引"></a>2. 倒排索引</h3><p>与倒排索引概念相对应的概念称为正排索引，也就是我们常规的数据库存储方式，以 <code>id</code> 对应一整行数据。当我们给定一个 <code>id</code> 时可以很快地找到该列，但如果给定的是某个字段中的词，正排索引只能一行一行到遍历，使用 <code>Like</code> 查找。当文档数据特别多，字段也特别多的时候，正排索引的查找效率就不行了，于是就有了倒排索引。根据关键字创建对应的文档索引，查找时直接根据关键词定位到数据本身。</p>
+<p>倒排索引中的关键字 （key）的集合也称为 <strong>字典（Dictionary）</strong>，而 key 后面对应的文档集合也称为<strong>记录列表（posting_list）</strong>，倒排索引常见于各种全文检索场景中。</p>
+<h4 id="2-1-倒排索引的创建"><a href="#2-1-倒排索引的创建" class="headerlink" title="2.1 倒排索引的创建"></a>2.1 倒排索引的创建</h4><p>倒排索引的创建步骤大致如下：</p>
 <ul>
-<li><p><code>CoreDNS</code> 在<code>Kubernetes</code>集群中调度运行提供<code>DNS</code>服务的<code>Pod</code>，同一集群中的其他<code>Pod</code>可使用此<code>DNS</code>服务实现<code>service name</code>到 <code>cluster IP</code>的解析 。<code>DNS</code>服务是<code>Kubernetes</code>赖以实现服务发现的核心组件之一，默认情况下只会创建一个<code>DNS Pod</code>，在生产环境中我们需要对<code>coredns</code>进行扩容。 有两种方式：</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">手动扩容 kubectl –namespace=kube-system scale deployment coredns –replicas=</span><br><span class="line">使用 DNS Horizontal Autoscaler</span><br></pre></td></tr></table></figure>
+<li><ol>
+<li>给每个文档进行唯一编号，对数据进行排序（why？），然后开始遍历文档；</li>
+</ol>
 </li>
-<li><p><code>Kubernetes Dashboard</code>： 一个<code>Web UI</code>,用于管理<code>kubernetes</code>集群中应用，以及集群自身。</p>
+<li><ol start="2">
+<li>解析每个文档中的关键字，按照 &lt; 关键字，id，关键字位置&gt; 的结构进行存储，存储关键词位置的原因主要是组合查询时，通常需要判断多个关键词的位置是否足够接近来获取相关性算分（&lt; 关键字，id，关键字位置&gt;只是最基础的信息，为了加快检索速度，通常存储的内容更多）；</li>
+</ol>
 </li>
-<li><p><code>Ingress Controller</code>： 暂时没学到相关内容。之后再来补充。</p>
+<li><ol start="3">
+<li>将关键字作为 <code>key</code> 存入 <code>Hash</code> 表，如果 <code>posting_list</code> 已经存在则在后面追加文档，否则，新建一个 <code>posting_list</code>；</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>重复 2、3 的步骤，处理完所有文档，完成倒排索引的创建，最后的数据存储结构图可以参考如下图例：</li>
+</ol>
 </li>
 </ul>
-<p><img src="/images/modeganqing.jpg" alt="image"></p>
+<p><img src="/images/202104/倒排索引.png" alt="倒排索引.png"></p>
+<h4 id="2-2-倒排索引的查询"><a href="#2-2-倒排索引的查询" class="headerlink" title="2.2 倒排索引的查询"></a>2.2 倒排索引的查询</h4><p>如果只是查询单个关键字在哪些文档中出现，直接以查询的关键字作为 key，得到的 posting_list 就是需要的结果了，但是如果需要查询同时包含关键词A，以及关键词B的文档时，就需要想办法获取两个 posting_list 中的公共元素。</p>
+<p>假设 posting_list A，B 都是没有排序的链表，那么在寻找公共元素时，必须挨个比对  <code>A ,B</code> 两个链表中的每一个元素，这样查找的复杂度为 <code>O(m*n)</code>，如果是排好序的链表，那查找速度就变为 <code>O(m+n)</code> 了</p>
+<p>归并的执行过程为，通过指针 <code>p1，p2</code> 分别指向链表 <code>A,B</code> 的第一个元素，比对是否相等，此时有以下三种情况：</p>
+<ol>
+<li>如果相等则直接放入结果集，<code>p1</code> 和 <code>p2</code> 分别向后移动；</li>
+<li>如果 <code>p1 &gt; p2</code> ，那么将 <code>p2</code> 指针向后移动，<code>p1</code> 保持位置不变；</li>
+<li>如果 <code>p1 &lt; p2</code> ，那么将 <code>p1</code> 指针向后移动，<code>p2</code> 保持位置不变；</li>
+</ol>
+<p>重复该步骤，直到 <code>p1</code> 或 <code>p2</code> 到达链表尾部。</p>
+<h3 id="3-利用跳表加速倒排"><a href="#3-利用跳表加速倒排" class="headerlink" title="3. 利用跳表加速倒排"></a>3. 利用跳表加速倒排</h3><p>使用跳表存储 <code>posting_list</code> 时，可以按照如下方式判断：</p>
+<p>如果 <code>A</code> 中的当前元素小于 <code>B</code> 中的当前元素，我们就以 <code>B</code> 中的当前元素为 <code>key</code>，在 <code>A</code> 中快速往前跳；如果 <code>B</code> 中的当前元素小于 <code>A</code> 中的当前元素，我们就以 <code>A</code> 中的当前元素为 <code>key</code>，在 <code>B</code> 中快速往前跳。如此一来，中间的很多元素就可以忽略掉，进一步提升了查找速度。</p>
+<p>常见的开源检索框架大多使用这种方式。</p>
+<h3 id="4-利用-Hash、位图加速倒排"><a href="#4-利用-Hash、位图加速倒排" class="headerlink" title="4. 利用 Hash、位图加速倒排"></a>4. 利用 Hash、位图加速倒排</h3><p>回到起点再试想一下。查找 <code>A , B</code> 中的公共元素，其实就是判断 <code>A</code> 是否在 <code>B</code> 中存在，那么我们可以提前将 <code>A</code> 中的元素映射为 <code>Hash</code> 表，然后进行 <code>Hash</code> 查找即可，但前提是必须提前分析好，需要把哪些 <code>posting_list</code> 映射为 <code>Hash</code> 表，同时原始的 <code>posting_list</code> 也必须保留，不然就取不到原始数据了。</p>
+<p>位图是特殊的 <code>Hash</code> 结构，所以也是同样的道理。但适应场景有所不同：</p>
+<ul>
+<li>位图法仅适用于只存储 <code>ID</code> 的简单的 <code>posting list</code>。如果 <code>posting list</code> 中需要存储复杂的对象，就不适合用位图来表示 <code>posting list</code> 了。</li>
+<li>位图法仅适用于 <code>posting list</code> 中元素稠密的场景。对于 <code>posting list</code> 中<strong>元素稀疏的场景，使用位图的运算和存储开销反而会比使用链表更大</strong>。</li>
+<li>虽然位图只需要用 <code>1</code> 个 <code>bit</code> 就能表示元素是否存在，但每个 <code>posting list</code> 都需要表示完整的对象空间。假设有 <code>2^32</code> 数量的文档，哪怕一个关键词只对应两个 <code>id</code> ，申请位图时也需要完整的 <code>2^32 bit</code> 的空间，只不过对应位置上全是 <code>0</code> 而已，这个占用高达 <code>512M</code>。</li>
+</ul>
+<p>成熟的工业界系统中，为了解决位图的空间消耗问题，经常会使用一种压缩位图的技术 <code>Roaring Bitmap</code> 来代替位图，诸如各大数据库、<code>Lucene</code> 等。 </p>
+<h3 id="5-Roaring-Bitmap"><a href="#5-Roaring-Bitmap" class="headerlink" title="5. Roaring Bitmap"></a>5. Roaring Bitmap</h3><p><code>Roaring Bitmap</code> 是位图设计的另类思想，它将一个 <code>32</code> 位的整数划分为高 <code>16</code> 位和低 <code>16</code> 位。对于高 <code>16</code> 位，<code>Roaring Bitmap</code> 将它存储在一个 <strong>有序数组（变长）</strong> 中，每一个数字代表一个 “桶” ，而低 <code>16</code> 位存储的是一个 <code>2^16</code> 的位图，每个 “桶”  都对应着一个位图。</p>
+<p>偷来的图：</p>
+<p><img src="/images/202104/roaringbitmap.jpg" alt="roaringbitmap.jpg"></p>
+<p>当需要进行查找时，先通过二分查找获取到 “桶” 的位置 <code>O(logn)</code> ，再在位图中进行与或操作 <code>O(1)</code>，牺牲些许查找性能的同时，带来的好处是位图空间压缩</p>
+<p>还是以一个关键词对应两个 <code>id</code> 为例，使用位图时必须申请全量空间 <code>2^32 bit = 512M</code> ; 而使用 <code>Roaring bitmap</code>时只需要申请两个桶（高位计算结果相同的话只需要一个）4字节（<code>short</code> 类型占两字节），低位的位图占用仅为 <code>2^16=8k</code></p>
+<p><strong>所以Roaring Bitmap的总体思想，其实就是将不存在的桶的位图空间“全部”（<s>并不是</s>）省去这样的方式，来节省存储空间的</strong></p>
+<p>提到位图时也说过，当元素稀疏时，使用位图的占用反而会比链表高，<code>Roaring Bitmap</code> 基于这个思想，当低位存储的内容少于 <code>4096</code> 时，使用变长的有序数组来存储，大于 <code>4096</code> 之后才采用位图。</p>
+<h5 id="为什么是4096"><a href="#为什么是4096" class="headerlink" title="为什么是4096"></a>为什么是4096</h5><p><code>Roaring Bitmap</code>是 <code>c</code> 语言编写的，使用 <code>short</code> 类型的数组，每个元素为 <code>2</code>字节，当元素达到 <code>4096</code> 时，内存占用为 <code>8k</code>，与 <code>2^16</code> 的位图占用相当，所以选择的界限为 <code>4096</code></p>
+<p><span style="color:red"><code>roaringbitmap</code> 并不能保证一定压缩空间，极端情况下会恢复为位图</span></p>
+<p><a href="https://github.com/RoaringBitmap/RoaringBitmap" target="_blank" rel="noopener"> Roaring Bitmap仓库地址在这里~~ </a></p>
+<h3 id="6-联合查询加速法"><a href="#6-联合查询加速法" class="headerlink" title="6. 联合查询加速法"></a>6. 联合查询加速法</h3><h4 id="6-1-调整次序法，适用于多个-posting-list-集合数量差距较明显的场景"><a href="#6-1-调整次序法，适用于多个-posting-list-集合数量差距较明显的场景" class="headerlink" title="6.1 调整次序法，适用于多个 posting_list 集合数量差距较明显的场景"></a>6.1 调整次序法，适用于多个 posting_list 集合数量差距较明显的场景</h4><p>假设通过多个关键词联合查询，得到了三个 <code>posting_list A,B,C</code>；集合中包含的元素数量分别为 <code>2，20，40</code> 并且包含关系为 <code>A &lt; B &lt; C</code>。已知普通链表求交集的复杂度为 <code>O（m+n）</code>；同样是求三个集合交集的话</p>
+<ul>
+<li>先计算<code>（A ∩ B）</code>得到结果后再 <code>∩ C</code> 的复杂度为  <code>(20+2)=22</code>；得到的交集结果为 <code>2</code>， 再计算 <code>(40+2)=42</code> ，总计 <code>64</code> </li>
+<li>先计算<code>（B ∩ C）</code> 得到结果后再 <code>∩ A</code> 的复杂度为 <code>（40+20）=60</code>；得到的交集结果为 <code>20</code>，再计算 <code>（20+2）=22</code>，总计 <code>82</code></li>
+</ul>
+<p>当然，调整次序法满足交换律，例如： <code>A∩（B∪C）= （A∩B）∪（A∩C）</code></p>
+<h4 id="6-2-快速多路归并"><a href="#6-2-快速多路归并" class="headerlink" title="6.2 快速多路归并"></a>6.2 快速多路归并</h4><p>适用于元素数量差距不明显的场景，利用跳表的性质，快速跳过多个元素，加快多路归并的效率；</p>
+<h4 id="6-3-预先组合法"><a href="#6-3-预先组合法" class="headerlink" title="6.3 预先组合法"></a>6.3 预先组合法</h4><p>例如经常查 <code>A+B+C</code>，那么可以组合 <code>posting_list</code> ，使其对应的 <code>key</code> 为 <code>A+B+C</code>；</p>
+<h4 id="6-4-缓存法加速"><a href="#6-4-缓存法加速" class="headerlink" title="6.4 缓存法加速"></a>6.4 缓存法加速</h4><hr>
+<p><img src="/images/202104/夜灯与樱花.png" alt="Alt"></p>
 
       
     </div>
@@ -434,9 +476,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/容器/" rel="tag"><i class="fa fa-tag"></i> 容器</a>
-          
-            <a href="/tags/kubernetes/" rel="tag"><i class="fa fa-tag"></i> kubernetes</a>
+            <a href="/tags/学习/" rel="tag"><i class="fa fa-tag"></i> 学习</a>
           
         </div>
       
@@ -449,8 +489,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/20/第一个Kubernetes应用/" rel="next" title="第一个kubernetes应用">
-                <i class="fa fa-chevron-left"></i> 第一个kubernetes应用
+              <a href="/2021/04/18/Week02/" rel="next" title="Week02总结">
+                <i class="fa fa-chevron-left"></i> Week02总结
               </a>
             
           </div>
@@ -458,10 +498,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/11/03/走近分布式协调服务--zookeeper/" rel="prev" title="走近分布式协调服务--zookeeper">
-                走近分布式协调服务--zookeeper <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -611,7 +647,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#系统组件图"><span class="nav-text">系统组件图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Master-Node"><span class="nav-text">Master Node</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Worker-Node"><span class="nav-text">Worker Node</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#核心附件"><span class="nav-text">核心附件</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-位图与布隆过滤器"><span class="nav-text">1. 位图与布隆过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-倒排索引"><span class="nav-text">2. 倒排索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-倒排索引的创建"><span class="nav-text">2.1 倒排索引的创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-倒排索引的查询"><span class="nav-text">2.2 倒排索引的查询</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-利用跳表加速倒排"><span class="nav-text">3. 利用跳表加速倒排</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-利用-Hash、位图加速倒排"><span class="nav-text">4. 利用 Hash、位图加速倒排</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Roaring-Bitmap"><span class="nav-text">5. Roaring Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#为什么是4096"><span class="nav-text">为什么是4096</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-联合查询加速法"><span class="nav-text">6. 联合查询加速法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-调整次序法，适用于多个-posting-list-集合数量差距较明显的场景"><span class="nav-text">6.1 调整次序法，适用于多个 posting_list 集合数量差距较明显的场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-快速多路归并"><span class="nav-text">6.2 快速多路归并</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-预先组合法"><span class="nav-text">6.3 预先组合法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-4-缓存法加速"><span class="nav-text">6.4 缓存法加速</span></a></li></ol></li></ol></div>
             
 
           </div>

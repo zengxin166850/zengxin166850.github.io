@@ -291,6 +291,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/20/kubernetes集群组件介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/20/kubernetes集群组件介绍/" itemprop="url">kubernetes集群组件介绍</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-20T23:05:42+08:00">
+                2019-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/devops/" itemprop="url" rel="index">
+                    <span itemprop="name">devops</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>一个<code>Kubernetes</code>集群，通常是由多个工作节点<code>Worker Node</code>加上一个集群控制者<code>Master</code>，以及集群状态存储系统<code>etcd</code>组成。</p>
+<h3 id="系统组件图"><a href="#系统组件图" class="headerlink" title="系统组件图"></a>系统组件图</h3><p><img src="/images/kubernetes-component.png" alt="image"></p>
+<h4 id="Master-Node"><a href="#Master-Node" class="headerlink" title="Master Node"></a>Master Node</h4><p><code>Master</code>节点主要由负责API服务的<code>apiserver</code>、负责容器编排的<code>controller-manager</code>、以及负责调度的<code>scheduler</code>组成。整个集群的持久化数据，由<code>apiserver</code>处理后，交由<code>etcd</code>进行管理。</p>
+<ul>
+<li><p><code>API server</code>负责<code>Restful</code>风格的<code>kubernetes API</code>，负责接收、响应、校验发入集群的所有<code>REST</code>请求。</p>
+</li>
+<li><p><code>Controller Manager</code> 负责维护集群的状态，包括很多资源的控制器，是保证 <code>Kubernetes</code>声明式 API 工作的大脑，比如故障检测、自动扩展、滚动更新等。</p>
+</li>
+<li><p><code>Scheduler</code>负责管理集群内各节点的资源状态。创建<code>Pod</code>时，根据合适的资源做出调度决策。在创建<code>Pod</code>的<code>Events</code>中可以看到，第一个<code>Event</code>便是<code>Schedule</code>。</p>
+</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/07/20/kubernetes集群组件介绍/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/20/第一个Kubernetes应用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -866,158 +1022,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/27/我的live2d配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="北方轻巡舰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/header.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="北方轻巡舰的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/27/我的live2d配置/" itemprop="url">我的live2d配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-27T11:43:07+08:00">
-                2019-04-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/另一个次元/" itemprop="url" rel="index">
-                    <span itemprop="name">另一个次元</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>给<code>hexo</code>加上<code>live2d</code>只能说是自己作为死宅的本能反应吧= =，在别人的网站上看过之后总是觉得羨ましい，然后到处找文章想给自己也加上，本来很简单的事情还用了大半天(I very vegetables)，这次把步骤写上来。也算做个备份吧，指不定那天忘了呢。</p>
-<h3 id="hexo的官方插件"><a href="#hexo的官方插件" class="headerlink" title="hexo的官方插件"></a>hexo的官方插件</h3><p><code>hexo</code>的官方有提供名为<code>hexo-helper-live2d</code>的插件使用如下安装命令就可以安装</p>
-<blockquote>
-<p>npm install –save hexo-helper-live2d</p>
-</blockquote>
-<p>随后在Hexo的<code>_config.yml</code>文件中添加如下配置(据说是可以配在主题的<code>_config.yml</code>中的，但是我没试过呢orz).<br>示例:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">live2d:</span><br><span class="line"> enable: <span class="literal">true</span>   </span><br><span class="line"> scriptFrom: local</span><br><span class="line"> pluginRootPath: live2dw/</span><br><span class="line"> pluginJsPath: lib/</span><br><span class="line"> pluginModelPath: assets/</span><br><span class="line"> tagMode: <span class="literal">false</span></span><br><span class="line"> debug: <span class="literal">false</span></span><br><span class="line"> model:</span><br><span class="line">   use: live2d-widget-model-wanko  <span class="comment">//启用的模型目录</span></span><br><span class="line"> display:</span><br><span class="line">   position: right</span><br><span class="line">   width: <span class="number">150</span></span><br><span class="line">   height: <span class="number">300</span></span><br><span class="line"> mobile:</span><br><span class="line">   show: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/04/27/我的live2d配置/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1072,7 +1076,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

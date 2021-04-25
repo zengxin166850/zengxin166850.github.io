@@ -86,18 +86,18 @@
 
 
 
-<meta name="description" content="滚动升级滚动升级即每次升级一个集群节点，但有以下的注意事项：  先升级普通的数据节点，最后升级 master ，否则老版本的节点之间会重新选主，同时由于老版本的 node 无法加入到新版本集群中，集群就分裂开了！ 支持滚动升级的版本为：mirror 版本之间，跨大版本之间只支 持 5.6---&amp;gt;6.8， 6.8---&amp;gt;7.2.1，其余情况需要 full cluster restart，">
+<meta name="description" content="滚动升级滚动升级即每次升级一个集群节点，但有以下的注意事项：  先升级普通的数据节点，最后升级 master ，否则老版本的 node 无法加入到新版本集群中，集群就分裂开了！ 支持滚动升级的版本为：mirror 版本之间，跨大版本之间只支 持 5.6---&amp;gt;6.8， 6.8---&amp;gt;7.2.1，其余情况需要 full cluster restart，或者多次升级。  升级准备 检查 d">
 <meta name="keywords" content="elasticsearch：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ES集群滚动升级">
 <meta property="og:url" content="http://yoursite.com/2021/04/07/ES集群滚动升级/index.html">
 <meta property="og:site_name" content="北方轻巡舰的博客">
-<meta property="og:description" content="滚动升级滚动升级即每次升级一个集群节点，但有以下的注意事项：  先升级普通的数据节点，最后升级 master ，否则老版本的节点之间会重新选主，同时由于老版本的 node 无法加入到新版本集群中，集群就分裂开了！ 支持滚动升级的版本为：mirror 版本之间，跨大版本之间只支 持 5.6---&amp;gt;6.8， 6.8---&amp;gt;7.2.1，其余情况需要 full cluster restart，">
+<meta property="og:description" content="滚动升级滚动升级即每次升级一个集群节点，但有以下的注意事项：  先升级普通的数据节点，最后升级 master ，否则老版本的 node 无法加入到新版本集群中，集群就分裂开了！ 支持滚动升级的版本为：mirror 版本之间，跨大版本之间只支 持 5.6---&amp;gt;6.8， 6.8---&amp;gt;7.2.1，其余情况需要 full cluster restart，或者多次升级。  升级准备 检查 d">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-04-18T09:45:48.013Z">
+<meta property="og:updated_time" content="2021-04-20T10:41:18.579Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ES集群滚动升级">
-<meta name="twitter:description" content="滚动升级滚动升级即每次升级一个集群节点，但有以下的注意事项：  先升级普通的数据节点，最后升级 master ，否则老版本的节点之间会重新选主，同时由于老版本的 node 无法加入到新版本集群中，集群就分裂开了！ 支持滚动升级的版本为：mirror 版本之间，跨大版本之间只支 持 5.6---&amp;gt;6.8， 6.8---&amp;gt;7.2.1，其余情况需要 full cluster restart，">
+<meta name="twitter:description" content="滚动升级滚动升级即每次升级一个集群节点，但有以下的注意事项：  先升级普通的数据节点，最后升级 master ，否则老版本的 node 无法加入到新版本集群中，集群就分裂开了！ 支持滚动升级的版本为：mirror 版本之间，跨大版本之间只支 持 5.6---&amp;gt;6.8， 6.8---&amp;gt;7.2.1，其余情况需要 full cluster restart，或者多次升级。  升级准备 检查 d">
 
 
 
@@ -386,7 +386,7 @@
       
         <h2 id="滚动升级"><a href="#滚动升级" class="headerlink" title="滚动升级"></a>滚动升级</h2><p>滚动升级即每次升级一个集群节点，但有以下的注意事项：</p>
 <ul>
-<li>先升级普通的数据节点，最后升级 <code>master</code> ，否则老版本的节点之间会重新选主，同时由于老版本的 <code>node</code> 无法加入到新版本集群中，集群就分裂开了！</li>
+<li>先升级普通的数据节点，最后升级 <code>master</code> ，否则老版本的 <code>node</code> 无法加入到新版本集群中，集群就分裂开了！</li>
 <li>支持滚动升级的版本为：<code>mirror</code> 版本之间，跨大版本之间只支 持 <code>5.6---&gt;6.8</code>， <code>6.8---&gt;7.2.1</code>，其余情况需要 <code>full cluster restart</code>，或者多次升级。</li>
 </ul>
 <h3 id="升级准备"><a href="#升级准备" class="headerlink" title="升级准备"></a>升级准备</h3><ul>
@@ -552,7 +552,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
