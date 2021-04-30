@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="学习," />
+  <meta name="keywords" content="elasticsearch," />
 
 
 
@@ -86,20 +86,20 @@
 
 
 
-<meta name="description" content="1. 文档学习">
-<meta name="keywords" content="学习">
+<meta name="description" content="1. 文档学习本周阅读了 Indices API、cat API、cluster API 三个章节，Query API 复习了小部分。为什么没有按照顺序读 Aggregatins 章节（因为这一章我一直觉得很难 orz… 最后再来慢慢啃吧）。重点内容包含以下模块  索引操作 sharink、split、rollover、open/close 别名 index aliases 与索引模板 index">
+<meta name="keywords" content="elasticsearch">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Week03总结">
 <meta property="og:url" content="http://yoursite.com/2021/04/24/Week03/index.html">
 <meta property="og:site_name" content="北方轻巡舰的博客">
-<meta property="og:description" content="1. 文档学习">
+<meta property="og:description" content="1. 文档学习本周阅读了 Indices API、cat API、cluster API 三个章节，Query API 复习了小部分。为什么没有按照顺序读 Aggregatins 章节（因为这一章我一直觉得很难 orz… 最后再来慢慢啃吧）。重点内容包含以下模块  索引操作 sharink、split、rollover、open/close 别名 index aliases 与索引模板 index">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/202104/souji%20okita.png">
-<meta property="og:updated_time" content="2021-04-24T11:24:24.676Z">
+<meta property="og:image" content="http://yoursite.com/images/202104/jane.png">
+<meta property="og:updated_time" content="2021-04-30T16:32:48.316Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Week03总结">
-<meta name="twitter:description" content="1. 文档学习">
-<meta name="twitter:image" content="http://yoursite.com/images/202104/souji%20okita.png">
+<meta name="twitter:description" content="1. 文档学习本周阅读了 Indices API、cat API、cluster API 三个章节，Query API 复习了小部分。为什么没有按照顺序读 Aggregatins 章节（因为这一章我一直觉得很难 orz… 最后再来慢慢啃吧）。重点内容包含以下模块  索引操作 sharink、split、rollover、open/close 别名 index aliases 与索引模板 index">
+<meta name="twitter:image" content="http://yoursite.com/images/202104/jane.png">
 
 
 
@@ -386,8 +386,60 @@
       
 
       
-        <h2 id="1-文档学习"><a href="#1-文档学习" class="headerlink" title="1. 文档学习"></a>1. 文档学习</h2><hr>
-<p><img src="/images/202104/souji okita.png" alt="Alt"></p>
+        <h2 id="1-文档学习"><a href="#1-文档学习" class="headerlink" title="1. 文档学习"></a>1. 文档学习</h2><p>本周阅读了 <code>Indices API、cat API、cluster API</code> 三个章节，<code>Query API</code> 复习了小部分。为什么没有按照顺序读 <code>Aggregatins</code> 章节（因为这一章我一直觉得很难 orz… 最后再来慢慢啃吧）。重点内容包含以下模块</p>
+<ul>
+<li>索引操作 <code>sharink、split、rollover、open/close</code></li>
+<li>别名 <code>index aliases</code> 与索引模板 <code>index template</code> (疑问，<code>template</code> 的 <code>version</code> 具体什么场景下使用？)</li>
+<li>索引状态神器： <code>_stats</code></li>
+<li>集群 <code>settings</code> 优先级： <code>transient &gt; persistent &gt; elasticsearch.yml</code></li>
+<li>重新分配分片 <code>cluster reroute</code></li>
+<li>混合查询（<code>Compound query</code>）</li>
+</ul>
+<a id="more"></a>
+<h2 id="2-惯例的小知识点总结"><a href="#2-惯例的小知识点总结" class="headerlink" title="2.惯例的小知识点总结"></a>2.惯例的小知识点总结</h2><h3 id="2-1-索引模板其实是可以使用变量的！"><a href="#2-1-索引模板其实是可以使用变量的！" class="headerlink" title="2.1 索引模板其实是可以使用变量的！"></a>2.1 索引模板其实是可以使用变量的！</h3><p>动态添加别名。<code>{index}</code> 会替换为实际的索引名称<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">PUT _template/template_1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;index_patterns&quot; : [&quot;te*&quot;],</span><br><span class="line">    &quot;settings&quot; : &#123;</span><br><span class="line">        &quot;number_of_shards&quot; : 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;aliases&quot; : &#123;</span><br><span class="line">        &quot;alias1&quot; : &#123;&#125;,</span><br><span class="line">        &quot;alias2&quot; : &#123;</span><br><span class="line">            &quot;filter&quot; : &#123;</span><br><span class="line">                &quot;term&quot; : &#123;&quot;user&quot; : &quot;kimchy&quot; &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;routing&quot; : &quot;kimchy&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;&#123;index&#125;-alias&quot; : &#123;&#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-2-synced-flush"><a href="#2-2-synced-flush" class="headerlink" title="2.2 synced flush"></a>2.2 synced flush</h3><p><code>sync flush</code> 是 <code>Elasticsearch</code> 提供的一种机制，当一个分片在 <code>5</code> 分钟内没有收到任何 <code>indexing</code> 操作时，会被标记为 <code>inactive</code> 非活跃状态，然后启用 <code>synced flush</code>，给每一个分配标记一个唯一的 <code>sync_id</code>,这个 <code>id</code> 在集群恢复（或者重启时）可以快速检测两个分配是否相同，在这种情况下，可以无需复制 <code>segment</code> 段文件，以加快恢复速度。<a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.2/indices-synced-flush.html" target="_blank" rel="noopener">synced_flush说明</a></p>
+<p>对于无需更新，或者很少更新的数据会很有用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//检查是否有syncid 标记</span><br><span class="line">GET index_name/_stats?filter_path=**.commit&amp;level=shards </span><br><span class="line"></span><br><span class="line">//手动执行synced flush，无需等待5分钟</span><br><span class="line">POST _flush/synced</span><br><span class="line"></span><br><span class="line">//指定索引名称</span><br><span class="line">POST kimchy,elasticsearch/_flush/synced</span><br></pre></td></tr></table></figure></p>
+<p>手动执行 <code>synced flush</code> 后会返回成功数量、失败数量</p>
+<h3 id="2-3-forcemerge-段合并"><a href="#2-3-forcemerge-段合并" class="headerlink" title="2.3 forcemerge 段合并"></a>2.3 forcemerge 段合并</h3><p>对 <code>Elasticsearch</code> 的存储内容进行逐层拆解后是这样的：</p>
+<p><span style="color:red">index—&gt;多shard—&gt;多lucene—–&gt; 多segment</span></p>
+<p>默认情况下每一个 <code>refresh_interval</code> 产生一个 <code>segment</code>。后台也会有进程自动进行 <code>merge</code>，如下的指令表示强制进行 <code>merge，max_num_segments</code> 指定了合并后的段个数</p>
+<p><code>only_expunge_deletes</code> 参数表示把标记为 <code>delete</code> 的数据进行 <code>merge</code> （可以理解为真正删除，默认会等 <code>60s</code> ）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST index_name/_forcemerge?max_num_segments=1&amp;flush=true&amp;only_expunge_deletes=true</span><br></pre></td></tr></table></figure>
+<p><code>index.merge.scheduler.max_thread_count：</code>  限制 <code>merge</code> 的并发线程数量，根据 <code>cpu</code> 核数修改。</p>
+<p><code>index.merge.policy.expunge_deletes_allowed:</code> 可以限制段合并的阈值，当删除的比例低于该阈值时，段合并不会生效。</p>
+<h3 id="2-4-cluster-reroute"><a href="#2-4-cluster-reroute" class="headerlink" title="2.4 _cluster/reroute"></a>2.4 _cluster/reroute</h3><p><code>reroute</code> 一共包含以下几种指令：</p>
+<ul>
+<li><code>move</code> ，将分片从一个节点移至另一个节点，已经分配成功的 <code>shard</code> 只能使用 <code>move</code> 指令；</li>
+<li><code>cancel</code>，取消分片的分配， 通常用于取消恢复中 <code>recovery</code> 状态的分片分配；</li>
+<li><code>allocate_replica</code> ，仅用于 <code>unsigned</code> 的副本分配,。</li>
+</ul>
+<p>在 <code>uri</code> 中添加 <code>?retry_failed</code> 可以自动失败重试，重试次数默认为 <code>5</code> ， 通过修改集群配置参数 <code>index.allocation.max_retries</code> 可以进行调整<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">GET _cat/shards/test2?v</span><br><span class="line">POST _cluster/reroute?retry_failed</span><br><span class="line">&#123;</span><br><span class="line">  &quot;commands&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;move&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &quot;test2&quot;,</span><br><span class="line">        &quot;shard&quot;: 0,</span><br><span class="line">        &quot;from_node&quot;: &quot;node2&quot;,</span><br><span class="line">        &quot;to_node&quot;: &quot;node1&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    </span><br><span class="line">    &#123;</span><br><span class="line">      &quot;allocate_replica&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &quot;test2&quot;,</span><br><span class="line">        &quot;shard&quot;: 0,</span><br><span class="line">        &quot;node&quot;: &quot;node2&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="强制分配不可恢复的错误"><a href="#强制分配不可恢复的错误" class="headerlink" title="强制分配不可恢复的错误"></a>强制分配不可恢复的错误</h4><p>除以上指令之外，还有两个特殊的命令，这些命令允许将主分片 <code>reroute</code>。但是使用时需要特别小心，因为主分片的分配通常是由 <code>Elasticsearch</code> 自动处理的。无法自动分配主分片的原因包括：</p>
+<ul>
+<li>创建了一个新索引，但是没有满足分配决定者的节点。</li>
+<li>在群集中的当前数据节点上找不到数据的最新分片副本。为防止数据丢失，系统不会自动将陈旧的分片副本提升为主副本。</li>
+</ul>
+<p>以下两个命令很危险，可能会导致数据丢失。<span style="color:red">只有在无法恢复原始数据并且集群能够接受数据丢失的情况，考虑使用。对于网络波动或其他可恢复性的分配失败，应该考虑使用 <code>retry_failed</code> 进行重试。</span></p>
+<h4 id="allocate-stale-primary"><a href="#allocate-stale-primary" class="headerlink" title="allocate_stale_primary"></a>allocate_stale_primary</h4><p><span style="color:red">将包含旧数据的副本升级为主分片</span>。需要给定 index 索引名称（index）和分片（shard）参数。<span style="color:red">使用此命令可能会导致数据丢失。如果具有数据版本更高的节点稍后重新加入群集，则该节点的数据将被删除或被新创建的副本覆盖掉。</span>为明确操作危险性，此命令要求将该标志 accept_data_loss 显式设置为 true 才能执行。</p>
+<h4 id="allocate-empty-primary"><a href="#allocate-empty-primary" class="headerlink" title="allocate_empty_primary"></a>allocate_empty_primary</h4><p>将空的主碎片分配给节点，需要给定 index 索引名称（index）和分片（shard）参数。使用此命令将导致完全丢失索引到该分片的所有数据（如果先前已启动）。如果具有数据副本的节点稍后重新加入群集，则该数据将被删除。为明确操作危险性，此命令要求将该标志 accept_data_loss 显式设置为 true 才能执行。</p>
+<h3 id="2-5-非常重要的状态查看-api"><a href="#2-5-非常重要的状态查看-api" class="headerlink" title="2.5 非常重要的状态查看 api"></a>2.5 非常重要的状态查看 api</h3><p>查看集群健康：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET _cluster/health</span><br><span class="line">GET _cat/health?v</span><br></pre></td></tr></table></figure></p>
+<p>查看索引健康、文档情况<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET _cat/indices?v</span><br></pre></td></tr></table></figure></p>
+<p>查看分片情况、分配、恢复状态等<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /_cat/shards/[index]?v</span><br></pre></td></tr></table></figure></p>
+<p>查看节点属性<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET _cat/nodeattrs?v</span><br></pre></td></tr></table></figure></p>
+<p>查看节点信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET _cat/nodes?v</span><br></pre></td></tr></table></figure></p>
+<p>查看 <code>pending_task</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET /_cluster/pending_tasks</span><br><span class="line"></span><br><span class="line">GET /_cat/pending_tasks?v</span><br></pre></td></tr></table></figure></p>
+<p>索引模板查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /_cat/templates?v&amp;s=name</span><br></pre></td></tr></table></figure>
+<h3 id="2-6-query-中的查询是可以给定名字的"><a href="#2-6-query-中的查询是可以给定名字的" class="headerlink" title="2.6 query 中的查询是可以给定名字的"></a>2.6 query 中的查询是可以给定名字的</h3><p><code>named_query</code> 可以用于判断具体是哪个条件命中了数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">GET /_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;bool&quot; : &#123;</span><br><span class="line">            &quot;should&quot; : [</span><br><span class="line">                &#123;&quot;match&quot; : &#123; &quot;name.first&quot; : &#123;&quot;query&quot; : &quot;shay&quot;, &quot;_name&quot; : &quot;first&quot;&#125; &#125;&#125;,</span><br><span class="line">                &#123;&quot;match&quot; : &#123; &quot;name.last&quot; : &#123;&quot;query&quot; : &quot;banon&quot;, &quot;_name&quot; : &quot;last&quot;&#125; &#125;&#125;</span><br><span class="line">            ],</span><br><span class="line">            &quot;filter&quot; : &#123;</span><br><span class="line">                &quot;terms&quot; : &#123;</span><br><span class="line">                    &quot;name.last&quot; : [&quot;banon&quot;, &quot;kimchy&quot;],</span><br><span class="line">                    &quot;_name&quot; : &quot;test&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-7-权重查询的场景"><a href="#2-7-权重查询的场景" class="headerlink" title="2.7 权重查询的场景"></a>2.7 权重查询的场景</h3><p>返回满足 <code>positive</code>  查询的数据，对于该结果中同时也满足 <code>negative</code> 的数据进行评分降低操作。</p>
+<ul>
+<li>例如检索企业名称这种数据中都带有【公司】、【有限公司】、【集团】之类的比较范的关键词；</li>
+<li>或者在检索苹果时，【派、树、面包】这些相关性更低，而【苹果】公司相关性可能更高的场景。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">GET /_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;boosting&quot; : &#123;</span><br><span class="line">            &quot;positive&quot; : &#123;</span><br><span class="line">                &quot;term&quot; : &#123;</span><br><span class="line">                    &quot;text&quot; : &quot;apple&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;negative&quot; : &#123;</span><br><span class="line">                 &quot;term&quot; : &#123;</span><br><span class="line">                     &quot;text&quot; : &quot;pie tart fruit crumble tree&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;negative_boost&quot; : 0.5</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p><img src="/images/202104/jane.png" alt="Alt"></p>
 
       
     </div>
@@ -405,7 +457,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/学习/" rel="tag"><i class="fa fa-tag"></i> 学习</a>
+            <a href="/tags/elasticsearch/" rel="tag"><i class="fa fa-tag"></i> elasticsearch</a>
           
         </div>
       
@@ -427,10 +479,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2021/04/24/倒排索引联合查询加速/" rel="prev" title="倒排索引---联合查询加速">
-                倒排索引---联合查询加速 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -515,7 +563,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -537,7 +585,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -580,7 +628,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-文档学习"><span class="nav-text">1. 文档学习</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-文档学习"><span class="nav-text">1. 文档学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-惯例的小知识点总结"><span class="nav-text">2.惯例的小知识点总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-索引模板其实是可以使用变量的！"><span class="nav-text">2.1 索引模板其实是可以使用变量的！</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-synced-flush"><span class="nav-text">2.2 synced flush</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-forcemerge-段合并"><span class="nav-text">2.3 forcemerge 段合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-cluster-reroute"><span class="nav-text">2.4 _cluster/reroute</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#强制分配不可恢复的错误"><span class="nav-text">强制分配不可恢复的错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#allocate-stale-primary"><span class="nav-text">allocate_stale_primary</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#allocate-empty-primary"><span class="nav-text">allocate_empty_primary</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-非常重要的状态查看-api"><span class="nav-text">2.5 非常重要的状态查看 api</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-query-中的查询是可以给定名字的"><span class="nav-text">2.6 query 中的查询是可以给定名字的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-权重查询的场景"><span class="nav-text">2.7 权重查询的场景</span></a></li></ol></li></ol></div>
             
 
           </div>

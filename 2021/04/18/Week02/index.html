@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="学习," />
+  <meta name="keywords" content="elasticsearch," />
 
 
 
@@ -87,7 +87,7 @@
 
 
 <meta name="description" content="1. 文档学习本周文档阅读内容大模块为 Search API ,重点章节包含以下模块  Request_Body_search；  rescore query、script_fields  ；  scroll、search_after、rescore ；  suggesters；  search_template、profile_API。">
-<meta name="keywords" content="学习">
+<meta name="keywords" content="elasticsearch">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Week02总结">
 <meta property="og:url" content="http://yoursite.com/2021/04/18/Week02/index.html">
@@ -97,7 +97,7 @@
 <meta property="og:image" content="http://yoursite.com/images/202104/index-doc_values-store.png">
 <meta property="og:image" content="http://yoursite.com/images/202104/search_template.png">
 <meta property="og:image" content="http://yoursite.com/images/202104/souji%20okita.png">
-<meta property="og:updated_time" content="2021-04-20T09:20:07.119Z">
+<meta property="og:updated_time" content="2021-04-30T16:36:54.469Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Week02总结">
 <meta name="twitter:description" content="1. 文档学习本周文档阅读内容大模块为 Search API ,重点章节包含以下模块  Request_Body_search；  rescore query、script_fields  ；  scroll、search_after、rescore ；  suggesters；  search_template、profile_API。">
@@ -455,7 +455,7 @@
 <h4 id="2-6-search-template-与-render-template"><a href="#2-6-search-template-与-render-template" class="headerlink" title="2.6 search_template 与 render template"></a>2.6 search_template 与 render template</h4><p><code>search_template</code> 的功能主要是用于工程代码和搜索解耦，维护人员定好 <code>search_template</code> 的基础结构和参数后，程序即可编写，当涉及到搜索调整，在参数没有更改的情况下，只需要调整  <code>template</code> 即可。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">POST _bulk</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;shirts&quot;,&quot;_id&quot;:&quot;1&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;brand&quot;:&quot;gucci&quot;,&quot;color&quot;:&quot;red&quot;,&quot;model&quot;:&quot;slim&quot;&#125;</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;test&quot;,&quot;_id&quot;:&quot;2&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;brand&quot;:&quot;gucci&quot;,&quot;color&quot;:&quot;black&quot;,&quot;model&quot;:&quot;slim&quot;&#125;</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;test&quot;,&quot;_id&quot;:&quot;3&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;brand&quot;:&quot;gucci&quot;,&quot;color&quot;:&quot;black&quot;,&quot;model&quot;:&quot;ntrms&quot;&#125;</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;test&quot;,&quot;_id&quot;:&quot;4&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;brand&quot;:&quot;gucci&quot;,&quot;color&quot;:&quot;black&quot;,&quot;model&quot;:&quot;ntrms&quot;&#125;</span><br><span class="line"></span><br><span class="line"># 0.直接使用search_template</span><br><span class="line">GET shirts/_search/template</span><br><span class="line">&#123;</span><br><span class="line">  &quot;source&quot;:&#123;</span><br><span class="line">    &quot;query&quot;:&#123;</span><br><span class="line">      &quot;match&quot;:&#123;</span><br><span class="line">        &quot;&#123;&#123;my_field&#125;&#125;&quot;:&quot;&#123;&#123;my_value&#125;&#125;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;params&quot;: &#123;</span><br><span class="line">    &quot;my_field&quot;:&quot;color&quot;,</span><br><span class="line">    &quot;my_value&quot;:&quot;black&quot;,</span><br><span class="line">    &quot;my_size&quot;: 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">DELETE _scripts/shirts_template</span><br><span class="line"></span><br><span class="line">#1.script存储 search_template,使用 mustache 模板语法</span><br><span class="line">POST _scripts/shirts_template</span><br><span class="line">&#123;</span><br><span class="line">  &quot;script&quot;: &#123;</span><br><span class="line">    &quot;lang&quot;: &quot;mustache&quot;,</span><br><span class="line">    &quot;source&quot;: &#123;</span><br><span class="line">      &quot;query&quot;:&#123;</span><br><span class="line">      &quot;match&quot;:&#123;</span><br><span class="line">        &quot;&#123;&#123;my_field&#125;&#125;&quot;:&quot;&#123;&#123;my_value&#125;&#125;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;size&quot;:&quot;&#123;&#123;my_size&#125;&#125;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#2.使用模板（id只能在dsl里声明）</span><br><span class="line">GET _search/template</span><br><span class="line">&#123;</span><br><span class="line">  &quot;id&quot;:&quot;shirts_template&quot;,</span><br><span class="line">  &quot;explain&quot;: true,</span><br><span class="line">  &quot;params&quot;: &#123;</span><br><span class="line">    &quot;my_size&quot;: &quot;1&quot;,</span><br><span class="line">    &quot;my_field&quot;:&quot;color&quot;,</span><br><span class="line">    &quot;my_value&quot;:&quot;black&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"># render template 模板渲染测试</span><br><span class="line">GET _render/template</span><br><span class="line">&#123;</span><br><span class="line">  &quot;source&quot;: &#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">      &quot;match&quot;: &#123;</span><br><span class="line">        &quot;&#123;&#123;my_field&#125;&#125;&quot;: &quot;&#123;&#123;my_value&#125;&#125;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;params&quot;: &#123;</span><br><span class="line">    &quot;my_field&quot;: &quot;color&quot;,</span><br><span class="line">    &quot;my_value&quot;: &quot;black&quot;,</span><br><span class="line">    &quot;my_size&quot;: 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">#或者带上模板id渲染</span><br><span class="line">GET _render/template/shirts_template</span><br><span class="line">&#123;</span><br><span class="line">  &quot;params&quot;: &#123;</span><br><span class="line">    &quot;my_field&quot;: &quot;color&quot;,</span><br><span class="line">    &quot;my_value&quot;: &quot;black&quot;,</span><br><span class="line">    &quot;my_size&quot;: 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"># 整体渲染</span><br><span class="line">GET _render/template</span><br><span class="line">&#123;</span><br><span class="line">    &quot;source&quot;: &quot;&#123;\&quot;query\&quot;:&#123;\&quot;bool\&quot;:&#123;\&quot;must\&quot;: &#123;&#123;#toJson&#125;&#125;clauses&#123;&#123;/toJson&#125;&#125; &#125;&#125;&#125;&quot;,</span><br><span class="line">    &quot;params&quot;: &#123;</span><br><span class="line">        &quot;clauses&quot;: [</span><br><span class="line">            &#123; &quot;term&quot;: &#123; &quot;user&quot; : &quot;foo&quot; &#125; &#125;,</span><br><span class="line">            &#123; &quot;term&quot;: &#123; &quot;user&quot; : &quot;bar&quot; &#125; &#125;</span><br><span class="line">        ]</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="2-7-tips"><a href="#2-7-tips" class="headerlink" title="2.7 tips"></a>2.7 tips</h4><ul>
-<li>es 7.x为了提高性能，在命中数据大于1000时，不会返回准确的命中总数，并指出数据总量是 <code>gte 10000</code>的，设置 <code>track_total_hits:true</code> 可以解决该问题，也可以将该参数设置为一个固定的数值，<code>ES</code> 会返回 <code>gte</code> 该数值的说明；</li>
+<li><code>es 7.x</code> 为了提高性能，在命中数据大于 <code>1000</code> 时，不会返回准确的命中总数，并指出数据总量是 <code>gte 10000</code>的，设置 <code>track_total_hits:true</code> 可以解决该问题，也可以将该参数设置为一个固定的数值，<code>ES</code> 会返回 <code>gte</code> 该数值的说明；</li>
 <li>返回 <code>version</code>，可以设置 <code>version:true</code>；</li>
 <li><code>sort</code>  可以对数组类型进行排序，例如：返回数组的平均值。或最小值；</li>
 <li>副本虽然影响写入速度，但是可以增加查询速度和数据安全性，因为查询可以在任一副本上获取到结果。</li>
@@ -479,7 +479,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/学习/" rel="tag"><i class="fa fa-tag"></i> 学习</a>
+            <a href="/tags/elasticsearch/" rel="tag"><i class="fa fa-tag"></i> elasticsearch</a>
           
         </div>
       
@@ -589,7 +589,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -611,7 +611,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
