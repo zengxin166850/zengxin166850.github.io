@@ -95,7 +95,7 @@
 <meta property="og:description" content="聚合分类聚合，可以简单的理解为数据库操作中的 Distinct、 Group By ，count、sum、Having 等操作，当然，实际的功能还是有差别的。目前  Elasticsearch 中的聚合操作包含以下几种分类：  Bucket ，分桶 Metric ，⼀些系列的统计⽅法，包括 sum、max、min、avg 、stats 等 Matrix Pipeline，针对 “聚合” 的聚合。基">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/202105/你所在的这个世界-玛修.jpg">
-<meta property="og:updated_time" content="2021-05-16T13:57:24.298Z">
+<meta property="og:updated_time" content="2021-05-16T14:16:58.255Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Aggregations 聚合总结">
 <meta name="twitter:description" content="聚合分类聚合，可以简单的理解为数据库操作中的 Distinct、 Group By ，count、sum、Having 等操作，当然，实际的功能还是有差别的。目前  Elasticsearch 中的聚合操作包含以下几种分类：  Bucket ，分桶 Metric ，⼀些系列的统计⽅法，包括 sum、max、min、avg 、stats 等 Matrix Pipeline，针对 “聚合” 的聚合。基">
@@ -456,7 +456,7 @@
 <p>返回结果将会带上 <code>&quot;meta&quot;: { &quot;color&quot;: &quot;blue&quot;  }</code> </p>
 <figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">GET /twitter/_search</span><br><span class="line">&#123;</span><br><span class="line">  "size": 0,</span><br><span class="line">  "aggs": &#123;</span><br><span class="line">    "titles": &#123;</span><br><span class="line">      "terms": &#123;</span><br><span class="line">        "field": "title"</span><br><span class="line">      &#125;,</span><br><span class="line">      "meta": &#123;</span><br><span class="line">        "color": "blue"</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <hr>
-<p>あなたが生きる、この世界に</p>
+<p>あなたが生きる、この世界に </p>
 <p><img src="/images/202105/你所在的这个世界-玛修.jpg" alt="あなたが生きる、この世界に-玛修.jpg"></p>
 
       
