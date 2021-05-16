@@ -94,10 +94,12 @@
 <meta property="og:site_name" content="北方轻巡舰的博客">
 <meta property="og:description" content="准备两个MySQL服务实例 windows上可以用压缩版本，例如mysql-5.7.31-winx64.zip，解压文件夹再复制一份，添加my.ini配置文件。假设一个叫mysql-5.7.31-winx64，一个叫mysql-5.7.31-winx64-2，以为分别配置其为主和从  修改主mysql-5.7.31-winx64的my.ini解压出来默认没有 my.ini 需要自己新建:12345">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-04-05T15:04:51.758Z">
+<meta property="og:image" content="http://yoursite.com/images/202104/贝尔维尔.jpg">
+<meta property="og:updated_time" content="2021-05-16T14:33:51.779Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql5.7-31 主从复制安装(windows)">
 <meta name="twitter:description" content="准备两个MySQL服务实例 windows上可以用压缩版本，例如mysql-5.7.31-winx64.zip，解压文件夹再复制一份，添加my.ini配置文件。假设一个叫mysql-5.7.31-winx64，一个叫mysql-5.7.31-winx64-2，以为分别配置其为主和从  修改主mysql-5.7.31-winx64的my.ini解压出来默认没有 my.ini 需要自己新建:12345">
+<meta name="twitter:image" content="http://yoursite.com/images/202104/贝尔维尔.jpg">
 
 
 
@@ -402,6 +404,8 @@
 <p>在从库执行<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show databases;</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| Database           |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| information_schema |</span><br><span class="line">| db                 |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">5 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">use</span> db;</span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; show tables;</span><br><span class="line">+<span class="comment">--------------+</span></span><br><span class="line">| Tables_in_db |</span><br><span class="line">+<span class="comment">--------------+</span></span><br><span class="line">| t1           |</span><br><span class="line">+<span class="comment">--------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> t1;</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">| id   |</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">|    1 |</span><br><span class="line">|    2 |</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure></p>
 <h4 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h4><p>可以通过 <code>show master status\G</code>, <code>show slave status\G</code> 查看状态<br>可以能改过 <code>stop slave</code>, <code>start slave</code>来停止复制。</p>
 <p><code>reset slave all</code> ,清除 <code>slave</code> 配置。</p>
+<hr>
+<p><img src="/images/202104/贝尔维尔.jpg" alt=""></p>
 
       
     </div>
