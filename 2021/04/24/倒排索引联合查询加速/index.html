@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="学习," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 位图与布隆过滤器位图通常用于状态检索，通过与或操作来判断，检索效率为 O(1)。相比数组而言，虽然检索效率相同，但可以减小内存占用，一个 2^32=40亿 的位图占用为 512M，同样的情况下数组在使用 boolean 类型时内存占用为位图的 8 倍，而使用 int32 时占用为 4 字节，内存占用是位图的 32 倍； 由于位图所使用的单元已经是最小的单位 bit，为了再次缩小位图空间，想到">
+<meta name="keywords" content="学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="倒排索引---联合查询加速">
+<meta property="og:url" content="http://yoursite.com/2021/04/24/倒排索引联合查询加速/index.html">
+<meta property="og:site_name" content="北方轻巡舰的博客">
+<meta property="og:description" content="1. 位图与布隆过滤器位图通常用于状态检索，通过与或操作来判断，检索效率为 O(1)。相比数组而言，虽然检索效率相同，但可以减小内存占用，一个 2^32=40亿 的位图占用为 512M，同样的情况下数组在使用 boolean 类型时内存占用为位图的 8 倍，而使用 int32 时占用为 4 字节，内存占用是位图的 32 倍； 由于位图所使用的单元已经是最小的单位 bit，为了再次缩小位图空间，想到">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/202104/bloomfilter.png">
+<meta property="og:image" content="http://yoursite.com/images/202104/倒排索引.png">
+<meta property="og:image" content="http://yoursite.com/images/202104/skiplist.jpg">
+<meta property="og:image" content="http://yoursite.com/images/202104/roaringbitmap.jpg">
+<meta property="og:image" content="http://yoursite.com/images/202104/RoaringDocIdSet.png">
+<meta property="og:image" content="http://yoursite.com/images/202104/夜灯与樱花.png">
+<meta property="og:updated_time" content="2021-04-30T00:40:24.114Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="倒排索引---联合查询加速">
+<meta name="twitter:description" content="1. 位图与布隆过滤器位图通常用于状态检索，通过与或操作来判断，检索效率为 O(1)。相比数组而言，虽然检索效率相同，但可以减小内存占用，一个 2^32=40亿 的位图占用为 512M，同样的情况下数组在使用 boolean 类型时内存占用为位图的 8 倍，而使用 int32 时占用为 4 字节，内存占用是位图的 32 倍； 由于位图所使用的单元已经是最小的单位 bit，为了再次缩小位图空间，想到">
+<meta name="twitter:image" content="http://yoursite.com/images/202104/bloomfilter.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/04/24/倒排索引联合查询加速/"/>
+
+
+
+
+
+  <title>倒排索引---联合查询加速 | 北方轻巡舰的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">北方轻巡舰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/04/24/倒排索引联合查询加速/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">倒排索引---联合查询加速</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-24T19:24:05+08:00">
+                2021-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习打卡/" itemprop="url" rel="index">
+                    <span itemprop="name">学习打卡</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-位图与布隆过滤器"><a href="#1-位图与布隆过滤器" class="headerlink" title="1. 位图与布隆过滤器"></a>1. 位图与布隆过滤器</h2><p>位图通常用于状态检索，通过与或操作来判断，检索效率为 <code>O(1)</code>。相比数组而言，虽然检索效率相同，但可以减小内存占用，一个 <code>2^32=40亿</code> 的位图占用为 <code>512M</code>，同样的情况下数组在使用 <code>boolean</code> 类型时内存占用为位图的 <code>8</code> 倍，而使用 <code>int32</code> 时占用为 <code>4</code> 字节，内存占用是位图的 <code>32</code> 倍；</p>
+<p>由于位图所使用的单元已经是最小的单位 <code>bit</code>，为了再次缩小位图空间，想到的办法是压缩数据（<code>Hash</code>之后再存储），缩小元素个数。但是压缩数据势必会引起 <code>Hash</code> 冲突，压缩的越小，冲突越大。于是又回到了 <code>Hash</code> 冲突解决法： 开放寻址、链式 <code>Hash</code> ；</p>
+<p>链式 <code>Hash</code> 无法减小空间（why？），而开放寻址有一种优化策略：“双散列”。其原理是使用多个 <code>Hash</code> 函数分别求 <code>Hash</code> 值，得到多个下标，将对应的下标位置均置为 1 ，而这其实就是 “布隆过滤器” 的设计思想，通过多个下标来判断，就减小了Hash冲突，当然也带来一个问题 —&gt; 布隆过滤器的删除，需要通过计数器，或者定时重建才行，不能直接将对应位置置为 0；</p>
+<p>同样的，“布隆过滤器” 也有自己的缺点：即使任何两个元素的哈希值不冲突，而且我们查询对象的 k 个位置的值都是 1，查询结果为存在，这个结果也可能是错误的。<strong>这也称为是布隆过滤器的错误率</strong>（通常来说，误判可以当成实际存在来处理，大部分情况是不影响业务的。例如用户注册时，需要检测用户名是否已存在，已存在的话需要更换用户名重新注册）</p>
+<p><span style="color:red">布隆过滤器图示：</span></p>
+<p><img src="/images/202104/bloomfilter.png" alt="bloomfilter.png"></p>
+<p><span style="color:red">位图是只有一个特殊的哈希函数，且没有被压缩长度的布隆过滤器。</span></p>
+<h2 id="2-倒排索引"><a href="#2-倒排索引" class="headerlink" title="2. 倒排索引"></a>2. 倒排索引</h2><p>与倒排索引概念相对应的概念称为正排索引，也就是我们常规的数据库存储方式，以 <code>id</code> 对应一整行数据。当我们给定一个 <code>id</code> 时可以很快地找到该列，但如果给定的是某个字段中的词，正排索引只能一行一行到遍历，使用 <code>Like</code> 查找。当文档数据特别多，字段也特别多的时候，正排索引的查找效率就不行了，于是就有了倒排索引。根据关键字创建对应的文档索引，查找时直接根据关键词定位到数据本身。</p>
+<p>倒排索引中的关键字 （key）的集合也称为 <strong>字典（Dictionary）</strong>，而 key 后面对应的文档集合也称为<strong>记录列表（posting_list）</strong>，倒排索引常见于各种全文检索场景中。</p>
+<h3 id="2-1-倒排索引的创建"><a href="#2-1-倒排索引的创建" class="headerlink" title="2.1 倒排索引的创建"></a>2.1 倒排索引的创建</h3><p>倒排索引的创建步骤大致如下：</p>
+<ul>
+<li><ol>
+<li>给每个文档进行唯一编号，对数据进行排序（why？），然后开始遍历文档；</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>解析每个文档中的关键字，按照 &lt; 关键字，id，关键字位置&gt; 的结构进行存储，存储关键词位置的原因主要是组合查询时，通常需要判断多个关键词的位置是否足够接近来获取相关性算分（&lt; 关键字，id，关键字位置&gt;只是最基础的信息，为了加快检索速度，通常存储的内容更多）；</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>将关键字作为 <code>key</code> 存入 <code>Hash</code> 表，如果 <code>posting_list</code> 已经存在则在后面追加文档，否则，新建一个 <code>posting_list</code>；</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>重复 <code>2、3</code> 的步骤，处理完所有文档，完成倒排索引的创建，最后的数据存储结构图可以参考如下图例：</li>
+</ol>
+</li>
+</ul>
+<p><img src="/images/202104/倒排索引.png" alt="倒排索引.png"></p>
+<p><strong>倒排索引分域：</strong></p>
+<p>对于同样的一个关键词，既有可能出现在标题中，也可能出现在内容中。此时我们可以采用分域的方式来进行区分，即关键词不光对应着 <code>&lt;id，position&gt;</code>，再增加一些属性来做区分。（当然，更大的可能是直接分为两个索引存储，毕竟磁盘便宜）.</p>
+<h3 id="2-2-倒排索引的查询"><a href="#2-2-倒排索引的查询" class="headerlink" title="2.2 倒排索引的查询"></a>2.2 倒排索引的查询</h3><p>如果只是查询单个关键字在哪些文档中出现，直接以查询的关键字作为 <code>key</code>，得到的 <code>posting_list</code> 就是需要的结果了，但是如果需要查询同时包含关键词 <code>A</code>，以及关键词 <code>B</code> 的文档时，就需要想办法获取两个 <code>posting_list</code> 中的公共元素。</p>
+<p>假设 <code>posting_list A，B</code> 都是没有排序的链表，那么在寻找公共元素时，必须挨个比对  <code>A ,B</code> 两个链表中的每一个元素，这样查找的复杂度为 <code>O(m*n)</code>，如果是排好序的链表，那查找速度就变为 <code>O(m+n)</code> 了</p>
+<p>归并的执行过程为，通过指针 <code>p1，p2</code> 分别指向链表 <code>A,B</code> 的第一个元素，比对是否相等，此时有以下三种情况：</p>
+<ol>
+<li>如果相等则直接放入结果集，<code>p1</code> 和 <code>p2</code> 分别向后移动；</li>
+<li>如果 <code>p1 &gt; p2</code> ，那么将 <code>p2</code> 指针向后移动，<code>p1</code> 保持位置不变；</li>
+<li>如果 <code>p1 &lt; p2</code> ，那么将 <code>p1</code> 指针向后移动，<code>p2</code> 保持位置不变；</li>
+</ol>
+<p>重复该步骤，直到 <code>p1</code> 或 <code>p2</code> 到达链表尾部。</p>
+<h2 id="3-利用跳表加速倒排"><a href="#3-利用跳表加速倒排" class="headerlink" title="3. 利用跳表加速倒排"></a>3. 利用跳表加速倒排</h2><p>使用跳表存储 <code>posting_list</code> 时，可以按照如下方式判断：</p>
+<p>如果 <code>A</code> 中的当前元素小于 <code>B</code> 中的当前元素，我们就以 <code>B</code> 中的当前元素为 <code>key</code>，在 <code>A</code> 中快速往前跳；如果 <code>B</code> 中的当前元素小于 <code>A</code> 中的当前元素，我们就以 <code>A</code> 中的当前元素为 <code>key</code>，在 <code>B</code> 中快速往前跳。如此一来，中间的很多元素就可以忽略掉，进一步提升了查找速度。</p>
+<p><span style="color:red">跳表结构图示：</span></p>
+<p><img src="/images/202104/skiplist.jpg" alt="skiplist.jpg"></p>
+<p>常见的开源检索框架大多都使用了这种方式。</p>
+<h3 id="4-利用-Hash、位图加速倒排"><a href="#4-利用-Hash、位图加速倒排" class="headerlink" title="4. 利用 Hash、位图加速倒排"></a>4. 利用 Hash、位图加速倒排</h3><p>那么我们可以提前将 <code>A</code> 中的元素映射为 <code>Hash</code> 表，然后对 <code>B</code> 中的原始逐个进行 <code>Hash</code> 查找即可，<span style="color:red">但前提是必须提前分析好，需要把哪些 <code>posting_list</code> 映射为 <code>Hash</code> 表，需要进行映射的数据不能进行频繁变动，不然就没有意义了</span>，同时原始的 <code>posting_list</code> 也必须保留，不然当查询到的两个 <code>posting_list</code> 都被映射为 <code>hash</code> 后，就取不到原始数据了。</p>
+<p>位图是特殊的 <code>Hash</code> 结构，所以也是同样的道理。但适应场景有所不同，使用位图时，需要把所有的 <code>posting_list</code> 都转为位图，然后通过位运算来判断，同时具有以下局限性：</p>
+<ul>
+<li>位图法仅适用于只存储 <code>ID</code> 的简单的 <code>posting list</code>。如果 <code>posting list</code> 中需要存储复杂的对象，就不适合用位图来表示 <code>posting list</code> 了。</li>
+<li>位图法仅适用于 <code>posting list</code> 中元素稠密的场景。对于 <code>posting list</code> 中<strong>元素稀疏的场景，使用位图的运算和存储开销反而会比使用链表更大</strong>。</li>
+<li>虽然位图只需要用 <code>1</code> 个 <code>bit</code> 就能表示元素是否存在，但每个 <code>posting list</code> 都需要表示完整的对象空间。假设有 <code>2^32</code> 数量的文档，哪怕一个关键词只对应两个 <code>id</code> ，申请位图时也需要完整的 <code>2^32 bit</code> 的空间，只不过对应位置上全是 <code>0</code> 而已，这个占用高达 <code>512M</code>。</li>
+</ul>
+<p>成熟的工业界系统中，为了解决位图的空间消耗问题，经常会使用一种压缩位图的技术 <code>Roaring Bitmap</code> 来代替位图，诸如各大数据库、<code>Lucene</code> 等。 </p>
+<h2 id="5-Roaring-Bitmap"><a href="#5-Roaring-Bitmap" class="headerlink" title="5. Roaring Bitmap"></a>5. Roaring Bitmap</h2><p><code>Roaring Bitmap</code> 是位图设计的另类思想，它将一个 <code>32</code> 位的整数划分为高 <code>16</code> 位和低 <code>16</code> 位。对于高 <code>16</code> 位，<code>Roaring Bitmap</code> 将它存储在一个 <strong>有序数组（变长）</strong> 中，每一个数字代表一个 “桶” ，而低 <code>16</code> 位存储的是一个 <code>2^16</code> 的位图，每个 “桶”  都对应着一个位图。</p>
+<p><span style="color:red"><code>Roaring BitMap</code> 图示：</span></p>
+<p><img src="/images/202104/roaringbitmap.jpg" alt="roaringbitmap.jpg"></p>
+<p>当需要进行查找时，先通过二分查找获取到 “桶” 的位置 <code>O(logn)</code> ，再在位图中进行与或操作 <code>O(1)</code>，牺牲些许查找性能的同时，带来的好处是位图空间压缩</p>
+<p>还是以一个关键词对应两个 <code>id</code> 为例，使用位图时必须申请全量空间 <code>2^32 bit = 512M</code> ; 而使用 <code>Roaring bitmap</code>时只需要申请两个桶（高位计算结果相同的话只需要一个）4字节（<code>short</code> 类型占两字节），低位的位图占用仅为 <code>2^16=8k</code></p>
+<p><strong>所以 <code>Roaring Bitmap</code> 的总体思想，其实就是将不存在的桶的位图空间“全部”（<s>并不是</s>）省去这样的方式，来节省存储空间的</strong></p>
+<p>提到位图时也说过，当元素稀疏时，使用位图(<span style="color:red">Bitmap Container</span>)的占用反而会比链表高，<code>Roaring Bitmap</code> 基于这个思想，当低位存储的内容少于 <code>4096</code> 时，使用变长的有序数组(<span style="color:red">Array Container</span>)来存储，大于 <code>4096</code> 之后才采用位图。</p>
+<h4 id="为什么是4096"><a href="#为什么是4096" class="headerlink" title="为什么是4096"></a>为什么是4096</h4><p><code>Roaring Bitmap</code> 使用的是 <code>short</code> 类型的数组，每个元素为 <code>2</code> 字节，当元素达到 <code>4096</code> 时，内存占用为 <code>8k</code>，与 <code>2^16</code> 的位图占用相当，所以选择的界限为 <code>4096</code></p>
+<p><span style="color:red"><code>roaringbitmap</code> 并不能保证一定压缩空间，极端情况下会恢复为位图</span></p>
+<p><a href="https://github.com/RoaringBitmap/RoaringBitmap" target="_blank" rel="noopener"> Roaring Bitmap仓库地址在这里~~ </a></p>
+<h4 id="Lucene-的-RoaringDocIdSet-流程图"><a href="#Lucene-的-RoaringDocIdSet-流程图" class="headerlink" title="Lucene 的 RoaringDocIdSet 流程图"></a>Lucene 的 RoaringDocIdSet 流程图</h4><p><img src="/images/202104/RoaringDocIdSet.png" alt="RoaringDocIdSet.png"></p>
+<p>图中的 <code>block</code> 就是所谓的 “桶”</p>
+<h3 id="6-联合查询加速法"><a href="#6-联合查询加速法" class="headerlink" title="6. 联合查询加速法"></a>6. 联合查询加速法</h3><h4 id="6-1-调整次序法，适用于多个-posting-list-集合数量差距较明显的场景"><a href="#6-1-调整次序法，适用于多个-posting-list-集合数量差距较明显的场景" class="headerlink" title="6.1 调整次序法，适用于多个 posting_list 集合数量差距较明显的场景"></a>6.1 调整次序法，适用于多个 posting_list 集合数量差距较明显的场景</h4><p>假设通过多个关键词联合查询，得到了三个 <code>posting_list A,B,C</code>；集合中包含的元素数量分别为 <code>2，20，40</code> 并且包含关系为 <code>A &lt; B &lt; C</code>。已知普通链表求交集的复杂度为 <code>O（m+n）</code>；同样是求三个集合交集的话</p>
+<ul>
+<li>先计算<code>（A ∩ B）</code>得到结果后再 <code>∩ C</code> 的复杂度为  <code>(20+2)=22</code>；得到的交集结果为 <code>2</code>， 再计算 <code>(40+2)=42</code> ，总计 <code>64</code> </li>
+<li>先计算<code>（B ∩ C）</code> 得到结果后再 <code>∩ A</code> 的复杂度为 <code>（40+20）=60</code>；得到的交集结果为 <code>20</code>，再计算 <code>（20+2）=22</code>，总计 <code>82</code></li>
+</ul>
+<p>当然，调整次序法满足交换律，例如： <code>A∩（B∪C）= （A∩B）∪（A∩C）</code></p>
+<h4 id="6-2-快速多路归并"><a href="#6-2-快速多路归并" class="headerlink" title="6.2 快速多路归并"></a>6.2 快速多路归并</h4><p>适用于元素数量差距不明显的场景，利用跳表的性质，快速跳过多个元素，加快多路归并的效率；不做过多解释</p>
+<h4 id="6-3-预先组合法"><a href="#6-3-预先组合法" class="headerlink" title="6.3 预先组合法"></a>6.3 预先组合法</h4><p>例如经常查 <code>A+B+C</code>，那么可以组合 <code>posting_list</code> ，使其对应的 <code>key</code> 为 <code>A+B+C</code>；</p>
+<h4 id="6-4-缓存法加速"><a href="#6-4-缓存法加速" class="headerlink" title="6.4 缓存法加速"></a>6.4 缓存法加速</h4><p>使用缓存。（例如 <code>elasticsearch</code> 中的 <code>filter</code> 的运用）。</p>
+<hr>
+<p><img src="/images/202104/夜灯与樱花.png" alt="Alt"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/学习/" rel="tag"><i class="fa fa-tag"></i> 学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/24/Week03/" rel="next" title="Week03总结">
+                <i class="fa fa-chevron-left"></i> Week03总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div id="gitalk-container">
+	</div>
+	
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/header.png"
+                alt="北方轻巡舰" />
+            
+              <p class="site-author-name" itemprop="name">北方轻巡舰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zengxin166850" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-位图与布隆过滤器"><span class="nav-text">1. 位图与布隆过滤器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-倒排索引"><span class="nav-text">2. 倒排索引</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-倒排索引的创建"><span class="nav-text">2.1 倒排索引的创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-倒排索引的查询"><span class="nav-text">2.2 倒排索引的查询</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-利用跳表加速倒排"><span class="nav-text">3. 利用跳表加速倒排</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-利用-Hash、位图加速倒排"><span class="nav-text">4. 利用 Hash、位图加速倒排</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Roaring-Bitmap"><span class="nav-text">5. Roaring Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么是4096"><span class="nav-text">为什么是4096</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lucene-的-RoaringDocIdSet-流程图"><span class="nav-text">Lucene 的 RoaringDocIdSet 流程图</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-联合查询加速法"><span class="nav-text">6. 联合查询加速法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-调整次序法，适用于多个-posting-list-集合数量差距较明显的场景"><span class="nav-text">6.1 调整次序法，适用于多个 posting_list 集合数量差距较明显的场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-快速多路归并"><span class="nav-text">6.2 快速多路归并</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-预先组合法"><span class="nav-text">6.3 预先组合法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-4-缓存法加速"><span class="nav-text">6.4 缓存法加速</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">北方轻巡舰</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="/css/gitalk.css">
+  <script src="/js/src/md5.min.js"></script>
+  <script src="/js/src/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '4d8264bae956afc03d03',
+		  clientSecret: 'cd2ea936a06ea5daf08bc14cd5538ae1f7eb491e',
+		  repo: 'hoppoComments',
+		  owner: 'zengxin166850',
+		  admin: ['zengxin166850'], 
+		  id: md5(location.pathname),
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script src="/js/src/autoload.js"></script>
+</body>
+</html>

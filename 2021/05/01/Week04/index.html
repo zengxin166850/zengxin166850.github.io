@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="elasticsearch,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 文档学习本周阅读了 Analyzer API、ingest API、Modules 三个章节，以及 xpack 的配置 https 访问部分，重点内容如下：  内置分词器，以及自定义分词器； ingest 数据处理； shard allocation 与 cluster allocaiton ； 跨集群检索 cross-cluster search； xpack 角色配置、https 配置">
+<meta name="keywords" content="elasticsearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Week04总结">
+<meta property="og:url" content="http://yoursite.com/2021/05/01/Week04/index.html">
+<meta property="og:site_name" content="北方轻巡舰的博客">
+<meta property="og:description" content="1. 文档学习本周阅读了 Analyzer API、ingest API、Modules 三个章节，以及 xpack 的配置 https 访问部分，重点内容如下：  内置分词器，以及自定义分词器； ingest 数据处理； shard allocation 与 cluster allocaiton ； 跨集群检索 cross-cluster search； xpack 角色配置、https 配置">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/202105/crossClusterSearch1_1.png">
+<meta property="og:image" content="http://yoursite.com/images/202105/crossClusterSearch1_2.png">
+<meta property="og:image" content="http://yoursite.com/images/202105/crossClusterSearch1_3.png">
+<meta property="og:image" content="http://yoursite.com/images/202105/crossClusterSearch1_4.png">
+<meta property="og:image" content="http://yoursite.com/images/202105/crossClusterSearch2_1.png">
+<meta property="og:image" content="http://yoursite.com/images/202105/crossClusterSearch2_2.png">
+<meta property="og:image" content="http://yoursite.com/images/202105/crossClusterSearch2_3.png">
+<meta property="og:image" content="http://yoursite.com/images/202105/crossClusterSearch2_4.png">
+<meta property="og:image" content="http://yoursite.com/images/202105/crossClusterSearch2_5.png">
+<meta property="og:image" content="http://yoursite.com/images/202105/crossClusterSearch2_6.png">
+<meta property="og:image" content="http://yoursite.com/images/202105/你所在的这个世界-加藤段藏.jpg">
+<meta property="og:updated_time" content="2021-05-16T14:24:54.645Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Week04总结">
+<meta name="twitter:description" content="1. 文档学习本周阅读了 Analyzer API、ingest API、Modules 三个章节，以及 xpack 的配置 https 访问部分，重点内容如下：  内置分词器，以及自定义分词器； ingest 数据处理； shard allocation 与 cluster allocaiton ； 跨集群检索 cross-cluster search； xpack 角色配置、https 配置">
+<meta name="twitter:image" content="http://yoursite.com/images/202105/crossClusterSearch1_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/05/01/Week04/">
+
+
+
+
+
+  <title>Week04总结 | 北方轻巡舰的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">北方轻巡舰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/05/01/Week04/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Week04总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-01T22:34:47+08:00">
+                2021-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习打卡/" itemprop="url" rel="index">
+                    <span itemprop="name">学习打卡</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-文档学习"><a href="#1-文档学习" class="headerlink" title="1. 文档学习"></a>1. 文档学习</h2><p>本周阅读了 <code>Analyzer API、ingest API、Modules</code> 三个章节，以及 <code>xpack</code> 的配置 <code>https</code> 访问部分，重点内容如下：</p>
+<ul>
+<li>内置分词器，以及自定义分词器；</li>
+<li><code>ingest</code> 数据处理；</li>
+<li><code>shard allocation</code> 与 <code>cluster allocaiton</code> ；</li>
+<li>跨集群检索 <code>cross-cluster search</code>；</li>
+<li><code>xpack</code> 角色配置、<code>https</code> 配置</li>
+</ul>
+<a id="more"></a>
+<h2 id="2-Analyzer-总结"><a href="#2-Analyzer-总结" class="headerlink" title="2. Analyzer 总结"></a>2. Analyzer 总结</h2><p>分词器是对一串语句进行词语分割处理的组件，它由三个部分组成：</p>
+<ul>
+<li><code>char_filter</code>（针对原始文本处理，如去掉某些符号、处理 <code>html</code> 等）</li>
+<li><code>tokenizer</code>按照规则，将上一步处理后的语句切分为单词</li>
+<li><code>token filter</code> 将切分后的单词进行加工（如转为小写、去除停用词增加同义词等等）</li>
+</ul>
+<p>分词的流程也是严格按照 <code>char_filter ---&gt; tokenizer ----&gt; filter</code> 这样的顺序进行的。</p>
+<p>分词测试 <code>API</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;whitespace&quot;,</span><br><span class="line">  &quot;text&quot;:     &quot;The quick brown fox.&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;:  [ &quot;lowercase&quot;, &quot;asciifolding&quot; ],</span><br><span class="line">  &quot;text&quot;:      &quot;Is this déja vu?&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-1-内置分词器"><a href="#2-1-内置分词器" class="headerlink" title="2.1 内置分词器"></a>2.1 内置分词器</h3><ul>
+<li><code>standard</code> ，默认分词器，按词切分，小写处理；</li>
+<li><code>simple</code>，按照非字母切分，小写处理，<code>dog&#39;s</code> 会被拆分为 <code>dog</code> 和 <code>s</code>；</li>
+<li><code>stop</code>，小写处理，过滤停用词 <code>the</code>、<code>a</code>、<code>is</code> 等，<code>dog&#39;s</code> 会被拆分为 <code>dog</code> 和 <code>s</code>；</li>
+<li><code>whitespace</code>，按空格拆分，不做小写处理；</li>
+<li><code>keyword</code>，不分词；</li>
+<li><code>pattern</code>，正则分词，例如自定义通过逗号切分；</li>
+<li><code>language</code>，常见语言分词，例如 <code>english</code>；</li>
+<li><code>fingerprint</code>，没看懂</li>
+</ul>
+<h3 id="2-2-常用内置-tokenizer"><a href="#2-2-常用内置-tokenizer" class="headerlink" title="2.2 常用内置 tokenizer"></a>2.2 常用内置 tokenizer</h3><ul>
+<li><code>standard</code> 按词切分，保留数字；<code>letter</code> 按非字母拆分，不保留数字</li>
+<li><code>lowercase</code>  与 <code>letter</code> 类型，新增加了转小写操作；<code>whitespace</code>  按空格拆分；</li>
+<li><code>uax_url_email</code>  与 <code>standard</code> 类似，增加了识别邮箱和 <code>url</code> 等数据；</li>
+<li><code>NGram Tokenizer</code>，滑动窗口分词，分词长度介于 <code>min_gram</code>只 <code>max_gram</code> 之间。</li>
+<li><code>Keyword Tokenizer</code></li>
+<li><code>Pattern Tokenizer</code> 正则分割</li>
+<li><code>Path Hierarchy Tokenizer</code>路径切割</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">"tokenizer"</span>: <span class="string">"path_hierarchy"</span>,</span><br><span class="line">  <span class="attr">"text"</span>: <span class="string">"/one/two/three"</span></span><br><span class="line">&#125;</span><br><span class="line">-------result--------</span><br><span class="line">[ /one, /one/two, /one/two/three ]</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-常用内置-token-filter"><a href="#2-3-常用内置-token-filter" class="headerlink" title="2.3 常用内置 token filter"></a>2.3 常用内置 token filter</h3><h4 id="asciifolding"><a href="#asciifolding" class="headerlink" title="asciifolding"></a>asciifolding</h4><p> <code>ASCII</code> 过滤器，去除不在 <code>ASCII</code> 中的特殊标点符号，保留大小写，示例：<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&quot;asciifolding&quot;],</span><br><span class="line">  &quot;text&quot;: &quot;Is This-&lt;déja v&apos;u&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="length"><a href="#length" class="headerlink" title="length"></a>length</h4><p>分词长度过滤器。只保留长度介于 <code>min</code> 和 <code>max</code> 之间的 <code>token</code> 。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&#123;&quot;type&quot;: &quot;length&quot;, &quot;min&quot;:1, &quot;max&quot;:3 &#125;],</span><br><span class="line">  &quot;text&quot;: &quot;Is This-&lt;déja v&apos;u&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="lowercase"><a href="#lowercase" class="headerlink" title="lowercase"></a>lowercase</h4><p>将分词统一转为小写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&quot;lowercase&quot;],</span><br><span class="line">  &quot;text&quot;: &quot;Is This-&lt;déja v&apos;u&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="uppercase"><a href="#uppercase" class="headerlink" title="uppercase"></a>uppercase</h4><p>将分词统一转为大写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&quot;lowercase&quot;],</span><br><span class="line">  &quot;text&quot;: &quot;Is This-&lt;déja v&apos;u&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="ngram"><a href="#ngram" class="headerlink" title="ngram"></a>ngram</h4><p><span style="color:red">对分词结果进行再拆分</span>，然后保留长度介于 <code>min_gram</code> 和 <code>max_gram</code> 之间的词<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&#123;&quot;type&quot;: &quot;ngram&quot;, &quot;min_gram&quot;:3, &quot;max_gram&quot;:4 &#125;],</span><br><span class="line">  &quot;text&quot;: &quot;Is This-&lt;déja v&apos;u&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="shingle"><a href="#shingle" class="headerlink" title="shingle"></a>shingle</h4><p>将分词结果进行单词组装并保留原分词结果。例如<code>[We ,love ,apple] =&gt; [We ,love ,apple, We love , love apple]</code>；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&#123;&quot;type&quot;: &quot;shingle&quot;, &quot;min_shingle_size&quot;:2 &#125;],</span><br><span class="line">  &quot;text&quot;: &quot;Is This-&lt;déja v&apos;u&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="stop"><a href="#stop" class="headerlink" title="stop"></a>stop</h4><p>过滤停用词，支持 <code>stopwords</code> 和 <code>stopwords_path</code></p>
+<h4 id="word-delimiter"><a href="#word-delimiter" class="headerlink" title="word_delimiter"></a>word_delimiter</h4><p>将分词结果再次按照 “下划线”、“横线” 等分隔符进行拆分<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;whitespace&quot;,</span><br><span class="line">  &quot;filter&quot;: [&quot;word_delimiter&quot;],</span><br><span class="line">  &quot;text&quot;: &quot;Is this-&lt;déja v&apos;u?&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="multiplexer"><a href="#multiplexer" class="headerlink" title="multiplexer"></a>multiplexer</h4><p>在分词的相同 <code>position</code> 执行多个 <code>filter</code>，如果处理后的词和原词相同。则移除掉。否则保留原词和新词<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;whitespace&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;multiplexer&quot;,</span><br><span class="line">      &quot;filters&quot;: [</span><br><span class="line">        &quot;lowercase&quot;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;Is This-&lt;déja v&apos;u&quot;</span><br><span class="line">&#125;</span><br><span class="line">------result-------</span><br><span class="line">[Is(is),This-&lt;déja(this-&lt;déja),v&apos;u]</span><br></pre></td></tr></table></figure></p>
+<h4 id="condition"><a href="#condition" class="headerlink" title="condition"></a>condition</h4><p>条件过滤，下面的例子表示将长度小于 <code>5</code> 的词转为小写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;whitespace&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;condition&quot;,</span><br><span class="line">      &quot;filter&quot;: [</span><br><span class="line">        &quot;lowercase&quot;</span><br><span class="line">      ],</span><br><span class="line">      &quot;script&quot;: &#123;</span><br><span class="line">        &quot;source&quot;: &quot;token.getTerm().length() &lt; 5&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;Is This-&lt;déja v&apos;u&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="predicate-token-filter"><a href="#predicate-token-filter" class="headerlink" title="predicate_token_filter"></a>predicate_token_filter</h4><p>移除不满足 <code>script</code> 条件的 <code>token</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;whitespace&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;predicate_token_filter&quot;,</span><br><span class="line">      &quot;script&quot;: &#123;</span><br><span class="line">        &quot;source&quot;: &quot;token.getTerm().length() &gt; 5&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;Is This-&lt;déja v&apos;u&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="stemmer、snowball"><a href="#stemmer、snowball" class="headerlink" title="stemmer、snowball"></a>stemmer、snowball</h4><p>提取各种语言的词干，默认语言为<code>english</code>，去掉 <code>ing</code>、<code>ed</code> 等。两者提取的词干略有不同（例如 <code>are</code> ,<code>stemmer</code> 会提取为 <code>ar</code> ,<code>snowball</code> 则保持不变）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;whitespace&quot;,</span><br><span class="line">  &quot;filter&quot;: [&quot;stemmer&quot;],</span><br><span class="line">  &quot;text&quot;: &quot;Is This-&lt;déja doing&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="stemmer-override"><a href="#stemmer-override" class="headerlink" title="stemmer_override"></a>stemmer_override</h4><p>覆盖 <code>stemmer</code> 的自动提取词干，顺序需要在其他 <code>stemmer</code> 之前</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;stemmer_override&quot;,</span><br><span class="line">      &quot;rules&quot;: [</span><br><span class="line">        &quot;doing =&gt; dddd&quot;</span><br><span class="line">      ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;stemmer&quot;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;What are you doing?&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="keyword-marker"><a href="#keyword-marker" class="headerlink" title="keyword_marker"></a>keyword_marker</h4><p>保护  <code>token</code> 不被 <code>stemmer</code> 提取词干<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;keyword_marker&quot;,</span><br><span class="line">      &quot;keywords&quot;: [</span><br><span class="line">        &quot;doing&quot;</span><br><span class="line">      ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;stemmer&quot;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;What are you doing?&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="kstem"><a href="#kstem" class="headerlink" title="kstem"></a>kstem</h4><p><code>english</code> 的高性能 <code>filter</code>，必须所有的词均为小写状态才能使用</p>
+<h4 id="synonym"><a href="#synonym" class="headerlink" title="synonym"></a>synonym</h4><p><span style="color:red">重点！！！，同义词处理</span></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;synonym&quot;,</span><br><span class="line">      &quot;synonyms&quot;: [</span><br><span class="line">        &quot;you =&gt; 你&quot;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;What are you doing?&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>支持同义词文件路径参数 <code>synonyms_path</code> ，文件案例如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">i-pod, i pod =&gt; ipod,</span><br><span class="line">sea biscuit, sea biscit =&gt; seabiscuit</span><br><span class="line">ipod, i-pod, i pod</span><br><span class="line">foozball , foosball</span><br><span class="line">universe , cosmos</span><br><span class="line">lol, laughing out loud</span><br></pre></td></tr></table></figure></p>
+<h4 id="reverse"><a href="#reverse" class="headerlink" title="reverse"></a>reverse</h4><p><span style="color:red">将 <code>token</code> 字符串翻转过来</span></p>
+<h4 id="truncate"><a href="#truncate" class="headerlink" title="truncate"></a>truncate</h4><p>有点类似于 <code>substring</code>，将原 <code>token</code> 按照 <code>length</code> 长度进行截取。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&#123;</span><br><span class="line">    &quot;type&quot;:&quot;truncate&quot;,</span><br><span class="line">    &quot;length&quot;:3</span><br><span class="line">  &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;What are you doing?&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="unique"><a href="#unique" class="headerlink" title="unique"></a>unique</h4><p>相同的 <code>token</code> 只保留一个，设置 <code>only_on_same_position:true</code> 之后则只会移除在相同位置的，默认 <code>false</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&quot;unique&quot;], </span><br><span class="line">  &quot;text&quot;: &quot;What are you doing? are you doing?&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&#123;</span><br><span class="line">    &quot;type&quot;:&quot;unique&quot;,</span><br><span class="line">    &quot;only_on_same_position&quot;:true</span><br><span class="line">  &#125;], </span><br><span class="line">  &quot;text&quot;: &quot;What are you doing? are you doing?&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="limit"><a href="#limit" class="headerlink" title="limit"></a>limit</h4><p>限制分词个数,由 <code>max_token_count</code> 控制，默认为 <code>1</code>。<code>consume_all_tokens:true</code>试了下没什么用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;whitespace&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;limit&quot;,</span><br><span class="line">      &quot;max_token_count&quot;: 2</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;What are you  doing?&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="keep"><a href="#keep" class="headerlink" title="keep"></a>keep</h4><p><code>keep_words</code> 只留下指定的词， <code>keep_types</code> 留下指定类型的词( 通过 <code>mode</code> 可以指定 <code>exclude</code> 模式)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&#123;</span><br><span class="line">    &quot;type&quot;:&quot;keep&quot;,</span><br><span class="line">    &quot;keep_words&quot;:[&quot;this&quot;]</span><br><span class="line">  &#125;],</span><br><span class="line">  &quot;text&quot;: &quot;Is this 123&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;keep_types&quot;,</span><br><span class="line">      &quot;mode&quot;: &quot;exclude&quot;,</span><br><span class="line">      &quot;types&quot;: [</span><br><span class="line">        &quot;&lt;NUM&gt;&quot;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;Is this déja v&apos;u 234&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="apostrophe"><a href="#apostrophe" class="headerlink" title="apostrophe"></a>apostrophe</h4><p>撇号处理器，去掉 <code>&#39;</code> 之后的字符，例如 <code>don&#39;t =&gt; don</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &quot;apostrophe&quot;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;d&apos;uuuuu&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="fingerprint"><a href="#fingerprint" class="headerlink" title="fingerprint"></a>fingerprint</h4><p>对 <code>token</code> 排序并去重</p>
+<h3 id="2-4-常用内容中-char-filter"><a href="#2-4-常用内容中-char-filter" class="headerlink" title="2.4 常用内容中 char filter"></a>2.4 常用内容中 char filter</h3><h4 id="html-strip-char-filter"><a href="#html-strip-char-filter" class="headerlink" title="html_strip char filter"></a>html_strip char filter</h4><p>顾名思义，在原文本基础上过滤 <code>html</code> 标签；通过 <code>escaped_tags</code> 可以自定义不需要处理的标签。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &quot;asciifolding&quot;</span><br><span class="line">  ],</span><br><span class="line">  &quot;char_filter&quot;: [&#123;</span><br><span class="line">    &quot;type&quot;:&quot;html_strip&quot;,</span><br><span class="line">    &quot;escaped_tags&quot;:&quot;span&quot;</span><br><span class="line">  &#125;], </span><br><span class="line">  &quot;text&quot;: &quot;&lt;div&gt;&lt;span&gt;déja&lt;/span&gt;&lt;/div&gt;&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="mapping-char-filter"><a href="#mapping-char-filter" class="headerlink" title="mapping char filter"></a>mapping char filter</h4><p>在原文本基础上进行字符映射，例如将 <code>and</code> 转为 <code>&amp;</code> ,定义时至少要声明 <code>mappings</code> 或 <code>mappings_path</code> 中的其中一个。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;whitespace&quot;,</span><br><span class="line">  &quot;char_filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;mapping&quot;,</span><br><span class="line">      &quot;mappings&quot;: [</span><br><span class="line">        &quot;and =&gt; &amp;&quot;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;you and me&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="pattern-replace-char-filter"><a href="#pattern-replace-char-filter" class="headerlink" title="pattern replace char filter"></a>pattern replace char filter</h4><p>使用 <code>java</code> 正则表达式进行文本替换，正则写的很糟糕的话，会导致运行慢、节点宕机、<code>Stack Overflow</code> 等一系列问题。下面是一个替换数字 <code>-</code> 连接符为 <code>_</code> 的案例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;whitespace&quot;,</span><br><span class="line">  &quot;char_filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;pattern_replace&quot;,</span><br><span class="line">      &quot;pattern&quot;: &quot;&quot;&quot;(\d+)-(?=\d)&quot;&quot;&quot;,</span><br><span class="line">      &quot;replacement&quot;: &quot;$1_&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;text&quot;: &quot;My card is 123-456-789&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><span style="color:red">还有个群友提问到的场景，如何将 <code>babyShoes</code> 拆分为 <code>baby</code> 和 <code>shoes</code></span>，下面是解决办法。（这里拆分后会有新问题，高亮位置不正确，因为正则映射后，原词的 <code>position</code> 位置被我们改动了）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;whitespace&quot;,</span><br><span class="line">  &quot;char_filter&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;pattern_replace&quot;,</span><br><span class="line">      &quot;pattern&quot;: &quot;&quot;&quot;(?&lt;=\p&#123;Lower&#125;)(?=\p&#123;Upper&#125;)&quot;&quot;&quot;,</span><br><span class="line">      &quot;replacement&quot;: &quot; &quot;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;filter&quot;: [&quot;lowercase&quot;], </span><br><span class="line">  &quot;text&quot;: &quot;The fooBarBaz method&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-跨集群检索"><a href="#3-跨集群检索" class="headerlink" title="3. 跨集群检索"></a>3. 跨集群检索</h2><p>跨集群检索允许只发送一个请求同时查询多个集群上的数据</p>
+<h3 id="3-1-跨集群检索案例"><a href="#3-1-跨集群检索案例" class="headerlink" title="3.1 跨集群检索案例"></a>3.1 跨集群检索案例</h3><p>使用跨集群检索之前，需要先配置 <code>remote_server</code> ，方式如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">PUT _cluster/settings</span><br><span class="line">&#123;</span><br><span class="line">  &quot;persistent&quot;: &#123;</span><br><span class="line">    &quot;cluster&quot;: &#123;</span><br><span class="line">      &quot;remote&quot;: &#123;</span><br><span class="line">        &quot;cluster_one&quot;: &#123;</span><br><span class="line">          &quot;seeds&quot;: [</span><br><span class="line">            &quot;127.0.0.1:9300&quot;</span><br><span class="line">          ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;cluster_two&quot;: &#123;</span><br><span class="line">          &quot;seeds&quot;: [</span><br><span class="line">            &quot;127.0.0.1:9301&quot;</span><br><span class="line">          ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;cluster_three&quot;: &#123;</span><br><span class="line">          &quot;seeds&quot;: [</span><br><span class="line">            &quot;127.0.0.1:9302&quot;</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>配置好 <code>remote_server</code> 之后就可以直接进行查询了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /twitter,cluster_one:twitter,cluster_two:twitter/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;user&quot;: &quot;kimchy&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过以下设置，可以选择性的跳过由于某个集群不可用，而引起的查询报错问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PUT _cluster/settings</span><br><span class="line">&#123;</span><br><span class="line">  &quot;persistent&quot;: &#123;</span><br><span class="line">    &quot;cluster.remote.cluster_two.skip_unavailable&quot;: true</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-2-cross-cluster-search-CCS-是如何工作的"><a href="#3-2-cross-cluster-search-CCS-是如何工作的" class="headerlink" title="3.2 cross-cluster search(CCS) 是如何工作的"></a>3.2 cross-cluster search(CCS) 是如何工作的</h3><p>跨集群的检索肯定会涉及到集群之间的通信，而任何网络问题或者请求延迟都会使查询变慢。为了避免 <code>cross-cluster search</code> 的慢查询问题，在发送请求时 <code>Elasticsearch</code> 提供了以下两种策略：</p>
+<ul>
+<li><code>Minimize network roundtrips</code>，默认情况下，<code>Elasticsearch</code> 减少远程集群之间的网络往返次数，这样可以减少网络延迟对搜索速度的影响。但是，<code>Elasticsearch</code> 不能减少大型搜索请求（例如包含 <code>Scroll</code> 或 <code>inner_hits</code> 的请求）的网络往返次数。(该分多次的还是得分多次查询….)</li>
+<li><code>Don’t minimize network roundtrips</code>，对于 <code>scroll</code> 和 <code>inner_hits</code> 这类检索， <code>Elasticsearch</code> 可以通过批量 <code>outgoing</code> 和 <code>ingoing</code> 的方式来访问远程集群。通过在请求中添加 <code>?ccs_minimize_roundtrips=false</code> 参数可以关闭请求数量压缩，速度较慢，但适用于低延迟的网络环境。</li>
+</ul>
+<h4 id="Minimize-network-roundtrips-检索的步骤："><a href="#Minimize-network-roundtrips-检索的步骤：" class="headerlink" title="Minimize network roundtrips 检索的步骤："></a><code>Minimize network roundtrips</code> 检索的步骤：</h4><ol>
+<li>将跨集群搜索请求发送到本地集群。该集群中的协调节点接收并解析该请求；</li>
+</ol>
+<p><img src="/images/202105/crossClusterSearch1_1.png" alt="crossClusterSearch1_1.png"></p>
+<ol start="2">
+<li>协调节点向每个集群发送单个搜索请求，包括其自身的搜索请求。每个集群独立执行搜索请求；</li>
+</ol>
+<p><img src="/images/202105/crossClusterSearch1_2.png" alt="crossClusterSearch1_2.png"></p>
+<ol start="3">
+<li>每个远程集群将其搜索结果发送回协调节点；</li>
+</ol>
+<p><img src="/images/202105/crossClusterSearch1_3.png" alt="crossClusterSearch1_3.png"></p>
+<ol start="4">
+<li>从每个集群收集结果之后，协调节点将在跨群集搜索响应中返回最终结果。</li>
+</ol>
+<p><img src="/images/202105/crossClusterSearch1_4.png" alt="crossClusterSearch1_4.png"></p>
+<h4 id="Don’t-minimize-network-roundtrips-检索的步骤："><a href="#Don’t-minimize-network-roundtrips-检索的步骤：" class="headerlink" title="Don’t minimize network roundtrips 检索的步骤："></a><code>Don’t minimize network roundtrips</code> 检索的步骤：</h4><ol>
+<li>将跨集群搜索请求发送到本地集群。该集群中的协调节点接收并解析该请求；</li>
+</ol>
+<p><img src="/images/202105/crossClusterSearch2_1.png" alt="crossClusterSearch2_1.png"></p>
+<ol start="2">
+<li>协调节点向每个集群发送单个搜索请求，包括其自身的搜索请求。每个集群独立执行搜索请求；</li>
+</ol>
+<p><img src="/images/202105/crossClusterSearch2_2.png" alt="crossClusterSearch2_2.png"></p>
+<ol start="3">
+<li>每个远程集群将其响应发送回协调节点。该响应中包含了将要执行跨集群搜索请求的分片和索引的信息。</li>
+</ol>
+<p><img src="/images/202105/crossClusterSearch2_3.png" alt="crossClusterSearch2_3.png"></p>
+<ol start="4">
+<li>协调节点向<span style="color:red">每个分片</span>（包括其自己的集群中的分片）发送搜索请求。每个分片独立执行搜索请求。</li>
+</ol>
+<p><img src="/images/202105/crossClusterSearch2_4.png" alt="crossClusterSearch2_4.png"></p>
+<ol start="5">
+<li>每个分片将其搜索结果发送回协调节点。</li>
+</ol>
+<p><img src="/images/202105/crossClusterSearch2_5.png" alt="crossClusterSearch2_5.png"></p>
+<ol start="6">
+<li>从每个集群收集结果之后，协调节点将在跨群集搜索响应中返回最终结果。</li>
+</ol>
+<p><img src="/images/202105/crossClusterSearch2_6.png" alt="crossClusterSearch2_6.png"></p>
+<h2 id="4-index-level-shard-allocation"><a href="#4-index-level-shard-allocation" class="headerlink" title="4. index_level shard allocation"></a>4. index_level shard allocation</h2><h4 id="设置节点属性"><a href="#设置节点属性" class="headerlink" title="设置节点属性"></a>设置节点属性</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// yml 配置</span><br><span class="line">node.attr.size: medium</span><br><span class="line"></span><br><span class="line">// 启动参数配置</span><br><span class="line">./bin/elasticsearch -Enode.attr.size=medium</span><br></pre></td></tr></table></figure>
+<h4 id="配置索引策略："><a href="#配置索引策略：" class="headerlink" title="配置索引策略："></a>配置索引策略：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 声明多个则表示需要同时满足</span><br><span class="line">PUT test/_settings</span><br><span class="line">&#123;</span><br><span class="line">  &quot;index.routing.allocation.include.size&quot;: &quot;big&quot;,</span><br><span class="line">  &quot;index.routing.allocation.include.rack&quot;: &quot;rack1&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>index.routing.allocation.include.{attribute}</code>，节点至少需要满足 <code>include</code> 中的一个属性；</li>
+<li><code>index.routing.allocation.require.{attribute}</code>，节点必须满足 <code>require</code> 中的所有属性</li>
+<li><code>index.routing.allocation.exclude.{attribute}</code>，索引不能分配在 <code>exclude</code> 属性的节点上</li>
+</ul>
+<p><code>attribute</code> 属性值由用户自定义 ，也可以使用 <code>Elasticsearch</code> 内建的以下属性：</p>
+<ul>
+<li><code>_name</code>，通过节点名称匹配节点</li>
+<li><code>_host_ip</code>，通过主机 <code>IP</code> 地址（与主机名关联的 <code>IP</code> ）匹配节点</li>
+<li><code>_publish_ip</code>，通过发布 <code>IP</code> 地址匹配节点</li>
+<li><code>_ip</code>，匹配 <code>_host_ip</code> 或 <code>_publish_ip</code></li>
+<li><code>_host</code> 通过主机名匹配节点</li>
+</ul>
+<h4 id="限制每个节点上的分片数量"><a href="#限制每个节点上的分片数量" class="headerlink" title="限制每个节点上的分片数量"></a>限制每个节点上的分片数量</h4><p>使用该配置会影响物理层面的分配，如果节点数不够，可能会导致部分分片状态为 <code>unAssigned</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">index.routing.allocation.total_shards_per_node</span><br><span class="line">cluster.routing.allocation.total_shards_per_node</span><br></pre></td></tr></table></figure></p>
+<h2 id="5-cluster-level-shard-allocation"><a href="#5-cluster-level-shard-allocation" class="headerlink" title="5. cluster_level shard allocation"></a>5. cluster_level shard allocation</h2><p><code>allocation awareness</code> 和 <code>Fore awareness</code> 是针对不同机房、机架环境设置的，例如不希望将主副分片分配到同一个机架，或者同一个地区。避免一处停电，影响所有数据。</p>
+<h4 id="第一步：设置节点属性，与index-level是相同的-可自定义"><a href="#第一步：设置节点属性，与index-level是相同的-可自定义" class="headerlink" title="第一步：设置节点属性，与index_level是相同的,可自定义"></a>第一步：设置节点属性，与index_level是相同的,可自定义</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node.attr.rack_id: rack1</span><br></pre></td></tr></table></figure>
+<h4 id="第二步：设置集群层面的分片分配策略，属性保持相同"><a href="#第二步：设置集群层面的分片分配策略，属性保持相同" class="headerlink" title="第二步：设置集群层面的分片分配策略，属性保持相同"></a>第二步：设置集群层面的分片分配策略，属性保持相同</h4><p>如下的例子中</p>
+<ul>
+<li><code>awareness.attribute</code> 指明了分片分配的感知策略基于 <code>rack_id</code></li>
+<li><code>force.rack_id.values</code> 指明了分片分配的范围，主副分片必须在两个机架上。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PUT _cluster/setting</span><br><span class="line">&#123;</span><br><span class="line">    &quot;persistent&quot;:&#123;</span><br><span class="line">        &quot;cluster.routing.allocation.awareness.attribute&quot;: &quot;rack_id&quot;,</span><br><span class="line">        &quot;cluster.routing.allocation.awareness.force.rack_id.values&quot;: &quot;rack1,rack2&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>如果只有一个机架属性，副本分配将表现为 <code>unassigned</code> 状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PUT test_004</span><br><span class="line">&#123;</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">    &quot;number_of_shards&quot;: 5,</span><br><span class="line">    &quot;number_of_replicas&quot;: 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="6-ingest-pipeline"><a href="#6-ingest-pipeline" class="headerlink" title="6. ingest pipeline"></a>6. ingest pipeline</h2><h3 id="6-1-增删改查"><a href="#6-1-增删改查" class="headerlink" title="6.1 增删改查"></a>6.1 增删改查</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//重复调用，会自动更新原有的声明</span><br><span class="line">PUT _ingest/pipeline/my_pipeline</span><br><span class="line">&#123;</span><br><span class="line">  &quot;description&quot; : &quot;describe pipeline&quot;,</span><br><span class="line">  &quot;processors&quot; : [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;set&quot; : &#123;</span><br><span class="line">        &quot;field&quot;: &quot;foo&quot;,</span><br><span class="line">        &quot;value&quot;: &quot;bar&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line">// 查询</span><br><span class="line">GET _ingest/pipeline/my_pipeline</span><br><span class="line">// 删除</span><br><span class="line">DELETE _ingest/pipeline/my_pipeline</span><br></pre></td></tr></table></figure>
+<h3 id="6-2-condition-语法（可以使用正则判断）"><a href="#6-2-condition-语法（可以使用正则判断）" class="headerlink" title="6.2 condition 语法（可以使用正则判断）"></a>6.2 condition 语法（可以使用正则判断）</h3><p>根据数据内容判断<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// if 案例</span><br><span class="line">PUT _ingest/pipeline/drop_guests_network</span><br><span class="line">&#123;</span><br><span class="line">  &quot;processors&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;drop&quot;: &#123;</span><br><span class="line">        &quot;if&quot;: &quot;ctx.network_name == &apos;Guest&apos;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line">// 展开对象，多条件判断案例</span><br><span class="line">PUT _ingest/pipeline/drop_guests_network</span><br><span class="line">&#123;</span><br><span class="line">  &quot;processors&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;dot_expander&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: &quot;network.name&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;drop&quot;: &#123;</span><br><span class="line">        &quot;if&quot;: &quot;ctx.network?.name != null &amp;&amp; ctx.network.name.contains(&apos;Guest&apos;)&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用复杂的代码语法判断<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 有些类似于 `script` 操作了</span><br><span class="line">PUT _ingest/pipeline/not_prod_dropper</span><br><span class="line">&#123;</span><br><span class="line">  &quot;processors&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;drop&quot;: &#123;</span><br><span class="line">        &quot;if&quot;: &quot;&quot;&quot;</span><br><span class="line">            Collection tags = ctx.tags;</span><br><span class="line">            if(tags != null)&#123;</span><br><span class="line">              for (String tag : tags) &#123;</span><br><span class="line">                  if (tag.toLowerCase().contains(&apos;prod&apos;)) &#123;</span><br><span class="line">                      return false;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            return true;</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>按条件使用 <code>processor</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">PUT _ingest/pipeline/logs_pipeline</span><br><span class="line">&#123;</span><br><span class="line">  &quot;description&quot;: &quot;A pipeline of pipelines for log files&quot;,</span><br><span class="line">  &quot;version&quot;: 1,</span><br><span class="line">  &quot;processors&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;pipeline&quot;: &#123;</span><br><span class="line">        &quot;if&quot;: &quot;ctx.service?.name == &apos;apache_httpd&apos;&quot;,</span><br><span class="line">        &quot;name&quot;: &quot;httpd_pipeline&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;pipeline&quot;: &#123;</span><br><span class="line">        &quot;if&quot;: &quot;ctx.service?.name == &apos;syslog&apos;&quot;,</span><br><span class="line">        &quot;name&quot;: &quot;syslog_pipeline&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;fail&quot;: &#123;</span><br><span class="line">        &quot;message&quot;: &quot;This pipeline requires service.name to be either `syslog` or `apache_httpd`&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="6-3-处理器-processors"><a href="#6-3-处理器-processors" class="headerlink" title="6.3 处理器 processors"></a>6.3 处理器 processors</h3><ul>
+<li><code>append</code>，向数组中添加元素，如果数组不存在，则使用给定元素新建。</li>
+<li><code>bytes</code>，单位转换，<code>1kb --&gt; 1024</code></li>
+<li><code>convert</code>，类型转换，字符串转数字，或者转 <code>boolean</code></li>
+<li><code>date</code>，日期格式化，处理后的字段默认为 <code>@timestamp</code> ，通过 <code>target_field</code> 变更</li>
+<li><code>date_index_name</code>，按照日期将数据分配到不同索引，使用 <code>set</code> 处理器修改 <code>_index</code> 也可以实现类似效果</li>
+<li><code>dissect</code> ，也称解剖…从单个文本字段中提取结构化字段，与 <code>grok</code> 类似，但不使用正则表达，所以某些情况下速度比 <code>grok</code> 更快</li>
+<li><code>dot_expander</code>，展开类似 <code>fullname.firstname</code> 的字段为 <code>object</code> 格式.</li>
+<li><code>drop</code>，移除文档，可以按 <code>if</code> 条件来 <code>drop</code></li>
+<li><code>fail</code>，抛出异常的处理器，用于提示请求出错</li>
+<li><code>foreach</code>，遍历数组字段，可以在内部使用所有其他的处理器。</li>
+<li><code>grok</code></li>
+<li><code>gsub</code>，将字符串按照 <code>pattern</code> 进行替换，如果不是字符串类型则会报错。</li>
+<li><code>html_strip</code>，去除 <code>html</code> 标签</li>
+<li><code>json</code>，将 <code>json</code> 字符串转换为对象</li>
+<li><code>kv</code>，通过 <code>field_split</code> 切分为数组，再根据 <code>value_split</code> 切分 <code>key</code> 和 <code>value</code></li>
+<li><code>lowercase/uppercase</code>，大小写转换</li>
+<li><code>pipeline</code>，类似于 <code>include</code> 的感觉，引用另一个 <code>pipeline</code> 的所有处理器</li>
+<li><code>remove</code>，移除一个已有的字段，如果字段不存在，抛出错误</li>
+<li><code>rename</code>，字段重命名</li>
+<li><code>script</code>，脚本处理器</li>
+<li><code>set</code>，为字段设值</li>
+<li><code>split</code>，分割</li>
+<li><code>sort</code>，排序</li>
+<li><code>trim</code>，去空格</li>
+<li><code>urldecode</code>，解析 <code>url</code> 中的转义字符，例如 <code>%23</code> 对应 <code>#</code></li>
+</ul>
+<p><span style="color:red">一个较为全面的应用案例：</span></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br></pre></td><td class="code"><pre><span class="line">POST _ingest/pipeline/_simulate</span><br><span class="line">&#123;</span><br><span class="line">  &quot;pipeline&quot;: &#123;</span><br><span class="line">    &quot;processors&quot;: [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;append&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;tags&quot;,</span><br><span class="line">          &quot;value&quot;: [</span><br><span class="line">            &quot;&#123;&#123;app&#125;&#125;&quot;,</span><br><span class="line">            &quot;&#123;&#123;owner&#125;&#125;&quot;</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;bytes&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;file&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;date&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;date_test&quot;,</span><br><span class="line">          &quot;formats&quot;: [</span><br><span class="line">            &quot;yyyy-MM-dd&quot;</span><br><span class="line">          ],</span><br><span class="line">          &quot;target_field&quot;: &quot;@date&quot;,</span><br><span class="line">          &quot;timezone&quot;: &quot;UTC+8&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;dissect&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;log&quot;,</span><br><span class="line">          &quot;pattern&quot;: &quot;[%&#123;ts&#125;] [%&#123;level&#125;] %&#123;*p1&#125;:%&#123;&amp;p1&#125; %&#123;*p2&#125;:%&#123;&amp;p2&#125;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;dot_expander&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;fullname.firstname&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;dot_expander&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;fullname.lastname&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;fail&quot;: &#123;</span><br><span class="line">          &quot;if&quot;: &quot;ctx.tags.contains(&apos;blue&apos;) != true&quot;,</span><br><span class="line">          &quot;message&quot;: &quot;The production tag is not present, found tags: &#123;&#123;tags&#125;&#125;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;foreach&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;hobby&quot;,</span><br><span class="line">          &quot;processor&quot;: &#123;</span><br><span class="line">            &quot;uppercase&quot;: &#123;</span><br><span class="line">              &quot;field&quot;: &quot;_ingest._value&quot;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;grok&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;message&quot;,</span><br><span class="line">          &quot;patterns&quot;: [</span><br><span class="line">            &quot;%&#123;IP:client&#125; %&#123;WORD:method&#125; %&#123;URIPATHPARAM:request&#125; %&#123;NUMBER:bytes&#125; %&#123;NUMBER:duration&#125;&quot;</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;html_strip&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;html_strip_test&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;join&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;hobby&quot;,</span><br><span class="line">          &quot;separator&quot;: &quot;-&quot;,</span><br><span class="line">          &quot;target_field&quot;: &quot;join_hobby&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;json&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;json_test&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;kv&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;kv_test&quot;,</span><br><span class="line">          &quot;field_split&quot;: &quot;&amp;&quot;,</span><br><span class="line">          &quot;value_split&quot;: &quot;=&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;remove&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;ip&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;rename&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;rename_test&quot;,</span><br><span class="line">          &quot;target_field&quot;: &quot;new_rename_test&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;script&quot;: &#123;</span><br><span class="line">          &quot;source&quot;: &quot;&quot;&quot;</span><br><span class="line">          ArrayList hobbyList = ctx.hobby;</span><br><span class="line">          hobbyList.remove(0);</span><br><span class="line">          ctx.script_test = hobbyList;</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;set&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;set_test&quot;,</span><br><span class="line">          &quot;value&quot;: &quot;我是&#123;&#123;set_test&#125;&#125;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;split&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;split_test&quot;,</span><br><span class="line">          // +号表示连续的符号视为一个</span><br><span class="line">          &quot;separator&quot;: &quot;,+&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;sort&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;sort_test&quot;,</span><br><span class="line">          &quot;order&quot;: &quot;asc&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;trim&quot;: &#123;</span><br><span class="line">          &quot;field&quot;: &quot;trim_test&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;urldecode&quot;:&#123;</span><br><span class="line">          // url转义符解析，例如 %23 对应 #</span><br><span class="line">          &quot;field&quot;:&quot;urldecode_test&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;docs&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;_source&quot;: &#123;</span><br><span class="line">        &quot;tags&quot;: &quot;blue&quot;,</span><br><span class="line">        &quot;app&quot;: &quot;surfshark&quot;,</span><br><span class="line">        &quot;owner&quot;: &quot;zengxin&quot;,</span><br><span class="line">        &quot;file&quot;: &quot;1kb&quot;,</span><br><span class="line">        &quot;date_test&quot;: &quot;2021-05-10&quot;,</span><br><span class="line">        &quot;log&quot;: &quot;[2018-08-10T17:15:42,466] [ERR] ip:1.2.3.4 error:REFUSED&quot;,</span><br><span class="line">        &quot;fullname.firstname&quot;: &quot;zeng&quot;,</span><br><span class="line">        &quot;fullname.lastname&quot;: &quot;xin&quot;,</span><br><span class="line">        &quot;hobby&quot;: [</span><br><span class="line">          &quot;read&quot;,</span><br><span class="line">          &quot;moive&quot;,</span><br><span class="line">          &quot;coding&quot;</span><br><span class="line">        ],</span><br><span class="line">        &quot;ip&quot;: &quot;8.8.8.8&quot;,</span><br><span class="line">        &quot;message&quot;: &quot;55.3.244.1 GET /index.html 15824 0.043&quot;,</span><br><span class="line">        &quot;html_strip_test&quot;: &quot;&lt;span style=&apos;color:red&apos;&gt;测试&lt;/span&gt;&quot;,</span><br><span class="line">        &quot;json_test&quot;: &quot;&quot;&quot;&#123;&quot;foo&quot;: 2000&#125;&quot;&quot;&quot;,</span><br><span class="line">        &quot;kv_test&quot;: &quot;username=zhangsan&amp;password=123456&quot;,</span><br><span class="line">        &quot;rename_test&quot;: &quot;history&quot;,</span><br><span class="line">        &quot;set_test&quot;: &quot;123&quot;,</span><br><span class="line">        &quot;split_test&quot;:&quot;zengxin,,,zhengxin,tomas,北方&quot;,</span><br><span class="line">        &quot;sort_test&quot;:[10,23,9,11,7,5],</span><br><span class="line">        &quot;trim_test&quot;:&quot;这是      的   &quot;,</span><br><span class="line">        &quot;urldecode_test&quot;:&quot;http://172.25.17.142:5601/app/kibana%23/dev_tools/console?_g=()&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="7-x-pack：role、https-配置"><a href="#7-x-pack：role、https-配置" class="headerlink" title="7. x-pack：role、https 配置"></a>7. x-pack：role、https 配置</h2><h3 id="7-1-身份认证与用户鉴权"><a href="#7-1-身份认证与用户鉴权" class="headerlink" title="7.1 身份认证与用户鉴权"></a>7.1 身份认证与用户鉴权</h3><h4 id="Authentication-认证体系"><a href="#Authentication-认证体系" class="headerlink" title="Authentication 认证体系"></a>Authentication 认证体系</h4><ul>
+<li>提供用户名、密码</li>
+<li>提供密钥或 <code>kerberos</code> 票据<h4 id="Realms：X-pack中的认证服务"><a href="#Realms：X-pack中的认证服务" class="headerlink" title="Realms：X-pack中的认证服务"></a>Realms：X-pack中的认证服务</h4></li>
+<li>内置 <code>Realms</code>（免费），<code>File/Native</code> 用户名/密码保存在 <code>Elasticsearch</code> 中；</li>
+<li>外部 <code>Realms</code>（收费），<code>LDAP/Active Directory/PKI/SAML/Kerberos</code>。</li>
+</ul>
+<h4 id="RBAC-用户鉴权"><a href="#RBAC-用户鉴权" class="headerlink" title="RBAC 用户鉴权"></a>RBAC 用户鉴权</h4><p>什么是 <code>RBAC</code>: <code>Role Based Access Control</code>（基于角色的权限控制），定义一个角色，并分配一组权限。权限包括索引级，字段级，集群级的不同的操作。然后通过将角色分配给用户，使得用户拥有这些权限。<br>ES </p>
+<ul>
+<li>User </li>
+<li>Role</li>
+<li>Permission</li>
+<li>Previlege</li>
+</ul>
+<h3 id="7-2-集群安全通信-tranposrt-https"><a href="#7-2-集群安全通信-tranposrt-https" class="headerlink" title="7.2 集群安全通信: tranposrt + https"></a>7.2 集群安全通信: tranposrt + https</h3><h4 id="配置xpack"><a href="#配置xpack" class="headerlink" title="配置xpack"></a>配置xpack</h4><ol>
+<li>切换到 <code>es</code> 启动用户，修改配置文件 <code>xpack.security.enabled: true</code></li>
+<li>执行 <code>bin/elasticsearch-certutil ca</code> 生成 <code>ca</code> 文件，一路回车默认即可, <code>7.2</code> 版本的默认文件名为 <code>elastic-stack-ca.p12</code>，存放在安装根目录下</li>
+<li>执行 <code>bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12</code> 生成证书。默认文件名为 <code>elastic-certificates.p12</code> ，存放在安装根目录下</li>
+<li>执行 <code>mv elastic-certificates.p12 config/cert/</code> 将证书移动到 <code>config/cert/</code> 目录下</li>
+<li>将证书拷贝到集群其它节点的 <code>config/cert/</code> 目录下</li>
+<li>修改最终的配置文件为如下所示</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">xpack.security.enabled: true</span><br><span class="line">xpack.security.transport.ssl.enabled: true</span><br><span class="line">xpack.security.transport.ssl.verification_mode: certificate</span><br><span class="line">xpack.security.transport.ssl.keystore.path: cert/elastic-certificates.p12</span><br><span class="line">xpack.security.transport.ssl.truststore.path: cert/elastic-certificates.p12</span><br><span class="line"></span><br><span class="line">xpack.security.http.ssl.enabled: true</span><br><span class="line">xpack.security.http.ssl.keystore.path: cert/elastic-certificates.p12</span><br><span class="line">xpack.security.http.ssl.truststore.path: cert/elastic-certificates.p12</span><br></pre></td></tr></table></figure>
+<h4 id="配置用户名、密码"><a href="#配置用户名、密码" class="headerlink" title="配置用户名、密码"></a>配置用户名、密码</h4><p>执行 <code>bin/elasticsearch-setup-passwords interactive</code> 初始化各用户的密码</p>
+<h4 id="kibana-访问设置"><a href="#kibana-访问设置" class="headerlink" title="kibana 访问设置"></a>kibana 访问设置</h4><p><code>kibana</code> 使用 <code>https</code> 时还需要修改如下三个参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">elasticsearch.hosts: [&quot;http://localhost:9200&quot;]</span><br><span class="line">elasticsearch.ssl.certificateAuthorities: [ &quot;/path/to/your/CA.pem&quot; ]</span><br><span class="line">elasticsearch.ssl.verificationMode: certificate</span><br></pre></td></tr></table></figure>
+<p>生成 <code>pem</code> 文件需要使用到 <code>openssl</code>，执行如下指令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -in elastic-certificates.p12 -cacerts -nokeys -out elastic-ca.pem</span><br></pre></td></tr></table></figure>
+<h4 id="kibana的https设置"><a href="#kibana的https设置" class="headerlink" title="kibana的https设置"></a>kibana的https设置</h4><ol>
+<li>执行 <code>bin/elasticsearch-certutil ca --pem</code>，生成的 <code>elastic-stack-ca.zip</code> 文件中包含了 <code>ca.crt</code>，<code>ca.key</code> 两个文件;</li>
+<li>解压缩后，将两个文件拷贝到 <code>config/cert</code> 目录下，编辑 <code>kibana.yml</code> 文件的如下配置；</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.ssl.enabled: true</span><br><span class="line">server.ssl.certificate: config/cert/ca.crt</span><br><span class="line">server.ssl.key: config/cert/ca.key</span><br></pre></td></tr></table></figure>
+<p><span style="color:red">由于证书是自签的，仅能用于测试，所以kibana中会有SSL相关的报错</span></p>
+<hr>
+<p>あなたがいきる、この世界に</p>
+<p><img src="/images/202105/你所在的这个世界-加藤段藏.jpg" alt="Alt"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/elasticsearch/" rel="tag"><i class="fa fa-tag"></i> elasticsearch</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/24/Week03/" rel="next" title="Week03总结">
+                <i class="fa fa-chevron-left"></i> Week03总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/15/Aggregations聚合总结/" rel="prev" title="Aggregations 聚合总结">
+                Aggregations 聚合总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div id="gitalk-container">
+	</div>
+	
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/header.png" alt="北方轻巡舰">
+            
+              <p class="site-author-name" itemprop="name">北方轻巡舰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zengxin166850" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+		  
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-文档学习"><span class="nav-text">1. 文档学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Analyzer-总结"><span class="nav-text">2. Analyzer 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-内置分词器"><span class="nav-text">2.1 内置分词器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-常用内置-tokenizer"><span class="nav-text">2.2 常用内置 tokenizer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-常用内置-token-filter"><span class="nav-text">2.3 常用内置 token filter</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#asciifolding"><span class="nav-text">asciifolding</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#length"><span class="nav-text">length</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lowercase"><span class="nav-text">lowercase</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#uppercase"><span class="nav-text">uppercase</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ngram"><span class="nav-text">ngram</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#shingle"><span class="nav-text">shingle</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stop"><span class="nav-text">stop</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#word-delimiter"><span class="nav-text">word_delimiter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#multiplexer"><span class="nav-text">multiplexer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#condition"><span class="nav-text">condition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#predicate-token-filter"><span class="nav-text">predicate_token_filter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stemmer、snowball"><span class="nav-text">stemmer、snowball</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stemmer-override"><span class="nav-text">stemmer_override</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#keyword-marker"><span class="nav-text">keyword_marker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kstem"><span class="nav-text">kstem</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#synonym"><span class="nav-text">synonym</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reverse"><span class="nav-text">reverse</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#truncate"><span class="nav-text">truncate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#unique"><span class="nav-text">unique</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#limit"><span class="nav-text">limit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#keep"><span class="nav-text">keep</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#apostrophe"><span class="nav-text">apostrophe</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fingerprint"><span class="nav-text">fingerprint</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-常用内容中-char-filter"><span class="nav-text">2.4 常用内容中 char filter</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#html-strip-char-filter"><span class="nav-text">html_strip char filter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mapping-char-filter"><span class="nav-text">mapping char filter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pattern-replace-char-filter"><span class="nav-text">pattern replace char filter</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-跨集群检索"><span class="nav-text">3. 跨集群检索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-跨集群检索案例"><span class="nav-text">3.1 跨集群检索案例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-cross-cluster-search-CCS-是如何工作的"><span class="nav-text">3.2 cross-cluster search(CCS) 是如何工作的</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Minimize-network-roundtrips-检索的步骤："><span class="nav-text">Minimize network roundtrips 检索的步骤：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Don’t-minimize-network-roundtrips-检索的步骤："><span class="nav-text">Don’t minimize network roundtrips 检索的步骤：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-index-level-shard-allocation"><span class="nav-text">4. index_level shard allocation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设置节点属性"><span class="nav-text">设置节点属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置索引策略："><span class="nav-text">配置索引策略：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#限制每个节点上的分片数量"><span class="nav-text">限制每个节点上的分片数量</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#5-cluster-level-shard-allocation"><span class="nav-text">5. cluster_level shard allocation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一步：设置节点属性，与index-level是相同的-可自定义"><span class="nav-text">第一步：设置节点属性，与index_level是相同的,可自定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二步：设置集群层面的分片分配策略，属性保持相同"><span class="nav-text">第二步：设置集群层面的分片分配策略，属性保持相同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试"><span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-ingest-pipeline"><span class="nav-text">6. ingest pipeline</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-增删改查"><span class="nav-text">6.1 增删改查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-condition-语法（可以使用正则判断）"><span class="nav-text">6.2 condition 语法（可以使用正则判断）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-处理器-processors"><span class="nav-text">6.3 处理器 processors</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-x-pack：role、https-配置"><span class="nav-text">7. x-pack：role、https 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-身份认证与用户鉴权"><span class="nav-text">7.1 身份认证与用户鉴权</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Authentication-认证体系"><span class="nav-text">Authentication 认证体系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Realms：X-pack中的认证服务"><span class="nav-text">Realms：X-pack中的认证服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RBAC-用户鉴权"><span class="nav-text">RBAC 用户鉴权</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-集群安全通信-tranposrt-https"><span class="nav-text">7.2 集群安全通信: tranposrt + https</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置xpack"><span class="nav-text">配置xpack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置用户名、密码"><span class="nav-text">配置用户名、密码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kibana-访问设置"><span class="nav-text">kibana 访问设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kibana的https设置"><span class="nav-text">kibana的https设置</span></a></li></ol></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">北方轻巡舰</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="/css/gitalk.css">
+  <script src="/js/src/md5.min.js"></script>
+  <script src="/js/src/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '4d8264bae956afc03d03',
+		  clientSecret: 'cd2ea936a06ea5daf08bc14cd5538ae1f7eb491e',
+		  repo: 'hoppoComments',
+		  owner: 'zengxin166850',
+		  admin: ['zengxin166850'], 
+		  id: md5(location.pathname),
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script src="/js/src/autoload.js"></script>
+</body>
+</html>

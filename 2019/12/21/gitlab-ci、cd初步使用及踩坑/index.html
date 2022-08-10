@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="docker,CI/CD,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="基本概念CI/CDCI全称为Continuous Integration代表持续集成的意思，通俗来说就是持续的自动构建（单元测试、打包等）。 CD全称为Continuous Deployment代表持续交付的意思，在代码构建完成后自动部署上线。 gitlab-ci/cd基于gitlab的一套ci/cd工具">
+<meta name="keywords" content="docker,CI&#x2F;CD">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gitlab-ci、cd初步使用及踩坑">
+<meta property="og:url" content="http://yoursite.com/2019/12/21/gitlab-ci、cd初步使用及踩坑/index.html">
+<meta property="og:site_name" content="北方轻巡舰的博客">
+<meta property="og:description" content="基本概念CI/CDCI全称为Continuous Integration代表持续集成的意思，通俗来说就是持续的自动构建（单元测试、打包等）。 CD全称为Continuous Deployment代表持续交付的意思，在代码构建完成后自动部署上线。 gitlab-ci/cd基于gitlab的一套ci/cd工具">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/201912/gitlab-runner-runonnoTag.png">
+<meta property="og:updated_time" content="2022-03-19T14:32:47.481Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gitlab-ci、cd初步使用及踩坑">
+<meta name="twitter:description" content="基本概念CI/CDCI全称为Continuous Integration代表持续集成的意思，通俗来说就是持续的自动构建（单元测试、打包等）。 CD全称为Continuous Deployment代表持续交付的意思，在代码构建完成后自动部署上线。 gitlab-ci/cd基于gitlab的一套ci/cd工具">
+<meta name="twitter:image" content="http://yoursite.com/images/201912/gitlab-runner-runonnoTag.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/21/gitlab-ci、cd初步使用及踩坑/">
+
+
+
+
+
+  <title>gitlab-ci、cd初步使用及踩坑 | 北方轻巡舰的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">北方轻巡舰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/21/gitlab-ci、cd初步使用及踩坑/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">gitlab-ci、cd初步使用及踩坑</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-21T16:30:18+08:00">
+                2019-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/devops/" itemprop="url" rel="index">
+                    <span itemprop="name">devops</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="CI-CD"><a href="#CI-CD" class="headerlink" title="CI/CD"></a>CI/CD</h3><p>CI全称为<code>Continuous Integration</code>代表持续集成的意思，通俗来说就是持续的自动构建（单元测试、打包等）。</p>
+<p>CD全称为<code>Continuous Deployment</code>代表持续交付的意思，在代码构建完成后自动部署上线。</p>
+<h3 id="gitlab-ci-cd"><a href="#gitlab-ci-cd" class="headerlink" title="gitlab-ci/cd"></a>gitlab-ci/cd</h3><p>基于<code>gitlab</code>的一套<code>ci/cd</code>工具<a id="more"></a></p>
+<h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><h3 id="1-ci文件配置"><a href="#1-ci文件配置" class="headerlink" title="1.ci文件配置"></a>1.ci文件配置</h3><p><code>gitlab-ci</code>是<code>gitlab</code>自带的功能，只需在项目的根目录添加一个<code>.gitlab-ci.yml</code>的文件名即可。例如我所使用的这个：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">    - build</span><br><span class="line">    - qbjsonar</span><br><span class="line"></span><br><span class="line">build-job:</span><br><span class="line">    stage: build</span><br><span class="line">    only: </span><br><span class="line">        - dev</span><br><span class="line">    script:</span><br><span class="line">        - cd zhsfsjfw/ &amp;&amp; pwd</span><br><span class="line">        - mvn clean package</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sonar-job:</span><br><span class="line">    stage: qbjsonar</span><br><span class="line">    only: </span><br><span class="line">        - dev</span><br><span class="line">    script:</span><br><span class="line">        - echo &apos;准备对`qbj`项目代码做sonar的质量检查！</span><br><span class="line">        - cd zhsfsjfw/</span><br><span class="line">        - mvn compile</span><br><span class="line">        - mvn sonar:sonar -Dsonar.host.url=http://172.16.34.102:9000 -Dsonar.login=497a0e0e2fc07f64c4b54edc17bb47dfa251ba34</span><br><span class="line"></span><br><span class="line">在上述这个`yml`文件中</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>stages</code>为具体步骤，名称均为自定义。</li>
+<li><code>only</code>代表只对<code>dev</code>分支进行<code>ci/cd</code>操作，其余分支不触发</li>
+<li><code>script</code>代表具体执行的脚本</li>
+</ul>
+<p>在有了这个文件之后，<code>gitlab</code>便会去寻找与之绑定的<code>gitlab-runner</code>(即具体执行<code>script</code>的所在服务器)。</p>
+<h3 id="安装runner"><a href="#安装runner" class="headerlink" title="安装runner"></a>安装runner</h3><p>这里我是用的是<code>docker</code>来运行<code>gitlab-runner</code>，命令为各处都能搜索到的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run -d --name gitlab-runner --restart always \</span><br><span class="line">    -v /srv/gitlab-runner/config:/etc/gitlab-runner \</span><br><span class="line">    -v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">    gitlab/gitlab-runner:latest</span><br></pre></td></tr></table></figure>
+<p>运行成功后<code>runner</code>就安装成功了，接下来需要配置与<code>gitlab-ci</code>的连接信息，进入容器进行注册：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it gitlab-runner gitlab-ci-multi-runner register</span><br><span class="line">...</span><br><span class="line">输入你搭建的gitlab地址:</span><br><span class="line">http://gitlab.hoppou.com</span><br><span class="line">输入gitlab-ci的token：</span><br><span class="line">（此处需要访问gitlab，找到项目的Settings，拿到相应的token值）</span><br><span class="line">输入runner的描述：</span><br><span class="line">测试runner</span><br><span class="line">输入runner的tag：</span><br><span class="line">mytag</span><br><span class="line">输入runner的执行器，包含docker，shell等多种执行器：</span><br><span class="line">shell</span><br></pre></td></tr></table></figure>
+<p>完成之后，重启<code>runner</code>使注册生效。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker restart gitlab-runner</span><br></pre></td></tr></table></figure>
+<h3 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h3><p>可以看到，我的<code>gitlab-ci</code>文件中，使用了<code>mvn</code>命令进行打包操作，而<code>runner</code>镜像本身是没有<code>java</code>环境及<code>maven</code>环境的。所以会出现以下情况。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Running with gitlab-runner 12.5.0 (577f813d)</span><br><span class="line">  on 测试runner Z6hhKYEA</span><br><span class="line">Using Shell executor...</span><br><span class="line">Running on cf7b491f673d...</span><br><span class="line">Fetching changes with git depth set to 50...</span><br><span class="line">Initialized empty Git repository in /home/gitlab-runner/builds/Z6hhKYEA/0/CDSFXZ/SF_SFXZ_OUTSOURCING/fy_scqbj_zhsfsjfw/.git/</span><br><span class="line">Created fresh repository.</span><br><span class="line">From http://gitlab.thunisoft.com/CDSFXZ/SF_SFXZ_OUTSOURCING/fy_scqbj_zhsfsjfw</span><br><span class="line"> * [new branch]      dev        -&gt; origin/dev</span><br><span class="line">Checking out c6ae4335 as dev...</span><br><span class="line">Skipping object checkout, Git LFS is not installed.</span><br><span class="line"></span><br><span class="line">Skipping Git submodules setup</span><br><span class="line">$ cd zhsfsjfw/ &amp;&amp; pwd</span><br><span class="line">/home/gitlab-runner/builds/Z6hhKYEA/0/CDSFXZ/SF_SFXZ_OUTSOURCING/fy_scqbj_zhsfsjfw/zhsfsjfw</span><br><span class="line">$ mvn clean package</span><br><span class="line">bash: line 79: mvn: command not found</span><br><span class="line">ERROR: Job failed: exit status 1</span><br></pre></td></tr></table></figure>
+<p>这里<strong>最好的方式，还是基于<code>runner</code>镜像，编写一个<code>dockerfile</code></strong>，将<code>java</code>和<code>maven</code>环境安装到<code>runner</code>中 </p>
+<p>（不过我发现的太晚了，又不想动手写<code>dockerfile</code>…..）</p>
+<p>于是我想了个骚方法- -。启动容器时，将<code>java</code>和<code>maven</code>的文件夹挂载到容器中去，于是我的启动命令变成了这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name gitlab-runner --restart always  \</span><br><span class="line">-v /home/volume/jdk1.8.0_211:/usr/local/jdk1.8.0_211 \</span><br><span class="line">-v /home/volume/apache-maven-3.6.3:/usr/local/apache-maven-3.6.3 \</span><br><span class="line">--env JAVA_HOME=/usr/local/jdk1.8.0_211 \</span><br><span class="line">--env MAVEN_HOME=/usr/local/apache-maven-3.6.3 \</span><br><span class="line">--env PATH=$PATH:$JAVA_HOME/bin:$MAVEN_HOME/bin \</span><br><span class="line">--privileged=true gitlab/gitlab-runner:latest</span><br></pre></td></tr></table></figure>
+<p>好像起初一看没什么问题？一番操作后，还是报错找不到<code>mvn</code>命令。于是进入到容器中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it gitlab-runner /bin/sh</span><br><span class="line"># env</span><br><span class="line">HOSTNAME=8014398ff403</span><br><span class="line">HOME=/root</span><br><span class="line">MAVEN_HOME=/usr/local/apache-maven-3.6.3</span><br><span class="line">TERM=xterm</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</span><br><span class="line">DEBIAN_FRONTEND=noninteractive</span><br><span class="line">JAVA_HOME=/usr/local/jdk1.8.0_211</span><br><span class="line">PWD=/</span><br></pre></td></tr></table></figure>
+<p>原来容器内部的<code>PATH</code>环境变并未发生更改，具体原因我猜测是<code>docker run</code>命令中使用的<code>$JAVA_HOME/bin</code>等并没有作为字符串传到容器中去，命令解析时是以宿主机的环境变量为准，而我宿主机并未配置该环境变量。</p>
+<p>在我直接按照如下方式写的时候，是可以起效的：（不过谁会愿意这么些呢。。。又臭又长）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-- env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/jdk1.8.0_211/bin:/usr/local/apache-maven-3.6.3/bin</span><br></pre></td></tr></table></figure></p>
+<p>于是我<strong>去掉了对PATH变量的赋值</strong>，修改<code>gitlabc-ci</code>文件为如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">    - build</span><br><span class="line">    - qbjsonar</span><br><span class="line"></span><br><span class="line">build-job:</span><br><span class="line">    stage: build</span><br><span class="line">    only: </span><br><span class="line">        - dev</span><br><span class="line">    script:</span><br><span class="line">        - cd zhsfsjfw/ &amp;&amp; pwd</span><br><span class="line">        - $MAVEN_HOME/bin/mvn clean package</span><br><span class="line">    tags: </span><br><span class="line">        - mytag</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sonar-job:</span><br><span class="line">    stage: qbjsonar</span><br><span class="line">    only: </span><br><span class="line">        - dev</span><br><span class="line">    script:</span><br><span class="line">        - echo &apos;准备对`qbj`项目代码做sonar的质量检查！</span><br><span class="line">        - cd zhsfsjfw/</span><br><span class="line">        - $MAVEN_HOME/bin/mvn compile</span><br><span class="line">        - $MAVEN_HOME/bin/mvn sonar:sonar -Dsonar.host.url=http://172.16.34.102:9000 -Dsonar.login=497a0e0e2fc07f64c4b54edc17bb47dfa251ba34</span><br><span class="line">    tags: </span><br><span class="line">        - mytag</span><br></pre></td></tr></table></figure>
+<p>除<code>script</code>的命令修改之外，可以看到我还添加了<code>tags</code>标签，这里匹配的是注册<code>runner</code>时，自己填写的<code>tag</code>。可以在<code>gitlab</code>的<code>settings</code>页面进行修改。</p>
+<p>如果不想配置<code>tags</code>，可以进入<code>settings --&gt; CI/CD --&gt; Runners Settings</code>,找到启用的<code>runner</code> –&gt; 编辑：</p>
+<p><img src="/images/201912/gitlab-runner-runonnoTag.png" alt="image"></p>
+<p>若<code>yml</code>没有指定<code>tags</code>，<code>settings</code>中也没有勾选该配置，<strong>那么任务会一直处于<code>pending</code>状态</strong>，提示找不到<code>runner</code>。</p>
+<p>最后再提一下关于<code>docker</code>命令中 <code>--privileged=true</code>,起初我没有添加该配置- -，虽然可以找到<code>mvn</code>命令了，但<code>ci</code>报错提示没有权限。虽然容器中默认是用的<code>root</code>用户，但这个<code>root</code>只具有容器内部的<code>root</code>权限，针对挂载的目录，他并不能操作宿主机的文件，加上<code>--privileged=true</code>后就可以了。</p>
+<p>另：<code>ci</code>发送指令给<code>runner</code>时是自己创建了一个名为<code>gitlab-runner</code>的用户(并非<code>root</code>),所以如果有别的权限问题，可以考虑将文件移动到 <code>/home/gitlab-runner</code>下操作，即可解决。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/docker/" rel="tag"><i class="fa fa-tag"></i> docker</a>
+          
+            <a href="/tags/CI-CD/" rel="tag"><i class="fa fa-tag"></i> CI/CD</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/30/mybatis插件开发/" rel="next" title="mybatis插件开发">
+                <i class="fa fa-chevron-left"></i> mybatis插件开发
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/27/Greenplum日志过大引起磁盘空间不足/" rel="prev" title="Greenplum日志过大引起磁盘空间不足">
+                Greenplum日志过大引起磁盘空间不足 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div id="gitalk-container">
+	</div>
+	
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/header.png" alt="北方轻巡舰">
+            
+              <p class="site-author-name" itemprop="name">北方轻巡舰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zengxin166850" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+		  
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CI-CD"><span class="nav-text">CI/CD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gitlab-ci-cd"><span class="nav-text">gitlab-ci/cd</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置方法"><span class="nav-text">配置方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-ci文件配置"><span class="nav-text">1.ci文件配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装runner"><span class="nav-text">安装runner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#踩坑"><span class="nav-text">踩坑</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">北方轻巡舰</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="/css/gitalk.css">
+  <script src="/js/src/md5.min.js"></script>
+  <script src="/js/src/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '4d8264bae956afc03d03',
+		  clientSecret: 'cd2ea936a06ea5daf08bc14cd5538ae1f7eb491e',
+		  repo: 'hoppoComments',
+		  owner: 'zengxin166850',
+		  admin: ['zengxin166850'], 
+		  id: md5(location.pathname),
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script src="/js/src/autoload.js"></script>
+</body>
+</html>

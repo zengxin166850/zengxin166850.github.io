@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="源码,多线程,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="无锁队列无锁也称为 LockFree，其实现原理是基于 CAS( compare and swap)  原子操作来保证多线程下共享资源的线程安全问题。  CAS(V,E,N) 代表的是要更新的值 V，预期值 E，当且仅当要更新的值等于预期值时(V=E)，将 V 的值设为 N。 CAS 操作会返回一个 boolean 值，true 表示交换成功，失败时进入循环，重新进行下一轮操作。  无锁队列则是使">
+<meta name="keywords" content="源码,多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="无锁队列的简单实现及ConcurrentLinkedQueue源码解析">
+<meta property="og:url" content="http://yoursite.com/2020/09/02/无锁队列简单实现及ConcurrentLinkedQueue源码解析/index.html">
+<meta property="og:site_name" content="北方轻巡舰的博客">
+<meta property="og:description" content="无锁队列无锁也称为 LockFree，其实现原理是基于 CAS( compare and swap)  原子操作来保证多线程下共享资源的线程安全问题。  CAS(V,E,N) 代表的是要更新的值 V，预期值 E，当且仅当要更新的值等于预期值时(V=E)，将 V 的值设为 N。 CAS 操作会返回一个 boolean 值，true 表示交换成功，失败时进入循环，重新进行下一轮操作。  无锁队列则是使">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/20200902/ConcurrentLinkedQueue.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/offer状态1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/offer状态2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/offer状态3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/offer状态4.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/offer状态5.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/offer状态6.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/offer状态7.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/offer状态8.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/offer状态9.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/poll状态1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/poll状态2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/poll状态3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/poll状态4.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/poll状态5.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/poll状态6.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/poll状态7.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/peek1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/20200902/peek2.jpg">
+<meta property="og:updated_time" content="2021-03-07T02:54:26.529Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="无锁队列的简单实现及ConcurrentLinkedQueue源码解析">
+<meta name="twitter:description" content="无锁队列无锁也称为 LockFree，其实现原理是基于 CAS( compare and swap)  原子操作来保证多线程下共享资源的线程安全问题。  CAS(V,E,N) 代表的是要更新的值 V，预期值 E，当且仅当要更新的值等于预期值时(V=E)，将 V 的值设为 N。 CAS 操作会返回一个 boolean 值，true 表示交换成功，失败时进入循环，重新进行下一轮操作。  无锁队列则是使">
+<meta name="twitter:image" content="http://yoursite.com/images/20200902/ConcurrentLinkedQueue.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/02/无锁队列简单实现及ConcurrentLinkedQueue源码解析/">
+
+
+
+
+
+  <title>无锁队列的简单实现及ConcurrentLinkedQueue源码解析 | 北方轻巡舰的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">北方轻巡舰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/02/无锁队列简单实现及ConcurrentLinkedQueue源码解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">无锁队列的简单实现及ConcurrentLinkedQueue源码解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-02T09:51:19+08:00">
+                2020-09-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深入java/" itemprop="url" rel="index">
+                    <span itemprop="name">深入java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="无锁队列"><a href="#无锁队列" class="headerlink" title="无锁队列"></a>无锁队列</h2><p>无锁也称为 <code>LockFree</code>，其实现原理是基于 <code>CAS( compare and swap)</code>  原子操作来保证多线程下共享资源的线程安全问题。</p>
+<ul>
+<li><code>CAS(V,E,N)</code> 代表的是要更新的值 <code>V</code>，预期值 <code>E</code>，当且仅当要更新的值等于预期值时<code>(V=E)</code>，将 <code>V</code> 的值设为 <code>N</code>。</li>
+<li><code>CAS</code> 操作会返回一个 <code>boolean</code> 值，<code>true</code> 表示交换成功，失败时进入循环，重新进行下一轮操作。</li>
+</ul>
+<p>无锁队列则是使用 <code>CAS</code> 来实现的，且支持并发操作的队列。在阅读源码之前，我使用 <code>Atomic</code> 包里的原子类及网上的一些参考信息编写了一个使用数组实现的简易无锁队列。</p>
+<p>代码如下：<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">public class LockFreeQueue &#123;</span><br><span class="line"></span><br><span class="line">    //队列元素</span><br><span class="line">    private AtomicReferenceArray items;</span><br><span class="line">    //容量</span><br><span class="line">    private volatile int size;</span><br><span class="line">    //入队次数</span><br><span class="line">    private AtomicInteger enCount;</span><br><span class="line">    //出队次数</span><br><span class="line">    private AtomicInteger deCount;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    LockFreeQueue(int size) &#123;</span><br><span class="line">        this.size = size;</span><br><span class="line">        //new Object[size+1]，下标0当做哨兵元素，不使用，处理下标挺麻烦的</span><br><span class="line">        items = new AtomicReferenceArray(size+1);</span><br><span class="line">        enCount = new AtomicInteger(0);</span><br><span class="line">        deCount = new AtomicInteger(0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //入队,更改队尾，入队次数和出队次数取模，可以很容易得到当前 head 和 tail 的下标</span><br><span class="line">    public boolean add(Object obj) throws Exception &#123;</span><br><span class="line">        if (obj == null) &#123;</span><br><span class="line">            throw new Exception(&quot;元素不能为null&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        //新的 tail 位置</span><br><span class="line">        int newTailIndex = (enCount.get()+1) % size;</span><br><span class="line">        //用出队次数计算当前 head 位置</span><br><span class="line">        int headIndex = deCount.get() % size;</span><br><span class="line">        // tail 取的是+1后的模，两者相等时表示队列已满</span><br><span class="line">        if (newTailIndex == headIndex) &#123;</span><br><span class="line">            System.out.println(&quot;队列已满,&quot; + obj + &quot;入队失败!&quot;);</span><br><span class="line">            return false;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            //CAS设置值</span><br><span class="line">            while (!items.compareAndSet(newTailIndex, null, obj)) &#123;</span><br><span class="line">                add(obj);</span><br><span class="line">            &#125;</span><br><span class="line">            //入队次数+1</span><br><span class="line">            enCount.incrementAndGet();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;入队成功!&quot; + obj);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //找到队首，出队。</span><br><span class="line">    public Object poll() &#123;</span><br><span class="line">        if (enCount.get() == deCount.get()) &#123;</span><br><span class="line">            System.out.println(&quot;当前队列为空,出队失败!&quot;);</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        int headIndex = (deCount.get()+1) % size;</span><br><span class="line">        Object obj = items.get(headIndex);</span><br><span class="line">        if(obj!=null &amp;&amp; items.compareAndSet(headIndex,obj,null))&#123;</span><br><span class="line">            //出队次数+1</span><br><span class="line">            deCount.incrementAndGet();</span><br><span class="line">            System.out.println(&quot;出队成功!&quot; + obj);</span><br><span class="line">            return obj;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            // cas 失败，或其余线程已出队成功，此处线程并发高会出现递归栈溢出。。。</span><br><span class="line">            return poll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void print()&#123;</span><br><span class="line">        StringBuffer buffer = new StringBuffer(&quot;[&quot;);</span><br><span class="line">        for(int i=1;i&lt;size;i++)&#123;</span><br><span class="line">            if(items.get(i)==null)&#123;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                buffer.append(items.get(i)).append(&quot;,&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        buffer.deleteCharAt(buffer.length() - 1);</span><br><span class="line">        buffer.append(&quot;]&quot;);</span><br><span class="line">        System.out.println(&quot;当前队列为：&quot;+buffer.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        LockFreeQueue queue = new LockFreeQueue(10);</span><br><span class="line">        //弊端，数字调大后，容易出现栈溢出</span><br><span class="line">        IntStream.rangeClosed(1,20).parallel().forEach(i -&gt; &#123;</span><br><span class="line">            if (i % 2 == 0) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    queue.add(i);</span><br><span class="line">                &#125; catch (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                queue.poll();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        queue.print();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="ConcurrentLinkedQueue"><a href="#ConcurrentLinkedQueue" class="headerlink" title="ConcurrentLinkedQueue"></a>ConcurrentLinkedQueue</h2><p><code>ConcurrentLinkedQueue</code> 是 <code>jdk</code> 并发包中提供的无锁队列，它是使用单向链表来实现的，其类图结构大致如下：</p>
+<p><img src="/images/20200902/ConcurrentLinkedQueue.jpg" alt="image"></p>
+<p>结合源码通过分析可知使用的数据结构是单向链表，同时定义了两个 <code>volatile</code> 的原子变量 <code>head</code> 和 <code>tail</code> 用于表示队列的头部和尾部，队列初始化时，会将头部和尾部指向哨兵节点（构造函数）。下述代码展示了其相关的基本属性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">private transient volatile Node&lt;E&gt; head;</span><br><span class="line">private transient volatile Node&lt;E&gt; tail;</span><br><span class="line"></span><br><span class="line">//构造函数</span><br><span class="line">public ConcurrentLinkedQueue() &#123;</span><br><span class="line">    //初始化 head 和 tail 指向哨兵节点</span><br><span class="line">    head = tail = new Node&lt;E&gt;(null);</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">//静态内部类 Node</span><br><span class="line">private static class Node&lt;E&gt; &#123;</span><br><span class="line">    volatile E item; //节点值</span><br><span class="line">    volatile Node&lt;E&gt; next;//指向下一节点</span><br><span class="line"></span><br><span class="line">    //原子操作 item</span><br><span class="line">    boolean casItem(E cmp, E val) &#123;</span><br><span class="line">        return UNSAFE.compareAndSwapObject(this, itemOffset, cmp, val);</span><br><span class="line">    &#125;</span><br><span class="line">    //这里的 setLazyNext 主要在更新头结点和尾节点时用到了。</span><br><span class="line">    // putOrderedObject 采用 store-store，禁止重排序，只写回主内存，不加载到线程的工作内存中</span><br><span class="line">    void lazySetNext(Node&lt;E&gt; val) &#123;</span><br><span class="line">        UNSAFE.putOrderedObject(this, nextOffset, val);</span><br><span class="line">    &#125;</span><br><span class="line">    //原子操作 next</span><br><span class="line">    boolean casNext(Node&lt;E&gt; cmp, Node&lt;E&gt; val) &#123;</span><br><span class="line">        return UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static final sun.misc.Unsafe UNSAFE;</span><br><span class="line">    private static final long itemOffset;</span><br><span class="line">    private static final long nextOffset;</span><br><span class="line">    </span><br><span class="line">    static&#123;</span><br><span class="line">        //...此处使用静态块初始化了 unsafe、itemOffset、nextOffset</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有了内部类 <code>Node</code> 中提供的原子操作方法后，接下来看看其入队、出队等功能是如何实现的。</p>
+<h3 id="1-offer-入队操作："><a href="#1-offer-入队操作：" class="headerlink" title="1.offer 入队操作："></a>1.offer 入队操作：</h3><p><strong>入队的核心是通过 <code>CAS</code> 设置修改 <code>tail.next</code> 的值，成功则加入队列，失败的线程则继续循环，直到成功。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">public boolean offer(E e) &#123;</span><br><span class="line">    //1.检查对象是否为空，null 抛出异常</span><br><span class="line">    checkNotNull(e);</span><br><span class="line">    //2.新建节点为 newNode</span><br><span class="line">    final Node&lt;E&gt; newNode = new Node&lt;E&gt;(e);</span><br><span class="line"></span><br><span class="line">    //括号里的两行只会在循环开始时执行一次。 t 和 p 都是循环内的局部变量，估计可以优化性能吧</span><br><span class="line">    for (Node&lt;E&gt; t = tail, p = t;;) &#123;</span><br><span class="line">        //3.执行入队操作</span><br><span class="line">        Node&lt;E&gt; q = p.next;</span><br><span class="line">        //4. q 为空了，所以 p 是最后一个节点，执行插入</span><br><span class="line">        if (q == null) &#123;</span><br><span class="line">            //5.使用 cas更新尾节点为newNode</span><br><span class="line">            if (p.casNext(null, newNode)) &#123;</span><br><span class="line">                //6. cas 更新成功，尾节点已变为 newnode，返回 true，同时判断是否更新 tail 的位置</span><br><span class="line">                // tail 是间隔一个元素进行更新的，不是每次入队都会刷新 tail.</span><br><span class="line">                if (p != t) // 跳跃更新头结点 head 的位置</span><br><span class="line">                    casTail(t, newNode);  // Failure is OK.</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">            // Lost CAS race to another thread; re-read next</span><br><span class="line">        &#125;</span><br><span class="line">        //7. q 是 p 的 next 指针，两者相等说明此时为自引用状态，重新找到 head 的值。这一步判断是因 poll 引起的</span><br><span class="line">        else if (p == q)</span><br><span class="line">            //这句话是可以返回 false 的，这与 JVM 的压栈顺序有关，</span><br><span class="line">            //执行时 t 的值会先被读取压入栈底，随后读取 tail 赋给 t 将赋值结果入栈，</span><br><span class="line">            //最后取两者进行对比。因为涉及多线程操作，在入栈后赋值前若 tail 的值因其它线程发生了变化。</span><br><span class="line">            //那么取赋值后的 t 为 head ，否则 head 还是原来的 head</span><br><span class="line">            p = (t != (t = tail)) ? t : head;</span><br><span class="line">        else</span><br><span class="line">            // 8.因其它线程先 cas 成功，所以需要重新找到尾节点尝试新一轮的入队</span><br><span class="line">            p = (p != t &amp;&amp; t != (t = tail)) ? t : q;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>假设一开始队列为空，初始化后第一次入队操作时，成功运行节点1、2、3的代码后其状态如下：</p>
+<p><img src="/images/20200902/offer状态1.jpg" alt="image"></p>
+<p>到节点 4 判断 <code>q == null</code> 时，若两个线程 A,B 并发的判断成功了，都会进入节点 5 处的代码，假设线程 A 先 进行 <code>CAS</code> 更新 <code>tail</code> 成功，将 <code>newNode</code> 加入到了队列，并且，由于 <code>p==t</code>,不会触发 <code>tail</code> 的位置更新。此时队列状态为：</p>
+<p><img src="/images/20200902/offer状态2.jpg" alt="image"></p>
+<p>与此对应，线程 B 也进行 <code>CAS</code> 但因 A 已经成功，所以 B 的交换会返回 <code>false</code>，进入下一轮循环，并重新运行到节点 4 的位置，此时由于 <code>q!=null</code> 且 <code>p!=q</code> 所以会运行到节点 8，将 q 赋值给 p。此时队列状态更新为：</p>
+<p><img src="/images/20200902/offer状态3.jpg" alt="image"></p>
+<p>线程 B 继续下一轮循环，现在找到了正确的 <code>tail</code> 为 p，运行到 4 时，判断 <code>q = p.next</code> 为空，随后进入到 5 的位置，进行 <code>CAS</code> 操作且将线程 B 的 <code>newNode</code> 加入到队列中，此时队列状态为：</p>
+<p><img src="/images/20200902/offer状态4.jpg" alt="image"></p>
+<p>由于 <code>p!=t</code> ，所以触发 <code>tail</code> 结点更新，队列状态变更为：</p>
+<p><img src="/images/20200902/offer状态5.jpg" alt="image"></p>
+<p>经上述流程后， 1-8 中除 7 以外的都已经执行过了，那么节点 7 是在什么时候执行的呢。其实 7 是在其它线程进行 <code>poll</code> 后或 <code>remove</code> 后出现的一种特殊情况才会发生，其队列状态如下：</p>
+<p><img src="/images/20200902/offer状态6.jpg" alt="image"></p>
+<p>此时进行 <code>offer</code> 操作运行到 4 时的队列状态为下图所示( <code>q==null</code> 为 <code>false</code>,有自引用所以不是 <code>NULL</code> ):</p>
+<p><img src="/images/20200902/offer状态7.jpg" alt="image"></p>
+<p>随后 7 判断到 <code>p == q</code> ,将 <code>head</code> 的值赋给了 p，下一轮循环再次运行到 4 时的队列状态变为了：</p>
+<p><img src="/images/20200902/offer状态8.jpg" alt="image"></p>
+<p>此时的 <code>q ==null</code> 返回 <code>true</code>，进入 5 ，若没有线程在做 <code>offer</code> 操作，则将新节点加入到队列。</p>
+<p>由于 <code>p != t</code> 所以设置新节点为 <code>tail</code>，队列状态变为：</p>
+<p><img src="/images/20200902/offer状态9.jpg" alt="image"></p>
+<p>最后，自引用节点（自引用是在 <code>updateHead</code> 方法中产生的）会由于没有对象引用它，下一次GC时会被自动清理。</p>
+<h3 id="2-poll-出队操作："><a href="#2-poll-出队操作：" class="headerlink" title="2.poll 出队操作："></a>2.poll 出队操作：</h3><p><strong>出队的核心是找到队首 <code>head</code>，并将 <code>head</code> 的值返回，并通过 <code>CAS</code> 将 <code>head</code> 设为 <code>NULL</code> 。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public E poll() &#123;</span><br><span class="line">    //1. 标签，类似于 goto 的作用。只能用在 for、while、do while 的开始位置。</span><br><span class="line">    restartFromHead:</span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        for (Node&lt;E&gt; h = head, p = h, q;;) &#123;</span><br><span class="line">            //2.保存当前节点值</span><br><span class="line">            E item = p.item;</span><br><span class="line">            //3.判断 CAS</span><br><span class="line">            if (item != null &amp;&amp; p.casItem(item, null)) &#123;</span><br><span class="line">                //4. CAS 成功，判断是否更新 head 位置</span><br><span class="line">                if (p != h) // hop two nodes at a time</span><br><span class="line">                    updateHead(h, ((q = p.next) != null) ? q : p);</span><br><span class="line">                return item;</span><br><span class="line">            &#125;</span><br><span class="line">            //5. p 为最后一个节点，此时队列为空，返回 null</span><br><span class="line">            else if ((q = p.next) == null) &#123;</span><br><span class="line">                updateHead(h, p);</span><br><span class="line">                return null;</span><br><span class="line">            &#125;</span><br><span class="line">            //6.自关联状态，重新回到goto</span><br><span class="line">            else if (p == q)</span><br><span class="line">                continue restartFromHead;</span><br><span class="line">            //7.将下一个节点赋值给 p，重新循环。</span><br><span class="line">            else</span><br><span class="line">                p = q;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述的代码一共分为了 7 个部分，现在假设队列一开始为空，线程运行到节点 3 的时候，队列状态为如下：</p>
+<p><img src="/images/20200902/poll状态1.jpg" alt="image"></p>
+<p>此时，<code>item</code> 的值为空，且 <code>(q = p.next) == null</code> 返回 <code>true</code> ，队列为空，代码进入到节点 5 交换头结点，但由于h和p是相等的，所以不会变化，返回 <code>null</code> 值。</p>
+<p>倘若当线程A运行到节点 5 时，线程 B 已经入队了一个元素。队列的状态变为了：</p>
+<p><img src="/images/20200902/poll状态2.jpg" alt="image"></p>
+<p>此时节点 5、6 都会判断失败，代码进入到节点 7，将 q 的值赋给了 p，并进入下一轮循环，此时队列状态更新为：</p>
+<p><img src="/images/20200902/poll状态3.jpg" alt="image"></p>
+<p>当代码再次运行到节点 3 的时候，队列状态为下图所示：</p>
+<p><img src="/images/20200902/poll状态4.jpg" alt="image"></p>
+<p>节点 4 判断 <code>item!=null</code>，且此时没有其它线程干扰的话，<code>CAS</code> 成功， 由于 <code>p!=h</code> 所以更新头结点的位置为 p，队列状态更新为：（这时候，<code>tail</code> 的状态就是上面 <code>offer</code> 操作时节点7对应的状态。）</p>
+<p><img src="/images/20200902/poll状态5.jpg" alt="image"></p>
+<p>对于 <code>poll</code> 操作的节点 6，也是一种并发场景，它出现在当线程 A 执行第四步，<code>CAS</code> 刚成功，但还没有更新头结点。此时线程 B 刚开始 <code>poll</code> 操作，得到 p 指向 <code>head</code>，队列状态为如下：</p>
+<p><img src="/images/20200902/poll状态6.jpg" alt="image"></p>
+<p>这时，线程A 更新 <code>head</code> 成功退出循环，原来的元素变成自引用，队列状态变为：</p>
+<p><img src="/images/20200902/poll状态7.jpg" alt="image"></p>
+<p>当线程 B 运行到 6 时，就会发生 <code>p== q</code>，跳回到循环起始位置，重新获取 <code>head</code> 出队。</p>
+<h4 id="3-peek获取队首"><a href="#3-peek获取队首" class="headerlink" title="3.peek获取队首"></a>3.peek获取队首</h4><p><code>peek</code> 的功能是返回队首元素，但不出队。所以比起 <code>poll</code> 而言，本质就是少了 <code>CAS</code> 操作而已。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public E peek() &#123;</span><br><span class="line">    restartFromHead:</span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        for (Node&lt;E&gt; h = head, p = h, q;;) &#123;</span><br><span class="line">            //1.存储节点值</span><br><span class="line">            E item = p.item;</span><br><span class="line">            //2.判断节点</span><br><span class="line">            if (item != null || (q = p.next) == null) &#123;</span><br><span class="line">                updateHead(h, p);</span><br><span class="line">                return item;</span><br><span class="line">            &#125;</span><br><span class="line">            //3.处理自引用</span><br><span class="line">            else if (p == q)</span><br><span class="line">                continue restartFromHead;</span><br><span class="line">            else</span><br><span class="line">            //4.重新定位头结点的位置</span><br><span class="line">                p = q;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于初始时，<code>head</code> 和 <code>tail</code> 指向的是哨兵节点。<code>peek</code> 进行第一次循环时得到的 <code>item</code>必定为 <code>null</code>，如果队列中没有元素，那么 2 判断成功，更新头结点，但 <code>h==p</code> 所以没有变化，返回 <code>null</code> 值。</p>
+<p><img src="/images/20200902/peek1.jpg" alt="image"></p>
+<p>如果队列中有元素，代码进入到 4，更新 p 的位置。下次运行到 2  时，<code>item!=null</code>，更新头结点成功，并返回真正的 <code>head</code> 值。</p>
+<p><img src="/images/20200902/peek2.jpg" alt="image"></p>
+<p>出现自引用时，更新头结点位置与 <code>poll</code> 的方式相同，不再说明。</p>
+<h3 id="4-updateHead更新头结点"><a href="#4-updateHead更新头结点" class="headerlink" title="4.updateHead更新头结点"></a>4.updateHead更新头结点</h3><p>该方法用于交换头结点的位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">final void updateHead(Node&lt;E&gt; h, Node&lt;E&gt; p) &#123;</span><br><span class="line">    //当 h!=p 时，且 cas 更新头节点成功，执行 lazySetNext，将 h 指向 h 自己，也就是自引用。</span><br><span class="line">    if (h != p &amp;&amp; casHead(h, p))</span><br><span class="line">        h.lazySetNext(h);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>上述说到自引用的时候可能会有疑惑，其实就是因为 <code>updateHead</code> 方法中 <code>lazySetNext</code> 的原因。</strong></p>
+<h3 id="5-first-取第一个元素"><a href="#5-first-取第一个元素" class="headerlink" title="5. first 取第一个元素"></a>5. first 取第一个元素</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Node&lt;E&gt; first() &#123;</span><br><span class="line">    restartFromHead:</span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        for (Node&lt;E&gt; h = head, p = h, q;;) &#123;</span><br><span class="line">            boolean hasItem = (p.item != null);</span><br><span class="line">            //判断是否有值，head 位置没更新的时候更新 head</span><br><span class="line">            if (hasItem || (q = p.next) == null) &#123;</span><br><span class="line">                updateHead(h, p);</span><br><span class="line">                return hasItem ? p : null;</span><br><span class="line">            &#125;</span><br><span class="line">            else if (p == q)</span><br><span class="line">                continue restartFromHead;</span><br><span class="line">            else</span><br><span class="line">                p = q;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="6-其余方法"><a href="#6-其余方法" class="headerlink" title="6.其余方法"></a>6.其余方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">//获取下一个元素</span><br><span class="line">final Node&lt;E&gt; succ(Node&lt;E&gt; p) &#123;</span><br><span class="line">    Node&lt;E&gt; next = p.next;</span><br><span class="line">    //判断是否自引用？是返回 head，否则 next</span><br><span class="line">    return (p == next) ? head : next;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//获取size大小，并发可能不准确</span><br><span class="line">public int size() &#123;</span><br><span class="line">    int count = 0;</span><br><span class="line">    //从第一个元素开始，不断取next</span><br><span class="line">    for (Node&lt;E&gt; p = first(); p != null; p = succ(p))</span><br><span class="line">        if (p.item != null)</span><br><span class="line">            // 最大返回MAX_VALUE</span><br><span class="line">            if (++count == Integer.MAX_VALUE)</span><br><span class="line">                break;</span><br><span class="line">    return count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//判断元素是否存在，也可能不准确</span><br><span class="line">public boolean contains(Object o) &#123;</span><br><span class="line">    if (o == null) return false;</span><br><span class="line">    for (Node&lt;E&gt; p = first(); p != null; p = succ(p)) &#123;</span><br><span class="line">        E item = p.item;</span><br><span class="line">        if (item != null &amp;&amp; o.equals(item))</span><br><span class="line">            return true;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//移除对象</span><br><span class="line">public boolean remove(Object o) &#123;</span><br><span class="line">    // 不能为null</span><br><span class="line">    if (o != null) &#123;</span><br><span class="line">        Node&lt;E&gt; next, pred = null;</span><br><span class="line">        //从第一个节点开始遍历</span><br><span class="line">        for (Node&lt;E&gt; p = first(); p != null; pred = p, p = next) &#123;</span><br><span class="line">            boolean removed = false;</span><br><span class="line">            E item = p.item;</span><br><span class="line"> </span><br><span class="line">            if (item != null) &#123;</span><br><span class="line">                // 若不匹配，则获取next节点继续匹配</span><br><span class="line">                if (!o.equals(item)) &#123;</span><br><span class="line">                    next = succ(p);</span><br><span class="line">                    continue;</span><br><span class="line">                &#125;</span><br><span class="line"> </span><br><span class="line">                // 若匹配，则通过CAS操作将对应节点元素置为null</span><br><span class="line">                removed = p.casItem(item, null);</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            // 获取删除节点的后继节点</span><br><span class="line">            next = succ(p);</span><br><span class="line">            if (pred != null &amp;&amp; next != null) // unlink</span><br><span class="line">                //维护pred和next之间的链表关系,将被删除的节点移除队列</span><br><span class="line">                pred.casNext(p, next);</span><br><span class="line">            if (removed)</span><br><span class="line">                return true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="tips"><a href="#tips" class="headerlink" title="tips"></a>tips</h3><ul>
+<li><p><code>head/tail</code> 并非总是指向队列的头 / 尾节点，而是采用了一种 <code>hop two nodes at a time</code> 的<br>方式，每隔一个节点更新。或者在进行其他的操作的时候变相更新位置。(事实上，<code>remove</code>、<code>peek</code>、<code>first</code>、<code>poll</code>都会更新 <code>head</code> 的位置)。</p>
+</li>
+<li><p>由于队列有时会处于不一致状态。为此，<code>ConcurrentLinkedQueue</code> 使用 <a href="https://developer.ibm.com/zh/articles/j-lo-concurrent/" target="_blank" rel="noopener">三个不变式</a> 来维护非阻塞算法的正确性。</p>
+</li>
+<li><p>为了有利于垃圾收集，队列使用了特有的 <code>head</code> 更新机制；通过 <code>setLazyNext</code> 将原节点改为自引用，促进垃圾回收。</p>
+</li>
+</ul>
+<h4 id="为什么使用-hop-的方式更新-head-和-tail"><a href="#为什么使用-hop-的方式更新-head-和-tail" class="headerlink" title="为什么使用 hop 的方式更新 head 和 tail"></a>为什么使用 hop 的方式更新 head 和 tail</h4><p>其实一直将 <code>tail</code> 节点作为队列的尾节点是可以的，但这样会导致每次入队后，都要用 <code>CAS</code> 更新 <code>tail</code>，如果能减少 <code>CAS</code>更新 <code>tail</code> 的次数，就能变相的提高入队的效率。但如果每次 <code>hop</code> 的距离过大，就会加长定位尾节点的时间，所以源码的实现里是跳了一个位置。</p>
+<p>总结自《并发编程艺术》、和许多博文（orz）。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码/" rel="tag"><i class="fa fa-tag"></i> 源码</a>
+          
+            <a href="/tags/多线程/" rel="tag"><i class="fa fa-tag"></i> 多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/05/ES基础--常用知识梳理/" rel="next" title="ES基础--常用知识梳理">
+                <i class="fa fa-chevron-left"></i> ES基础--常用知识梳理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/07/mysql5.7-31 主从复制安装(windows)/" rel="prev" title="mysql5.7-31 主从复制安装(windows)">
+                mysql5.7-31 主从复制安装(windows) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div id="gitalk-container">
+	</div>
+	
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/header.png" alt="北方轻巡舰">
+            
+              <p class="site-author-name" itemprop="name">北方轻巡舰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zengxin166850" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+		  
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#无锁队列"><span class="nav-text">无锁队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentLinkedQueue"><span class="nav-text">ConcurrentLinkedQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-offer-入队操作："><span class="nav-text">1.offer 入队操作：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-poll-出队操作："><span class="nav-text">2.poll 出队操作：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-peek获取队首"><span class="nav-text">3.peek获取队首</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-updateHead更新头结点"><span class="nav-text">4.updateHead更新头结点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-first-取第一个元素"><span class="nav-text">5. first 取第一个元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-其余方法"><span class="nav-text">6.其余方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tips"><span class="nav-text">tips</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么使用-hop-的方式更新-head-和-tail"><span class="nav-text">为什么使用 hop 的方式更新 head 和 tail</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">北方轻巡舰</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="/css/gitalk.css">
+  <script src="/js/src/md5.min.js"></script>
+  <script src="/js/src/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '4d8264bae956afc03d03',
+		  clientSecret: 'cd2ea936a06ea5daf08bc14cd5538ae1f7eb491e',
+		  repo: 'hoppoComments',
+		  owner: 'zengxin166850',
+		  admin: ['zengxin166850'], 
+		  id: md5(location.pathname),
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script src="/js/src/autoload.js"></script>
+</body>
+</html>

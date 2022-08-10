@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="elasticsearch,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="分片分配案例1：将索引 A 所有 shards 分配到 node1, 索引 B 的所有 shards 分配到 node2 、 node3具体步骤：  为三个节点分别设置不同的属性，假设 node1 为 hot ，node2 和 node3 均为 warm 在 node1 的配置文件中增加 node.attr.hot_waram: hot 在 node2 和 node3 的配置文件中增加 node.">
+<meta name="keywords" content="elasticsearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模拟题记录">
+<meta property="og:url" content="http://yoursite.com/2021/05/29/模拟题记录/index.html">
+<meta property="og:site_name" content="北方轻巡舰的博客">
+<meta property="og:description" content="分片分配案例1：将索引 A 所有 shards 分配到 node1, 索引 B 的所有 shards 分配到 node2 、 node3具体步骤：  为三个节点分别设置不同的属性，假设 node1 为 hot ，node2 和 node3 均为 warm 在 node1 的配置文件中增加 node.attr.hot_waram: hot 在 node2 和 node3 的配置文件中增加 node.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/202105/贝德维尔.jpg">
+<meta property="og:updated_time" content="2021-06-06T07:32:32.681Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="模拟题记录">
+<meta name="twitter:description" content="分片分配案例1：将索引 A 所有 shards 分配到 node1, 索引 B 的所有 shards 分配到 node2 、 node3具体步骤：  为三个节点分别设置不同的属性，假设 node1 为 hot ，node2 和 node3 均为 warm 在 node1 的配置文件中增加 node.attr.hot_waram: hot 在 node2 和 node3 的配置文件中增加 node.">
+<meta name="twitter:image" content="http://yoursite.com/images/202105/贝德维尔.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/05/29/模拟题记录/">
+
+
+
+
+
+  <title>模拟题记录 | 北方轻巡舰的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">北方轻巡舰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/05/29/模拟题记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">模拟题记录</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-29T09:39:06+08:00">
+                2021-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习打卡/" itemprop="url" rel="index">
+                    <span itemprop="name">学习打卡</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="分片分配"><a href="#分片分配" class="headerlink" title="分片分配"></a>分片分配</h2><h3 id="案例1：将索引-A-所有-shards-分配到-node1-索引-B-的所有-shards-分配到-node2-、-node3"><a href="#案例1：将索引-A-所有-shards-分配到-node1-索引-B-的所有-shards-分配到-node2-、-node3" class="headerlink" title="案例1：将索引 A 所有 shards 分配到 node1, 索引 B 的所有 shards 分配到 node2 、 node3"></a>案例1：将索引 A 所有 shards 分配到 node1, 索引 B 的所有 shards 分配到 node2 、 node3</h3><p>具体步骤：</p>
+<ul>
+<li>为三个节点分别设置不同的属性，假设 <code>node1</code> 为 <code>hot</code> ，<code>node2</code> 和 <code>node3</code> 均为 <code>warm</code></li>
+<li>在 <code>node1</code> 的配置文件中增加 <code>node.attr.hot_waram: hot</code> 在 <code>node2</code> 和 <code>node3</code> 的配置文件中增加 <code>node.attr.hot_warm: warm</code> </li>
+<li>依次重启集群中的节点</li>
+</ul>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PUT index_a/_settings</span><br><span class="line">&#123;</span><br><span class="line">    &quot;index.routing.allocation.require.hot_warm&quot;: &quot;hot&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT index_b/_settings</span><br><span class="line">&#123;</span><br><span class="line">    &quot;index.routing.allocation.require.hot_warm&quot;: &quot;warm&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看分片的位置，以及重新分配的状态：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET _cat/shards/index_a?v</span><br><span class="line"></span><br><span class="line">GET _cat/shards/index_b?v</span><br></pre></td></tr></table></figure></p>
+<p><span style="color:red">重点！！！想要取消设置，可以设置对应的项为空，例如： <code>index.routing.allocation.include.hot_warm:null</code></span></p>
+<blockquote>
+<p>exclude,include,require 的属性值均采用逗号分隔的字符串。不是数组！</p>
+</blockquote>
+<h3 id="案例2：-将索引-hamlet-设置为不允许分配在节点-node3-上"><a href="#案例2：-将索引-hamlet-设置为不允许分配在节点-node3-上" class="headerlink" title="案例2： 将索引 hamlet 设置为不允许分配在节点 node3 上"></a>案例2： 将索引 hamlet 设置为不允许分配在节点 node3 上</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PUT hamlet/_settings</span><br><span class="line">&#123;</span><br><span class="line">    &quot;index.routing.allocation.exclude._name&quot;:&quot;node3&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注： <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.2/allocation-filtering.html" target="_blank" rel="noopener"><code>_name</code> 是内置的节点属性，除_name之外还包括_ip、_host两个属性</a></p>
+<h3 id="案例3：按照要求给节点设置属性-AZ"><a href="#案例3：按照要求给节点设置属性-AZ" class="headerlink" title="案例3：按照要求给节点设置属性 AZ"></a>案例3：按照要求给节点设置属性 AZ</h3><p>要求将 <code>node1</code> 和 <code>node2</code> 的属性设置为 <code>earth</code>、<code>node3</code> 设置为 <code>mars</code>。分片进行 <code>force awareness</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#在node1和node2 中配置</span><br><span class="line">node.attr.AZ: earth</span><br><span class="line"></span><br><span class="line">#在node3中配置</span><br><span class="line">node.attr.AZ: mars</span><br></pre></td></tr></table></figure>
+<p>新增如上配置，然后重启集群。添加如下设置即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PUT _cluster/settings</span><br><span class="line">&#123;</span><br><span class="line">    &quot;persistent&quot;:&#123;</span><br><span class="line">        &quot;cluster.routing.allocation.awareness.attributes&quot;: &quot;AZ&quot;,</span><br><span class="line">        &quot;cluster.routing.allocation.awareness.force.zone.values&quot;: &quot;earth,mars&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="单节点-RBAC-全流程配置"><a href="#单节点-RBAC-全流程配置" class="headerlink" title="单节点 RBAC 全流程配置"></a>单节点 RBAC 全流程配置</h2><p>在节点的 <code>elasticsearch.yml</code> 中开启 <code>xpack</code>，增加如下配置项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">xpack.security.enabled: true</span><br><span class="line">xpack.security.transport.ssl.enabled: true</span><br></pre></td></tr></table></figure>
+<p>重启 <code>elasticsearch</code> ，然后执行密码初始化的 <code>shell</code> :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./elasticsearch-setup-passwords interactive</span><br></pre></td></tr></table></figure></p>
+<p>这个 <code>shell</code> 只能执行一次，如果已经执行过，就只能用 <code>dsl</code> 或者在 <code>kibana</code> 界面中进行密码的修改了。</p>
+<p>修改 <code>kibana</code> 中的以下配置项，并重启<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">elasticsearch.username: &quot;elastic&quot;</span><br><span class="line">elasticsearch.password: &quot;123456&quot;</span><br></pre></td></tr></table></figure></p>
+<p>在设置界面中按照要求配置 <code>user</code> 和 <code>role</code> 即可。</p>
+<h2 id="date-histogram-pipeline-聚合"><a href="#date-histogram-pipeline-聚合" class="headerlink" title="date_histogram + pipeline 聚合"></a>date_histogram + pipeline 聚合</h2><p>先求每个月的平均值，然后找出平均值最大的那个月,需要注意是 <code>buckets_path</code> ，有个负数 <code>s</code>，练习时这里我犯了好几回错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">GET earthquake/_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;size&quot;:0,</span><br><span class="line">    &quot;aggs&quot;:&#123;</span><br><span class="line">        &quot;month_aggs&quot;:&#123;</span><br><span class="line">            &quot;date_histogram&quot;:&#123;</span><br><span class="line">                &quot;field&quot;: &quot;magnitude&quot;,</span><br><span class="line">                &quot;calendar_interval&quot;: &quot;1M&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;aggs&quot;:&#123;</span><br><span class="line">                &quot;avg_aggs&quot;:&#123;</span><br><span class="line">                    &quot;avg&quot;:&#123;</span><br><span class="line">                        &quot;field&quot;: &quot;magnitude&quot;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;max_avg_magnitude&quot;:&#123;</span><br><span class="line">            &quot;max_bucket&quot;:&#123;</span><br><span class="line">                &quot;buckets_path&quot;:&quot;month_aggs.avg_aggs&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ingest-数据处理"><a href="#ingest-数据处理" class="headerlink" title="ingest 数据处理"></a>ingest 数据处理</h2><h3 id="案例1：对数组进行处理-数据样例大致如下"><a href="#案例1：对数组进行处理-数据样例大致如下" class="headerlink" title="案例1：对数组进行处理,数据样例大致如下"></a>案例1：对数组进行处理,数据样例大致如下</h3> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> POST test_005/_bulk</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_id&quot;:1&#125;&#125;</span><br><span class="line">&#123;&quot;tags&quot;:[&quot;ping pang&quot;, &quot;basket ball&quot;, &quot; foot bool &quot;]&#125;</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_id&quot;:2&#125;&#125;</span><br><span class="line">&#123;&quot;tags&quot;:[&quot; ping pang &quot;, &quot;gof bal&quot;]&#125;</span><br></pre></td></tr></table></figure>
+<p> 要求：去除字符串中的空格，增加一个新字段 <code>array_length</code>，值为数组 <code>tags</code> 的长度<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">PUT _ingest/pipeline/my_pipeline</span><br><span class="line">&#123;</span><br><span class="line">    &quot;description&quot;:&quot;for practice&quot;,</span><br><span class="line">    &quot;processors&quot;:[</span><br><span class="line">      &#123;</span><br><span class="line">          &quot;foreach&quot;:&#123;</span><br><span class="line">              &quot;field&quot;: &quot;tags&quot;,</span><br><span class="line">              &quot;processor&quot;:&#123;</span><br><span class="line">                  &quot;trim&quot;:&#123;</span><br><span class="line">                      &quot;field&quot;:&quot;_ingest._value&quot;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">          &quot;script&quot;:&#123;</span><br><span class="line">              &quot;source&quot;:&quot;&quot;&quot;</span><br><span class="line">              ArrayList list = ctx.tags;</span><br><span class="line">              ctx.array_length = list.size();</span><br><span class="line">              &quot;&quot;&quot;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST test_005/_update_by_query?pipeline=my_pipeline</span><br><span class="line">#验证结果</span><br><span class="line">GET test_005/_search</span><br></pre></td></tr></table></figure></p>
+<h3 id="案例2：根据条件判断的结果，处理数据"><a href="#案例2：根据条件判断的结果，处理数据" class="headerlink" title="案例2：根据条件判断的结果，处理数据"></a>案例2：根据条件判断的结果，处理数据</h3><ul>
+<li>设置 <code>pipeline</code> 名称为 <code>earthquakes_pipeline</code></li>
+<li>将 <code>magnitude_type</code> 字段的值转为大写</li>
+<li>如果字段中包含 <code>batch_number</code> 则将该值 <code>+1</code> ，否则将 <code>batch_number</code> 置为 <code>1</code>;</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">POST earthquakes/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;batch_number&quot;: 999,</span><br><span class="line">  &quot;magnitude_type&quot;:&quot;abc&quot;</span><br><span class="line">&#125;</span><br><span class="line">POST earthquakes/_doc/2</span><br><span class="line">&#123;</span><br><span class="line">  &quot;magnitude_type&quot;:&quot;cde&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT _ingest/pipeline/earthquakes_pipeline</span><br><span class="line">&#123;</span><br><span class="line">    &quot;description&quot;:&quot;earth_quakes test&quot;,</span><br><span class="line">    &quot;processors&quot;:[</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;uppercase&quot;:&#123;</span><br><span class="line">            &quot;field&quot;:&quot;magnitude_type&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;script&quot;:&#123;</span><br><span class="line">            &quot;source&quot;:&quot;&quot;&quot;</span><br><span class="line">            if(ctx.batch_number == null)&#123;</span><br><span class="line">                ctx.batch_number = 1;</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                ctx.batch_number +=1;</span><br><span class="line">            &#125;</span><br><span class="line">            &quot;&quot;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">POST earthquakes/_update_by_query?pipeline=earthquakes_pipeline</span><br><span class="line"></span><br><span class="line">GET earthquakes/_search</span><br></pre></td></tr></table></figure>
+<h3 id="案例3：计算字符串长度并分割字符串为数组，最后-reindex-到新索引"><a href="#案例3：计算字符串长度并分割字符串为数组，最后-reindex-到新索引" class="headerlink" title="案例3：计算字符串长度并分割字符串为数组，最后 reindex 到新索引,"></a>案例3：计算字符串长度并分割字符串为数组，最后 reindex 到新索引,</h3><p>虽然 <code>reindex</code> 可以直接写 <code>script</code> ，但采用 <code>ingest</code> 实现更为稳妥一些<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">PUT _ingest/pipeline/reindex_pipeline</span><br><span class="line">&#123;</span><br><span class="line">    &quot;description&quot;:&quot;for reindex test&quot;,</span><br><span class="line">    &quot;processors&quot;:[</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;script&quot;:&#123;</span><br><span class="line">            &quot;source&quot;: &quot;&quot;&quot;</span><br><span class="line">            ctx.content_length = ctx.title.length();</span><br><span class="line">            &quot;&quot;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;set&quot;:&#123;</span><br><span class="line">            &quot;field&quot;:&quot;split_title&quot;,</span><br><span class="line">            &quot;value&quot;:&quot;&#123;&#123;title&#125;&#125;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;split&quot;:&#123;</span><br><span class="line">            &quot;field&quot;:&quot;split_title&quot;,</span><br><span class="line">            &quot;separator&quot;:&quot; &quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">DELETE index_a</span><br><span class="line"></span><br><span class="line">POST index_a/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;title&quot;:&quot;foo bar&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST index_a/_update_by_query?pipeline=reindex_pipeline</span><br><span class="line"></span><br><span class="line">GET index_a/_search</span><br></pre></td></tr></table></figure></p>
+<h3 id="案例4：-使用-分割字符串，并将分割后的结果存到三个不同的字段中"><a href="#案例4：-使用-分割字符串，并将分割后的结果存到三个不同的字段中" class="headerlink" title="案例4： 使用 . 分割字符串，并将分割后的结果存到三个不同的字段中"></a>案例4： 使用 . 分割字符串，并将分割后的结果存到三个不同的字段中</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">POST _ingest/pipeline/_simulate</span><br><span class="line">&#123;</span><br><span class="line">  &quot;pipeline&quot; : &#123;</span><br><span class="line">   &quot;description&quot;: &quot;split pipeline&quot;,</span><br><span class="line">  &quot;processors&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;split&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: &quot;line_number&quot;,</span><br><span class="line">        &quot;separator&quot;: &quot;\\.&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;set&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: &quot;number_act&quot;,</span><br><span class="line">        &quot;value&quot;: &quot;&#123;&#123;line_number.0&#125;&#125;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">     &#123;</span><br><span class="line">      &quot;set&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: &quot;number_scene&quot;,</span><br><span class="line">        &quot;value&quot;: &quot;&#123;&#123;line_number.1&#125;&#125;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">     &#123;</span><br><span class="line">      &quot;set&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: &quot;number_line&quot;,</span><br><span class="line">        &quot;value&quot;: &quot;&#123;&#123;line_number.2&#125;&#125;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">     &#123;</span><br><span class="line">        &quot;script&quot;: &#123;</span><br><span class="line">          &quot;source&quot;: &quot;&quot;&quot;</span><br><span class="line">            ctx.a1 = ctx.line_number.0;</span><br><span class="line">            ctx.a2 = ctx.line_number.1;</span><br><span class="line">            ctx.a3 = ctx.line_number.2;</span><br><span class="line">          &quot;&quot;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  ]</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;docs&quot; : [</span><br><span class="line">    &#123; &quot;_source&quot;: &#123; &quot;line_number&quot;: &quot;1.2.3&quot;&#125; &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="別名操作"><a href="#別名操作" class="headerlink" title="別名操作"></a>別名操作</h2><p>别名的快速操作:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PUT &#123;index_name&#125;/_alias/&#123;alias_name&#125;</span><br><span class="line"></span><br><span class="line">GET &#123;index_name&#125;/_alias/&#123;alias_name&#125;</span><br><span class="line"></span><br><span class="line">DELETE &#123;index_name&#125;/_alias/&#123;alias_name&#125;</span><br></pre></td></tr></table></figure></p>
+<p>具体指令操作，以及针对数据过滤：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">POST _aliases</span><br><span class="line">&#123;</span><br><span class="line">    &quot;actions&quot;:&#123;</span><br><span class="line">        &quot;add&quot;:&#123;</span><br><span class="line">            &quot;index&quot;:&quot;&#123;index_name&#125;&quot;,</span><br><span class="line">            &quot;alias&quot;:&quot;&#123;alias_name&#125;&quot;,</span><br><span class="line">            &quot;filter&quot;:&#123;</span><br><span class="line">                &quot;range&quot;:&#123;</span><br><span class="line">                    &quot;&#123;field&#125;&quot;:&#123;</span><br><span class="line">                        &quot;gt&quot;:&quot;&#123;value&#125;&quot;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="单节点备份恢复全过程"><a href="#单节点备份恢复全过程" class="headerlink" title="单节点备份恢复全过程"></a>单节点备份恢复全过程</h2><p>根据要求，切换到可以启动 <code>elastic</code> 的用户，在服务器的指定目录下创建文件夹，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">su elastic</span><br><span class="line"></span><br><span class="line">cd /opt/elasticsearch-7.2.1</span><br><span class="line"></span><br><span class="line">mkdir repo</span><br></pre></td></tr></table></figure></p>
+<p>在节点的 <code>elasticsearch.yml</code> 文件中新增如下配置项并<strong>重启</strong>,路径即为刚才所创建的文件夹的位置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">path.repo: /opt/elasticsearch-7.2.1/repo</span><br></pre></td></tr></table></figure></p>
+<p>进行如下测试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">PUT index_a/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;name&quot;:&quot;zhangsan&quot;</span><br><span class="line">&#125;</span><br><span class="line">PUT index_b/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;name&quot;:&quot;zhangsan&quot;</span><br><span class="line">&#125;</span><br><span class="line"># 新建仓库 repo ,此时会在 /opt/elasticsearch-7.2.1/repo 下建立相应的文件夹</span><br><span class="line">PUT _snapshot/snapshot_repo</span><br><span class="line">&#123;</span><br><span class="line">  &quot;type&quot;: &quot;fs&quot;,</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">    &quot;location&quot;: &quot;snapshot_repo&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">#创建备份</span><br><span class="line">PUT _snapshot/snapshot_repo/index_snapshot?wait_for_completion=true</span><br><span class="line">&#123;</span><br><span class="line">  &quot;indices&quot;: &quot;index_a,index_b&quot;,</span><br><span class="line">  &quot;ignore_unavailable&quot;: true,</span><br><span class="line">  &quot;include_global_state&quot;: true</span><br><span class="line">&#125;</span><br><span class="line">#删除</span><br><span class="line">DELETE index_a,index_b</span><br><span class="line">#恢复</span><br><span class="line">POST _snapshot/snapshot_repo/index_snapshot/_restore</span><br><span class="line">&#123;</span><br><span class="line">  &quot;indices&quot;: &quot;index_a&quot;,</span><br><span class="line">  &quot;index_settings&quot;:&#123;</span><br><span class="line">    &quot;number_of_replica&quot;: 0</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">#成功</span><br><span class="line">GET index_a/_search</span><br><span class="line">#失败</span><br><span class="line">GET index_b/_search</span><br></pre></td></tr></table></figure></p>
+<h2 id="跨集群检索配置全流程"><a href="#跨集群检索配置全流程" class="headerlink" title="跨集群检索配置全流程"></a>跨集群检索配置全流程</h2><p><span style="color:red">带权限认证的集群无法之间做 <code>cross_cluster_search</code>，除非签发时用到的证书是一样的。我是将xpack关闭后做的测试</span></p>
+<p>在 集群 <code>A</code> 创建 <code>index_a</code> 并插入一条数据，然后修改集群 <code>A</code> 的 <code>_cluster/settings</code>,（需要注意集群的 <code>seeds</code> 地址为 <code>transport</code> 的端口，默认为 <code>9300</code>  ，初次尝试时我没有注意到这点）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">DELETE index_a</span><br><span class="line">POST index_a/_doc</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&quot;zhangsan&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT _cluster/settings</span><br><span class="line">&#123;</span><br><span class="line">    &quot;persistent&quot;:&#123;</span><br><span class="line">        &quot;cluster&quot;:&#123;</span><br><span class="line">            &quot;remote&quot;:&#123;</span><br><span class="line">                &quot;cluster_B&quot;:&#123;</span><br><span class="line">                    &quot;seeds&quot;:[&quot;172.25.17.61:9300&quot;]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在集群 <code>B</code> 创建 <code>index_b</code> 并插入一条数据,然后修改集群 <code>B</code> 的 <code>_cluster/settings</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">DELETE index_b</span><br><span class="line">POST index_b/_doc</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&quot;lisi&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT _cluster/settings</span><br><span class="line">&#123;</span><br><span class="line">    &quot;persistent&quot;:&#123;</span><br><span class="line">        &quot;cluster&quot;:&#123;</span><br><span class="line">            &quot;remote&quot;:&#123;</span><br><span class="line">                &quot;cluster_A&quot;:&#123;</span><br><span class="line">                    &quot;seeds&quot;:[&quot;172.25.17.58:9300&quot;,&quot;172.25.17.87:9300&quot;,&quot;172.25.17.142:9300&quot;]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>进行测试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#在集群A 查询 B的数据</span><br><span class="line">GET cluster_B:index_b/_search</span><br><span class="line"></span><br><span class="line">在集群B 查询 A 的数据</span><br><span class="line">GET cluster_A:index_a/_search</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p><img src="/images/202105/贝德维尔.jpg" alt="贝德维尔.jpg"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/elasticsearch/" rel="tag"><i class="fa fa-tag"></i> elasticsearch</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/22/自定义分词器/" rel="next" title="自定义分词器">
+                <i class="fa fa-chevron-left"></i> 自定义分词器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/06/14/rpc原理/" rel="prev" title="RPC 原理">
+                RPC 原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div id="gitalk-container">
+	</div>
+	
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/header.png" alt="北方轻巡舰">
+            
+              <p class="site-author-name" itemprop="name">北方轻巡舰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zengxin166850" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+		  
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#分片分配"><span class="nav-text">分片分配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#案例1：将索引-A-所有-shards-分配到-node1-索引-B-的所有-shards-分配到-node2-、-node3"><span class="nav-text">案例1：将索引 A 所有 shards 分配到 node1, 索引 B 的所有 shards 分配到 node2 、 node3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例2：-将索引-hamlet-设置为不允许分配在节点-node3-上"><span class="nav-text">案例2： 将索引 hamlet 设置为不允许分配在节点 node3 上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例3：按照要求给节点设置属性-AZ"><span class="nav-text">案例3：按照要求给节点设置属性 AZ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单节点-RBAC-全流程配置"><span class="nav-text">单节点 RBAC 全流程配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#date-histogram-pipeline-聚合"><span class="nav-text">date_histogram + pipeline 聚合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ingest-数据处理"><span class="nav-text">ingest 数据处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#案例1：对数组进行处理-数据样例大致如下"><span class="nav-text">案例1：对数组进行处理,数据样例大致如下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例2：根据条件判断的结果，处理数据"><span class="nav-text">案例2：根据条件判断的结果，处理数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例3：计算字符串长度并分割字符串为数组，最后-reindex-到新索引"><span class="nav-text">案例3：计算字符串长度并分割字符串为数组，最后 reindex 到新索引,</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例4：-使用-分割字符串，并将分割后的结果存到三个不同的字段中"><span class="nav-text">案例4： 使用 . 分割字符串，并将分割后的结果存到三个不同的字段中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#別名操作"><span class="nav-text">別名操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单节点备份恢复全过程"><span class="nav-text">单节点备份恢复全过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跨集群检索配置全流程"><span class="nav-text">跨集群检索配置全流程</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">北方轻巡舰</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="/css/gitalk.css">
+  <script src="/js/src/md5.min.js"></script>
+  <script src="/js/src/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '4d8264bae956afc03d03',
+		  clientSecret: 'cd2ea936a06ea5daf08bc14cd5538ae1f7eb491e',
+		  repo: 'hoppoComments',
+		  owner: 'zengxin166850',
+		  admin: ['zengxin166850'], 
+		  id: md5(location.pathname),
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script src="/js/src/autoload.js"></script>
+</body>
+</html>

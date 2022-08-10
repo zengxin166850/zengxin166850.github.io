@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="elasticsearch,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 文档学习本周阅读内容为 cat API、cluster API、query API 部分， 以及 script 和 mapping 的小章节内容。 Aggregatins 暂时跳过了（这一章我一直觉得很难 orz… 最后再来慢慢啃吧）,这周总结的重点内容如下：  cluster reroute、cluster update settings Compound query full text">
+<meta name="keywords" content="elasticsearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Week03总结">
+<meta property="og:url" content="http://yoursite.com/2021/04/24/Week03/index.html">
+<meta property="og:site_name" content="北方轻巡舰的博客">
+<meta property="og:description" content="1. 文档学习本周阅读内容为 cat API、cluster API、query API 部分， 以及 script 和 mapping 的小章节内容。 Aggregatins 暂时跳过了（这一章我一直觉得很难 orz… 最后再来慢慢啃吧）,这周总结的重点内容如下：  cluster reroute、cluster update settings Compound query full text">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/202105/es_decay_param.jpg">
+<meta property="og:image" content="http://yoursite.com/images/202105/es_decay_function.jpg">
+<meta property="og:image" content="http://yoursite.com/images/202104/jane.png">
+<meta property="og:updated_time" content="2021-05-09T10:32:13.076Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Week03总结">
+<meta name="twitter:description" content="1. 文档学习本周阅读内容为 cat API、cluster API、query API 部分， 以及 script 和 mapping 的小章节内容。 Aggregatins 暂时跳过了（这一章我一直觉得很难 orz… 最后再来慢慢啃吧）,这周总结的重点内容如下：  cluster reroute、cluster update settings Compound query full text">
+<meta name="twitter:image" content="http://yoursite.com/images/202105/es_decay_param.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/04/24/Week03/">
+
+
+
+
+
+  <title>Week03总结 | 北方轻巡舰的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">北方轻巡舰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/04/24/Week03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Week03总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-24T19:23:50+08:00">
+                2021-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习打卡/" itemprop="url" rel="index">
+                    <span itemprop="name">学习打卡</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-文档学习"><a href="#1-文档学习" class="headerlink" title="1. 文档学习"></a>1. 文档学习</h2><p>本周阅读内容为 <code>cat API</code>、<code>cluster API</code>、<code>query API</code> 部分， 以及 <code>script</code> 和 <code>mapping</code> 的小章节内容。 <code>Aggregatins</code> 暂时跳过了（这一章我一直觉得很难 orz… 最后再来慢慢啃吧）,这周总结的重点内容如下：</p>
+<ul>
+<li><code>cluster reroute</code>、<code>cluster update settings</code></li>
+<li><code>Compound query</code></li>
+<li><code>full text query</code></li>
+<li><code>scripting</code></li>
+<li><code>mapping</code></li>
+</ul>
+<a id="more"></a>
+<h2 id="2-cat-API、cluster-API总结"><a href="#2-cat-API、cluster-API总结" class="headerlink" title="2. cat API、cluster API总结"></a>2. cat API、cluster API总结</h2><h3 id="2-1-常用的状态查看-API"><a href="#2-1-常用的状态查看-API" class="headerlink" title="2.1 常用的状态查看 API"></a>2.1 常用的状态查看 API</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 查看集群健康：</span><br><span class="line">GET _cluster/health</span><br><span class="line">GET _cat/health?v</span><br><span class="line"></span><br><span class="line">// 查看索引健康、文档情况</span><br><span class="line">GET _cat/indices?v</span><br><span class="line"></span><br><span class="line">// 查看分片情况、分配、恢复状态等</span><br><span class="line">GET /_cat/shards/[index]?v</span><br><span class="line"></span><br><span class="line">// 查看节点属性</span><br><span class="line">GET _cat/nodeattrs?v</span><br><span class="line"></span><br><span class="line">// 查看节点信息</span><br><span class="line">GET _cat/nodes?v</span><br><span class="line"></span><br><span class="line">// 查看 `pending_task`</span><br><span class="line">GET /_cluster/pending_tasks</span><br><span class="line">GET /_cat/pending_tasks?v</span><br><span class="line"></span><br><span class="line">// 查看索引模板</span><br><span class="line">GET /_cat/templates?v&amp;s=name</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-cluster-reroute"><a href="#2-2-cluster-reroute" class="headerlink" title="2.2 _cluster/reroute"></a>2.2 _cluster/reroute</h3><p><code>reroute</code> 一共包含以下几种指令：</p>
+<ul>
+<li><code>move</code> ，将分片从一个节点移至另一个节点，已经分配成功的 <code>shard</code> 只能使用 <code>move</code> 指令；</li>
+<li><code>cancel</code>，取消分片的分配， 通常用于取消恢复中 <code>recovery</code> 状态的分片分配；</li>
+<li><code>allocate_replica</code> ，仅用于 <code>unsigned</code> 的副本分配,。</li>
+</ul>
+<p>在 <code>uri</code> 中添加 <code>?retry_failed</code> 可以自动失败重试，重试次数默认为 <code>5</code> ， 通过修改集群配置参数 <code>index.allocation.max_retries</code> 可以进行调整<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">GET _cat/shards/test2?v</span><br><span class="line">// response-----------</span><br><span class="line">index shard prirep state   docs store ip           node</span><br><span class="line">test2 0     r      STARTED    1 4.1kb 172.25.17.58 node3</span><br><span class="line">test2 0     p      STARTED    1 4.1kb 172.25.17.87 node2</span><br><span class="line"></span><br><span class="line"># 我这里先查询到 shard 0 的主分片分布在 node2上，然后通过 reroute 移动到 node1 上。</span><br><span class="line">POST _cluster/reroute?retry_failed</span><br><span class="line">&#123;</span><br><span class="line">  &quot;commands&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;move&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &quot;test2&quot;,</span><br><span class="line">        &quot;shard&quot;: 0,</span><br><span class="line">        &quot;from_node&quot;: &quot;node2&quot;,</span><br><span class="line">        &quot;to_node&quot;: &quot;node1&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"># 分配 unsigned 的副本</span><br><span class="line">POST _cluster/reroute?retry_failed</span><br><span class="line">&#123;</span><br><span class="line">  &quot;commands&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;allocate_replica&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &quot;index_name&quot;,</span><br><span class="line">        &quot;shard&quot;: 0,</span><br><span class="line">        &quot;node&quot;: &quot;node2&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="强制分配不可恢复的错误"><a href="#强制分配不可恢复的错误" class="headerlink" title="强制分配不可恢复的错误"></a>强制分配不可恢复的错误</h4><p>除以上指令之外，还有两个特殊的命令，这些命令允许将主分片 <code>reroute</code>。但是使用时需要特别小心，因为主分片的分配通常是由 <code>Elasticsearch</code> 自动处理的。无法自动分配主分片的原因包括：</p>
+<ul>
+<li>创建了一个新索引，但是没有满足分配决定者的节点。</li>
+<li>在群集中的当前数据节点上找不到数据的最新分片副本。为防止数据丢失，系统不会自动将陈旧的分片副本提升为主副本。</li>
+</ul>
+<p>以下两个命令很危险，可能会导致数据丢失。<span style="color:red">只有在无法恢复原始数据并且集群能够接受数据丢失的情况，考虑使用。对于网络波动或其他可恢复性的分配失败，应该考虑使用 <code>retry_failed</code> 进行重试。</span></p>
+<h4 id="allocate-stale-primary"><a href="#allocate-stale-primary" class="headerlink" title="allocate_stale_primary"></a>allocate_stale_primary</h4><p><span style="color:red">将包含旧数据的副本升级为主分片</span>。需要给定 index 索引名称（index）和分片（shard）参数。<span style="color:red">使用此命令可能会导致数据丢失。如果具有数据版本更高的节点稍后重新加入群集，则该节点的数据将被删除或被新创建的副本覆盖掉。</span>为明确操作危险性，此命令要求将该标志 accept_data_loss 显式设置为 true 才能执行。</p>
+<h4 id="allocate-empty-primary"><a href="#allocate-empty-primary" class="headerlink" title="allocate_empty_primary"></a>allocate_empty_primary</h4><p>将空的主碎片分配给节点，需要给定 index 索引名称（index）和分片（shard）参数。使用此命令将导致完全丢失索引到该分片的所有数据（如果先前已启动）。如果具有数据副本的节点稍后重新加入群集，则该数据将被删除。为明确操作危险性，此命令要求将该标志 accept_data_loss 显式设置为 true 才能执行。</p>
+<h2 id="3-query-API-总结"><a href="#3-query-API-总结" class="headerlink" title="3.  query API 总结"></a>3.  query API 总结</h2><h3 id="3-1-组合查询-compound-query"><a href="#3-1-组合查询-compound-query" class="headerlink" title="3.1 组合查询 compound query"></a>3.1 组合查询 compound query</h3><ul>
+<li><code>bool query</code> ，包含了 <code>must</code>、<code>must_not</code>、<code>should</code>、<code>filter</code> 四种基础查询，自由组合；</li>
+<li><code>boosting query</code> ，权重查询，适用于 xx 公司、xx 集团等关键词区分权重的场景；</li>
+<li><code>constant_score</code>，不需要相关性算分的场景（<code>filter</code> 使用的就是 <code>constant score</code> 只不过分值为 <code>0</code>）；</li>
+<li><code>disjunction max</code>，单个字段最匹配（类比 <code>multi_match</code> 的 <code>best fields</code> 效果）</li>
+<li><code>function score</code>，自定义算分</li>
+</ul>
+<h4 id="bool-query"><a href="#bool-query" class="headerlink" title="bool query"></a>bool query</h4><p><strong>组合查询：</strong>多条件之间可以自由拼装、嵌套</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">GET index_name/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;bool&quot; : &#123;</span><br><span class="line">      &quot;must&quot; : &#123;</span><br><span class="line">        &quot;term&quot; : &#123; &quot;user&quot; : &quot;kimchy&quot; &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;filter&quot;: &#123;</span><br><span class="line">        &quot;term&quot; : &#123; &quot;tag&quot; : &quot;tech&quot; &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;must_not&quot; : &#123;</span><br><span class="line">        &quot;range&quot; : &#123;</span><br><span class="line">          &quot;age&quot; : &#123; &quot;gte&quot; : 10, &quot;lte&quot; : 20 &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;should&quot; : [</span><br><span class="line">        &#123; &quot;term&quot; : &#123; &quot;tag&quot; : &quot;wow&quot; &#125; &#125;,</span><br><span class="line">        &#123; &quot;term&quot; : &#123; &quot;tag&quot; : &quot;elasticsearch&quot; &#125; &#125;</span><br><span class="line">      ],</span><br><span class="line">      &quot;minimum_should_match&quot; : 1,</span><br><span class="line">      &quot;boost&quot; : 1.0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="boosting-query"><a href="#boosting-query" class="headerlink" title="boosting query"></a>boosting query</h4><p><strong>权重查询：</strong>返回满足 <code>positive</code>  查询的数据，对于该结果中同时也满足 <code>negative</code> 的数据进行评分降低操作。</p>
+<ul>
+<li>例如检索企业名称这种数据中都带有【公司】、【有限公司】、【集团】之类的比较范的关键词；</li>
+<li>或者在检索苹果时，【派、树、面包】这些相关性更低，而【苹果】公司相关性可能更高的场景。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">GET index_name/_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;boosting&quot; : &#123;</span><br><span class="line">            &quot;positive&quot; : &#123;</span><br><span class="line">                &quot;term&quot; : &#123;</span><br><span class="line">                    &quot;text&quot; : &quot;apple&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;negative&quot; : &#123;</span><br><span class="line">                 &quot;term&quot; : &#123;</span><br><span class="line">                     &quot;text&quot; : &quot;pie tart fruit crumble tree&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;negative_boost&quot; : 0.5</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="constant-score"><a href="#constant-score" class="headerlink" title="constant score"></a>constant score</h4><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET index_name/_search</span><br><span class="line">&#123;</span><br><span class="line">    "query": &#123;</span><br><span class="line">        "constant_score" : &#123;</span><br><span class="line">            "filter" : &#123;</span><br><span class="line">                "term" : &#123; "user" : "kimchy"&#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            "boost" : 1.2</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="disjunction-max"><a href="#disjunction-max" class="headerlink" title="disjunction max"></a>disjunction max</h4><p>对于普通的 <code>match</code> 查询而言，<span style="color:red">当多个字段都有匹配时</span>，很可能就会比某个字段完全匹配的分数更高，而 <code>disjunction max</code> 则根据匹配度最完整的字段来做主要评分，其余字段只起到辅助评分的效果。下面的例子中所展示的 <code>tie_breaker</code> 就是指其他字段的得分系数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">GET index_name/_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;dis_max&quot; : &#123;</span><br><span class="line">            &quot;queries&quot; : [</span><br><span class="line">                &#123; &quot;term&quot; : &#123; &quot;title&quot; : &quot;Quick pets&quot; &#125;&#125;,</span><br><span class="line">                &#123; &quot;term&quot; : &#123; &quot;body&quot; : &quot;Quick pets&quot; &#125;&#125;</span><br><span class="line">            ],</span><br><span class="line">            &quot;tie_breaker&quot; : 0.7</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="function-score"><a href="#function-score" class="headerlink" title="function score"></a>function score</h4><p><code>function score</code> 目前共包含以下几种：</p>
+<ul>
+<li><code>script_score</code> 可以自定义脚本计算分数，由于 <code>script</code> 具有编译缓存机制，所以能抽取参数的情况下，尽量是抽取参数后使用固定脚本；</li>
+<li><code>random_score+seed</code> 可以用于随机推荐、排名场景；</li>
+<li><code>weight</code> 权重，我目前将它简单的理解为 <code>boost</code>，很简单（略过）;</li>
+<li><code>field_value_factor</code> ,可以应用在内容相同（相似），通过投票数、点赞数等其他字段影响分数的场景；</li>
+<li><code>decay functions</code> 大概用在附近位置、相近时间等，(有点类似于 <code>range_query</code> 的感觉，但分数计算会更加圆滑–&gt;因为是通过衰减函数计算的)。</li>
+</ul>
+<p><strong>基础用法：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">GET kibana_sample_data_ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;_source&quot;: [</span><br><span class="line">    &quot;product_name&quot;,</span><br><span class="line">    &quot;category&quot;</span><br><span class="line">  ],</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;function_score&quot;: &#123;</span><br><span class="line">      &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match_all&quot;: &#123;&#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;boost&quot;: &quot;5&quot;,</span><br><span class="line">      // function_score 的其中一种，随机</span><br><span class="line">      &quot;random_score&quot;: &#123;&#125;,</span><br><span class="line">      // function_score 与 query 分数相乘</span><br><span class="line">      &quot;boost_mode&quot;: &quot;multiply&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><code>boost_mode</code> 与 <code>score_mode</code> 的区别</strong><br>多个 <code>function</code> 之间的算分为 <code>score_mode</code>，基础 <code>query</code>与 <code>function_score</code> 之间的算分为 <code>boost_mode</code>。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">GET /_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;function_score&quot;: &#123;</span><br><span class="line">          &quot;query&quot;: &#123; &quot;match_all&quot;: &#123;&#125; &#125;,</span><br><span class="line">          // match_all的 query 查询分为1，boost 将其置为5</span><br><span class="line">          &quot;boost&quot;: &quot;5&quot;, </span><br><span class="line">          &quot;functions&quot;: [</span><br><span class="line">              &#123;</span><br><span class="line">                  &quot;filter&quot;: &#123; &quot;match&quot;: &#123; &quot;test&quot;: &quot;bar&quot; &#125; &#125;,</span><br><span class="line">                  &quot;random_score&quot;: &#123;&#125;, </span><br><span class="line">                  &quot;weight&quot;: 23</span><br><span class="line">              &#125;,</span><br><span class="line">              &#123;</span><br><span class="line">                  &quot;filter&quot;: &#123; &quot;match&quot;: &#123; &quot;test&quot;: &quot;cat&quot; &#125; &#125;,</span><br><span class="line">                  &quot;weight&quot;: 42</span><br><span class="line">              &#125;</span><br><span class="line">          ],</span><br><span class="line">          &quot;max_boost&quot;: 42,</span><br><span class="line">          // 多个function之间采用最大值得分</span><br><span class="line">          &quot;score_mode&quot;: &quot;max&quot;,</span><br><span class="line">          // 最终算分为 query 基础分 * function的得分</span><br><span class="line">          &quot;boost_mode&quot;: &quot;multiply&quot;,</span><br><span class="line">          &quot;min_score&quot; : 42</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><code>random_score + seed</code> 的使用案例</strong><br>当 <code>seed</code> 相同时，返回的随机分数是固定的，可以用于对不同的用户展示乱序结果，但同一个用户结果不变的场景</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">POST /blogs/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;function_score&quot;: &#123;</span><br><span class="line">      &quot;random_score&quot;: &#123;</span><br><span class="line">        &quot;seed&quot;: 911119</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>field_value_factor的使用案例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">GET /_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;function_score&quot;: &#123;</span><br><span class="line">            &quot;field_value_factor&quot;: &#123;</span><br><span class="line">                &quot;field&quot;: &quot;likes&quot;,</span><br><span class="line">                &quot;factor&quot;: 1.2,</span><br><span class="line">                &quot;modifier&quot;: &quot;sqrt&quot;,</span><br><span class="line">                &quot;missing&quot;: 1</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>decay functions 衰减函数的使用案例</strong></p>
+<p>通过衰减函数对文档进行评分，函数的衰减速度取决于文档的数字字段值距用户给定原点的距离。类似于范围查询，分数变化更加的平滑，而不是固定的数值。</p>
+<p>衰减函数的类型，包括 <code>gauss</code> 高斯函数、<code>linear</code> 线性函数、<code>exp</code> 指数函数三种<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;gauss&quot;: &#123;</span><br><span class="line">    //字段名</span><br><span class="line">    &quot;location&quot;: &#123; </span><br><span class="line">          &quot;origin&quot;: &quot;11, 12&quot;,</span><br><span class="line">          &quot;scale&quot;: &quot;2km&quot;,</span><br><span class="line">          &quot;offset&quot;: &quot;0km&quot;,</span><br><span class="line">          &quot;decay&quot;: 0.33</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><span style="color:red"><code>decay_function</code> 参数示意图:</span></p>
+<p><img src="/images/202105/es_decay_param.jpg" alt="es_decay_param.jpg"></p>
+<p><span style="color:red">三种衰减函数示意图：</span></p>
+<p><img src="/images/202105/es_decay_function.jpg" alt="es_decay_function.jpg"></p>
+<p>官方案例说明：假设我们在一个小镇的中心搜索附近的酒店，我们希望离小镇中心越近越好，同时价格也是一个选择因素，例如有一个更便宜的，距离稍微远些也是可选项。</p>
+<p>我们将搜索范围限定在 2km 以内，并且希望价格不高于 100 元。那么可以使用如下的衰减函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 价格</span><br><span class="line">&quot;gauss&quot;: &#123;</span><br><span class="line">    &quot;price&quot;: &#123;</span><br><span class="line">          &quot;origin&quot;: &quot;0&quot;,</span><br><span class="line">          &quot;scale&quot;: &quot;100&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 位置</span><br><span class="line">&quot;gauss&quot;: &#123; </span><br><span class="line">    &quot;location&quot;: &#123;</span><br><span class="line">        // 假设中心坐标是 11,12 </span><br><span class="line">        &quot;origin&quot;: &quot;11, 12&quot;,</span><br><span class="line">        &quot;scale&quot;: &quot;2km&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-2-full-text-query"><a href="#3-2-full-text-query" class="headerlink" title="3.2 full text query"></a>3.2 full text query</h3><ul>
+<li><code>intervals</code>（跳过）</li>
+<li><code>match</code>、<code>match boolean prefix</code>、<code>match phrase</code> 、<code>match phrase prefix</code></li>
+<li>multi match</li>
+<li>common term query</li>
+<li>query string 与 simple query string</li>
+</ul>
+<h4 id="match-boolean-prefix-和-match-phrase-prefix-的使用案例"><a href="#match-boolean-prefix-和-match-phrase-prefix-的使用案例" class="headerlink" title="match boolean prefix 和 match phrase prefix 的使用案例"></a><code>match boolean prefix</code> 和 <code>match phrase prefix</code> 的使用案例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">GET index_name/_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match_bool_prefix&quot; : &#123;</span><br><span class="line">            &quot;message&quot; : &quot;quick brown f&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 等价于</span><br><span class="line">GET index_name/_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;bool&quot; : &#123;</span><br><span class="line">            &quot;should&quot;: [</span><br><span class="line">                &#123; &quot;term&quot;: &#123; &quot;message&quot;: &quot;quick&quot; &#125;&#125;,</span><br><span class="line">                &#123; &quot;term&quot;: &#123; &quot;message&quot;: &quot;brown&quot; &#125;&#125;,</span><br><span class="line">                &#123; &quot;prefix&quot;: &#123; &quot;message&quot;: &quot;f&quot;&#125;&#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 词语必须连在一起</span><br><span class="line">GET /_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match_phrase_prefix&quot;: &#123;</span><br><span class="line">      &quot;message&quot;: &#123;</span><br><span class="line">        &quot;query&quot;: &quot;quick brown f&quot;,</span><br><span class="line">        &quot;slop&quot;: 1</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="multi-match"><a href="#multi-match" class="headerlink" title="multi match"></a>multi match</h4><p><code>most_fields</code> 等同于普通的 <code>should + match</code> 查询，各字段分值相加；<code>best_fields</code> 相当于 <code>disjunction max</code> 查询；<code>cross fields</code> 用于跨字段查询。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// 字段名可以通过 ‘^’ 符号实现 boost 效果，* 实现字段通配符</span><br><span class="line">GET index_name/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;multi_match&quot; : &#123;</span><br><span class="line">      &quot;query&quot;:    &quot;this is a test&quot;, </span><br><span class="line">      &quot;fields&quot;: [ &quot;subject^3&quot;, &quot;message&quot;, &quot;*_name&quot; ] </span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// best_fields</span><br><span class="line">POST blogs/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;multi_match&quot;: &#123;</span><br><span class="line">      &quot;type&quot;: &quot;best_fields&quot;,</span><br><span class="line">      &quot;query&quot;: &quot;Quick pets&quot;,</span><br><span class="line">      &quot;fields&quot;: [&quot;title&quot;,&quot;body&quot;],</span><br><span class="line">      &quot;tie_breaker&quot;: 0.2,</span><br><span class="line">      &quot;minimum_should_match&quot;: &quot;20%&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="common-term-query"><a href="#common-term-query" class="headerlink" title="common term query"></a>common term query</h4><p>这个 <code>query</code> 是为了解决普通 <code>term_query</code> 存在的问题而延伸的功能，在介绍 <code>common term query</code> 之前，需要先了解 <code>term</code> 查询的问题点：</p>
+<p>常规的 <code>term</code> 查询，例如 <code>the brown fox</code> 这个词需要拆分三个 <code>term</code> ，分别是 <code>the</code> 、<code>brown</code> 以及 <code>fox</code> ，每个 <code>term</code> 都会查询所有的文档，对于 <code>the</code> 这种通用的定冠词可以匹配到大量的文档。它对于的相关性影响应该更低，所以 <code>term</code> 查询的处理方法是将 <code>the</code> 视为停用词，这样不仅减小了索引空间占用，也减少了扫描文档的数量。但是也带了一个新的问题，虽然 <code>the</code> 对于结果的相关性影响更小，但依旧对文档的总得分是有影响的。视为停用词之后则此部分不再贡献相关性得分了。同时也会影响召回率：例如 <code>happy</code> 和 <code>not happy</code> 的判断将会不准确。</p>
+<p><code>common term query</code> 将词分为两部分，<code>more important</code>（低频词） 和 <code>less important</code>（高频词）。查询时也分为两个步骤，先查找 <code>more important</code> 部分，此时返回的结果相对更少，然后查找 <code>less important</code> 部分，对相关性算分的贡献值更小，但不会查找全部文档，而是在 <code>more important</code> 的结果集中二次筛选。<br>如果所有的词都是 <code>less important</code> 的高频词，那默认情况下将通过 <code>AND</code> 将词语组合在一起进行一次查询。（可以通过 <code>minimum_should_match</code> 控制）。</p>
+<p>判断关键词属于 <code>more important</code> 还是 <code>less important</code> 的参数是 <code>cutoff_frequency</code>（此参数是对于分片而言的） ,如下的查询中，词频超过 <code>1%</code> 的将作为 <code>less important</code>（高频词）,高频词之间采用 <code>OR</code> 关联，低频词采用 <code>AND</code> 关联（<code>match_query</code> 也支持该参数，但不支持 <code>*_freq_operator</code>）。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">GET /_search</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">"query"</span>: &#123;</span><br><span class="line">        <span class="attr">"common"</span>: &#123;</span><br><span class="line">            <span class="attr">"body"</span>: &#123;</span><br><span class="line">                <span class="attr">"query"</span>: <span class="string">"nelly the elephant as a cartoon"</span>,</span><br><span class="line">                <span class="attr">"cutoff_frequency"</span>: <span class="number">0.001</span>,</span><br><span class="line">                <span class="attr">"low_freq_operator"</span>: <span class="string">"and"</span>,</span><br><span class="line">                <span class="attr">"high_freq_operator"</span>: <span class="string">"or"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 大致相当于</span></span><br><span class="line">GET /_search</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">"query"</span>: &#123;</span><br><span class="line">        <span class="attr">"bool"</span>: &#123;</span><br><span class="line">            <span class="attr">"must"</span>: [</span><br><span class="line">            &#123; <span class="attr">"term"</span>: &#123; <span class="attr">"body"</span>: <span class="string">"nelly"</span>&#125;&#125;,</span><br><span class="line">            &#123; <span class="attr">"term"</span>: &#123; <span class="attr">"body"</span>: <span class="string">"elephant"</span>&#125;&#125;,</span><br><span class="line">            &#123; <span class="attr">"term"</span>: &#123; <span class="attr">"body"</span>: <span class="string">"cartoon"</span>&#125;&#125;</span><br><span class="line">            ],</span><br><span class="line">            <span class="attr">"should"</span>: [</span><br><span class="line">            &#123; <span class="attr">"term"</span>: &#123; <span class="attr">"body"</span>: <span class="string">"the"</span>&#125;&#125;,</span><br><span class="line">            &#123; <span class="attr">"term"</span>: &#123; <span class="attr">"body"</span>: <span class="string">"as"</span>&#125;&#125;,</span><br><span class="line">            &#123; <span class="attr">"term"</span>: &#123; <span class="attr">"body"</span>: <span class="string">"a"</span>&#125;&#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 还可以增加 minimum_should_match 控制 or 匹配的个数</span></span><br><span class="line">minimum_should_match: 2</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line">"minimum_should_match": &#123;</span><br><span class="line">    "low_freq" : 2,</span><br><span class="line">    "high_freq" : 3</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-3-named-query"><a href="#3-3-named-query" class="headerlink" title="3.3 named query"></a>3.3 named query</h3><p>可以用于判断具体是哪个查询条件命中了数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">GET /_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;bool&quot; : &#123;</span><br><span class="line">            &quot;should&quot; : [</span><br><span class="line">                &#123;&quot;match&quot; : &#123; &quot;name.first&quot; : &#123;&quot;query&quot; : &quot;shay&quot;, &quot;_name&quot; : &quot;first&quot;&#125; &#125;&#125;,</span><br><span class="line">                &#123;&quot;match&quot; : &#123; &quot;name.last&quot; : &#123;&quot;query&quot; : &quot;banon&quot;, &quot;_name&quot; : &quot;last&quot;&#125; &#125;&#125;</span><br><span class="line">            ],</span><br><span class="line">            &quot;filter&quot; : &#123;</span><br><span class="line">                &quot;terms&quot; : &#123;</span><br><span class="line">                    &quot;name.last&quot; : [&quot;banon&quot;, &quot;kimchy&quot;],</span><br><span class="line">                    &quot;_name&quot; : &quot;test&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-scripting总结"><a href="#4-scripting总结" class="headerlink" title="4. scripting总结"></a>4. scripting总结</h2><p>script 可以用的地方很多，目前包括了 reindex、pipeline、update、update_by_query、script_score、script_fields、search_templatey 以及 script 聚合等。场景非常广泛。复习此部分时刚好解决了群里小伙伴的一个疑问</p>
+<h3 id="群友提问-script-如何实现-split字符串分割"><a href="#群友提问-script-如何实现-split字符串分割" class="headerlink" title="群友提问 script 如何实现 split字符串分割"></a>群友提问 script 如何实现 split字符串分割</h3><p>场景数据如下，希望将 <code>b</code> 字段分割为数组存到新字段中，在 <code>reindex</code> 时发现 <code>pipeline</code> 可以实现，但使用 <code>script</code> 脚本时确报错编译失败：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DELETE index_a/_doc/1</span><br><span class="line"></span><br><span class="line">PUT index_a/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;a&quot; : &quot;aaaa&quot;,</span><br><span class="line">  &quot;b&quot;: &quot;asdf,asgeg,geg,saeg&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于 <code>painless</code> 与 <code>java</code> 语言是类似的，经查看 <code>String</code> 类的 <code>split</code> 方法参数为正则 <code>regex</code> 表达式。所以直接使用 <code>,</code> 会编译失败，而使用 <code>/,/</code> 正则表达式时则会提示需要设置 <code>yml</code> 参数 <code>script.painless.regex.enabled: true</code> ，默认情况下正则是关闭的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">GET index_a/_doc/1</span><br><span class="line">POST index_a/_update_by_query</span><br><span class="line">&#123;</span><br><span class="line">  &quot;script&quot;:&#123;</span><br><span class="line">    &quot;source&quot;:&quot;&quot;&quot;</span><br><span class="line">    ctx._source.b_list = ctx._source.b.split(/,/)</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 错误信息</span><br><span class="line">&#123;</span><br><span class="line">  &quot;error&quot;: &#123;</span><br><span class="line">    &quot;root_cause&quot;: [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;type&quot;: &quot;script_exception&quot;,</span><br><span class="line">        &quot;reason&quot;: &quot;compile error&quot;,</span><br><span class="line">        &quot;script_stack&quot;: [</span><br><span class="line">          &quot;... st = ctx._source.b.split(/,/)&quot;,</span><br><span class="line">          &quot;                             ^---- HERE&quot;</span><br><span class="line">        ],</span><br><span class="line">        &quot;script&quot;: &quot;    ctx._source.b_list = ctx._source.b.split(/,/)&quot;,</span><br><span class="line">        &quot;lang&quot;: &quot;painless&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    &quot;type&quot;: &quot;script_exception&quot;,</span><br><span class="line">    &quot;reason&quot;: &quot;compile error&quot;,</span><br><span class="line">    &quot;script_stack&quot;: [</span><br><span class="line">      &quot;... st = ctx._source.b.split(/,/)&quot;,</span><br><span class="line">      &quot;                             ^---- HERE&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;script&quot;: &quot;    ctx._source.b_list = ctx._source.b.split(/,/)&quot;,</span><br><span class="line">    &quot;lang&quot;: &quot;painless&quot;,</span><br><span class="line">    &quot;caused_by&quot;: &#123;</span><br><span class="line">      &quot;type&quot;: &quot;illegal_state_exception&quot;,</span><br><span class="line">      &quot;reason&quot;: &quot;Regexes are disabled. Set [script.painless.regex.enabled] to [true] in elasticsearch.yaml to allow them. Be careful though, regexes break out of Painless&apos;s protection against deep recursion and long loops.&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;status&quot;: 400</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>另一种解决办法：使用 <code>StringTokenizer</code> 拆分</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">POST index_a/_update_by_query</span><br><span class="line">&#123;</span><br><span class="line">  &quot;script&quot;:&#123;</span><br><span class="line">    &quot;source&quot;:&quot;&quot;&quot;</span><br><span class="line">    String b = ctx._source.b;</span><br><span class="line">    ArrayList b_list = new ArrayList();</span><br><span class="line">    if(!b.isEmpty())&#123;</span><br><span class="line">      String splitter = &quot;,&quot;;</span><br><span class="line">      StringTokenizer token = new StringTokenizer(b,splitter);</span><br><span class="line">      while(token.hasMoreTokens())&#123;</span><br><span class="line">        b_list.add(token.nextToken());</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ctx._source.b_list = b_list;</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-mapping-总结"><a href="#5-mapping-总结" class="headerlink" title="5. mapping 总结"></a>5. mapping 总结</h2><h3 id="5-1-normalizer"><a href="#5-1-normalizer" class="headerlink" title="5.1 normalizer"></a>5.1 normalizer</h3><p>normalizer 是用于解决 keyword 类型的数据规范问题的，例如某个字段设置为了 keyword 类型，但数据清洗时存在的不规范导致了两种数据 apple、Apple，由于 keyword 类型的性质，导致两者成为了不同的单词。</p>
+<p>normalizer 会在数据写入之前进行统一处理，例如使用 <code>filter: lowercase</code> 将 <code>apple</code> 和 <code>Apple</code> 统一</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">DELETE test_normalizer</span><br><span class="line"># 自定义 normalizer</span><br><span class="line">PUT test_normalizer</span><br><span class="line">&#123;</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">    &quot;analysis&quot;: &#123;</span><br><span class="line">      &quot;normalizer&quot;: &#123;</span><br><span class="line">        &quot;lowercase&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;custom&quot;,</span><br><span class="line">          &quot;filter&quot;: [</span><br><span class="line">            &quot;lowercase&quot;</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">    &quot;doc&quot;: &#123;</span><br><span class="line">      &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;type&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;type_normalizer&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;keyword&quot;,</span><br><span class="line">          &quot;normalizer&quot;: &quot;lowercase&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT test_normalizer/doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;type&quot;: &quot;apple&quot;,</span><br><span class="line">  &quot;type_normalizer&quot;: &quot;apple&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT test_normalizer/doc/2</span><br><span class="line">&#123;</span><br><span class="line">  &quot;type&quot;: &quot;Apple&quot;,</span><br><span class="line">  &quot;type_normalizer&quot;: &quot;Apple&quot;</span><br><span class="line">&#125;</span><br><span class="line"># 查询三</span><br><span class="line">GET test_normalizer/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;term&quot;:&#123;</span><br><span class="line">      &quot;type&quot;:&quot;aPple&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 查询四</span><br><span class="line">GET test_normalizer/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;term&quot;:&#123;</span><br><span class="line">      &quot;type_normalizer&quot;:&quot;aPple&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="5-2-Dynamic-mapping"><a href="#5-2-Dynamic-mapping" class="headerlink" title="5.2 Dynamic mapping"></a>5.2 Dynamic mapping</h3><p> <strong><code>dynamic_field_mapping</code></strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">//日期推断</span><br><span class="line">PUT my_index/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;create_date&quot;: &quot;2015/09/02&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET my_index/_mapping</span><br><span class="line">//关闭推断</span><br><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">    &quot;date_detection&quot;: false</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT my_index/_doc/1 </span><br><span class="line">&#123;</span><br><span class="line">  &quot;create&quot;: &quot;2015/09/02&quot;</span><br><span class="line">&#125;</span><br><span class="line">// 格式化</span><br><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">    &quot;dynamic_date_formats&quot;: [&quot;MM/dd/yyyy&quot;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT my_index/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;create_date&quot;: &quot;09/25/2015&quot;</span><br><span class="line">&#125;</span><br><span class="line">// 数字推断</span><br><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">    &quot;numeric_detection&quot;: true</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT my_index/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;my_float&quot;:   &quot;1.0&quot;, </span><br><span class="line">  &quot;my_integer&quot;: &quot;1&quot; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>dynamic_template</strong></p>
+<ul>
+<li>字段类型匹配：<code>match_mapping_type</code></li>
+<li>字段名称匹配：<code>match</code>、<code>unmatch</code>、<code>match_pattern</code></li>
+<li>字段通配符：<code>path_match</code>、<code>path_unmatch</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">//match_mapping_type、match</span><br><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">    &quot;dynamic_templates&quot;: [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;longs_as_strings&quot;: &#123;</span><br><span class="line">          &quot;match_mapping_type&quot;: &quot;string&quot;,</span><br><span class="line">          &quot;match&quot;:   &quot;long_*&quot;,</span><br><span class="line">          &quot;unmatch&quot;: &quot;*_text&quot;,</span><br><span class="line">          &quot;mapping&quot;: &#123;</span><br><span class="line">            &quot;type&quot;: &quot;long&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// path_match</span><br><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">    &quot;dynamic_templates&quot;: [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;full_name&quot;: &#123;</span><br><span class="line">          &quot;path_match&quot;:   &quot;name.*&quot;,</span><br><span class="line">          &quot;path_unmatch&quot;: &quot;*.middle&quot;,</span><br><span class="line">          &quot;mapping&quot;: &#123;</span><br><span class="line">            &quot;type&quot;:       &quot;text&quot;,</span><br><span class="line">            &quot;copy_to&quot;:    &quot;full_name&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong><code>dynamic</code> 的三种级别： <code>true</code>、<code>false</code>、<code>strict</code></strong>，可以用在 <code>properties</code> 同级，也可以用在字段上：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">PUT index_name</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">    &quot;dynamic&quot;: &quot;strict&quot;,</span><br><span class="line">    &quot;properties&quot;: &#123;</span><br><span class="line">      &quot;name&quot;: &#123;</span><br><span class="line">        &quot;type&quot;: &quot;text&quot;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;social_networks&quot;: &#123;</span><br><span class="line">        &quot;dynamic&quot;: true,</span><br><span class="line">        &quot;properties&quot;: &#123;&#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="5-3-docvalue-fields查询、data-nanos类型"><a href="#5-3-docvalue-fields查询、data-nanos类型" class="headerlink" title="5.3 docvalue_fields查询、data_nanos类型"></a>5.3 docvalue_fields查询、data_nanos类型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">DELETE my_index</span><br><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">      &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;date&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;date_nanos&quot; </span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT my_index/_doc/1</span><br><span class="line">&#123; &quot;date&quot;: &quot;2015-01-01&quot; &#125; </span><br><span class="line"></span><br><span class="line">PUT my_index/_doc/2</span><br><span class="line">&#123; &quot;date&quot;: &quot;2015-01-01T12:10:30.123456789Z&quot; &#125; </span><br><span class="line"></span><br><span class="line">PUT my_index/_doc/3</span><br><span class="line">&#123; &quot;date&quot;: 1420070400 &#125; </span><br><span class="line"></span><br><span class="line">GET my_index/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;sort&quot;: &#123; &quot;date&quot;: &quot;asc&quot;&#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">GET my_index/_search</span><br><span class="line">&#123;</span><br><span class="line">  </span><br><span class="line">  &quot;docvalue_fields&quot; : [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;field&quot; : &quot;date&quot;,</span><br><span class="line">      &quot;format&quot;: &quot;strict_date_time&quot; </span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="5-4-index-options"><a href="#5-4-index-options" class="headerlink" title="5.4 index_options"></a>5.4 index_options</h3><p><code>index_options</code> 参数控制向倒排索引添加哪些信息，主要用于搜索和高亮。有下面四种参数： </p>
+<ul>
+<li><code>docs</code> 仅索引文档的 <code>id</code>，可以用于判断该 <code>term</code> 在这个字段是否出现过；</li>
+<li><code>freqs</code> 索引文档的 id 和 term 的词频。计算相关性得分时，词频高的 <code>term</code>  分数会更高 ；</li>
+<li><code>positions</code> 索引文档的 <code>id</code> 和 <code>term</code> 的词频以及 <code>term</code> 的位置信息。位置对于 <code>phrase</code> 这种短语查询很重要。默认情况下字段属性 <code>index:true</code> 都会使用 <code>positions</code>，数字使用的是 <code>docs</code>；</li>
+<li><code>offsets</code> 在 <code>positions</code> 的索引基础上增加了开始字符以及结束字符的偏移量，偏移量对于 <code>unified highlighter</code> 高亮（默认的高亮方式）来说可以加速高亮。</li>
+</ul>
+<h2 id="6-tips"><a href="#6-tips" class="headerlink" title="6.  tips"></a>6.  tips</h2><ul>
+<li><p>集群的 <code>settings</code> 设置优先级顺序为： <code>transient &gt; persistent &gt; elasticsearch.yml</code>；</p>
+</li>
+<li><p><code>indices.query.bool.max_clause_count</code> 限制了单次查询的字段数量，默认为 <code>1024</code>；</p>
+</li>
+<li><p><code>fielddata</code> 用于开启  <code>text</code>  类型字段的聚合；</p>
+</li>
+<li><p><code>script</code> 小技巧：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 通过 random 获取随机数</span><br><span class="line">Random random = new Random();</span><br><span class="line">ctx._source.age = random.nextInt(100);</span><br><span class="line"></span><br><span class="line">// 取当前日期、时间戳</span><br><span class="line">ctx._source.birthday = new Date();</span><br><span class="line">ctx._source.birthday = new Date().getTime();</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<p><img src="/images/202104/jane.png" alt="Alt"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/elasticsearch/" rel="tag"><i class="fa fa-tag"></i> elasticsearch</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/24/倒排索引---联合查询加速/" rel="next" title="倒排索引---联合查询加速">
+                <i class="fa fa-chevron-left"></i> 倒排索引---联合查询加速
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/01/Week04/" rel="prev" title="Week04总结">
+                Week04总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div id="gitalk-container">
+	</div>
+	
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/header.png" alt="北方轻巡舰">
+            
+              <p class="site-author-name" itemprop="name">北方轻巡舰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zengxin166850" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+		  
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-文档学习"><span class="nav-text">1. 文档学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-cat-API、cluster-API总结"><span class="nav-text">2. cat API、cluster API总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-常用的状态查看-API"><span class="nav-text">2.1 常用的状态查看 API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-cluster-reroute"><span class="nav-text">2.2 _cluster/reroute</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#强制分配不可恢复的错误"><span class="nav-text">强制分配不可恢复的错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#allocate-stale-primary"><span class="nav-text">allocate_stale_primary</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#allocate-empty-primary"><span class="nav-text">allocate_empty_primary</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-query-API-总结"><span class="nav-text">3.  query API 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-组合查询-compound-query"><span class="nav-text">3.1 组合查询 compound query</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#bool-query"><span class="nav-text">bool query</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#boosting-query"><span class="nav-text">boosting query</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#constant-score"><span class="nav-text">constant score</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#disjunction-max"><span class="nav-text">disjunction max</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#function-score"><span class="nav-text">function score</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-full-text-query"><span class="nav-text">3.2 full text query</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#match-boolean-prefix-和-match-phrase-prefix-的使用案例"><span class="nav-text">match boolean prefix 和 match phrase prefix 的使用案例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#multi-match"><span class="nav-text">multi match</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#common-term-query"><span class="nav-text">common term query</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-named-query"><span class="nav-text">3.3 named query</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-scripting总结"><span class="nav-text">4. scripting总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#群友提问-script-如何实现-split字符串分割"><span class="nav-text">群友提问 script 如何实现 split字符串分割</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-mapping-总结"><span class="nav-text">5. mapping 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-normalizer"><span class="nav-text">5.1 normalizer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-Dynamic-mapping"><span class="nav-text">5.2 Dynamic mapping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-docvalue-fields查询、data-nanos类型"><span class="nav-text">5.3 docvalue_fields查询、data_nanos类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-index-options"><span class="nav-text">5.4 index_options</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-tips"><span class="nav-text">6.  tips</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">北方轻巡舰</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="/css/gitalk.css">
+  <script src="/js/src/md5.min.js"></script>
+  <script src="/js/src/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '4d8264bae956afc03d03',
+		  clientSecret: 'cd2ea936a06ea5daf08bc14cd5538ae1f7eb491e',
+		  repo: 'hoppoComments',
+		  owner: 'zengxin166850',
+		  admin: ['zengxin166850'], 
+		  id: md5(location.pathname),
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script src="/js/src/autoload.js"></script>
+</body>
+</html>

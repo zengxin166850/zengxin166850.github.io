@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="jvm,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在上一次的《从回收算法理解JVM》 中只是简单的提到了分区 GC，本篇文章针对 G1 做了进一步的总结，并解释了无停顿 GC 的部分实现原理">
+<meta name="keywords" content="jvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从回收算法理解JVM（二）">
+<meta property="og:url" content="http://yoursite.com/2022/03/22/从回收算法理解JVM(二)/index.html">
+<meta property="og:site_name" content="北方轻巡舰的博客">
+<meta property="og:description" content="在上一次的《从回收算法理解JVM》 中只是简单的提到了分区 GC，本篇文章针对 G1 做了进一步的总结，并解释了无停顿 GC 的部分实现原理">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://cdn.processon.com/61cac30663768964cae88a95?e=1640681750&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:1GClBPbikrhPFmSriwmFT1IT4NU=">
+<meta property="og:image" content="http://cdn.processon.com/61cacd2c079129360c590e93?e=1640684348&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:sZwXOegb-gXH_vKbxH5AIfyth6c=">
+<meta property="og:image" content="http://cdn.processon.com/61cace2e079129360c5914a8?e=1640684607&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:6wnQ76E1f9V7cKqha0Vn6oNI7zY=">
+<meta property="og:image" content="http://cdn.processon.com/61cad84963768964cae91206?e=1640687193&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:JaQiVfiNNmqmu-q7bu6wBNZB84E=">
+<meta property="og:image" content="http://cdn.processon.com/61b9b4ff7d9c0868e0234f9c?e=1639564047&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:AIU83Sh69qfrU2r8OD2g69HFl-A=">
+<meta property="og:image" content="http://cdn.processon.com/61ceb5c6e401fd7a538eef7c?e=1640940502&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:QbMOQ0ktySYbuQnC_LJftq2Zkic=">
+<meta property="og:image" content="http://cdn.processon.com/61cec002f346fb0692ae44b6?e=1640943122&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:Ibwk-R6T4w1i3Kee_7CgMrZi8XA=">
+<meta property="og:image" content="http://cdn.processon.com/61ced38a5653bb069fede1eb?e=1640948122&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:iCEHRsH2KBfOEBrQ0m-5ZQRD-cs=">
+<meta property="og:image" content="http://cdn.processon.com/61ced31b07912973efb1eceb?e=1640948012&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:PEDSV-sTJbjq1D3RbMT2kxgSxt0=">
+<meta property="og:image" content="http://cdn.processon.com/61ced3327d9c083657b28482?e=1640948035&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:6KqZulgZIyAJsQyAO5__YuKIu7M=">
+<meta property="og:updated_time" content="2022-03-22T14:09:23.841Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从回收算法理解JVM（二）">
+<meta name="twitter:description" content="在上一次的《从回收算法理解JVM》 中只是简单的提到了分区 GC，本篇文章针对 G1 做了进一步的总结，并解释了无停顿 GC 的部分实现原理">
+<meta name="twitter:image" content="http://cdn.processon.com/61cac30663768964cae88a95?e=1640681750&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:1GClBPbikrhPFmSriwmFT1IT4NU=">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2022/03/22/从回收算法理解JVM(二)/">
+
+
+
+
+
+  <title>从回收算法理解JVM（二） | 北方轻巡舰的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">北方轻巡舰的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/03/22/从回收算法理解JVM(二)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="北方轻巡舰">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/header.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北方轻巡舰的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从回收算法理解JVM（二）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-03-22T22:06:24+08:00">
+                2022-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深入java/" itemprop="url" rel="index">
+                    <span itemprop="name">深入java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上一次的《从回收算法理解JVM》 中只是简单的提到了分区 <code>GC</code>，本篇文章针对 <code>G1</code> 做了进一步的总结，并解释了无停顿 <code>GC</code> 的部分实现原理<a id="more"></a></p>
+<h2 id="G1-在并发标记和记忆集维护中的优化"><a href="#G1-在并发标记和记忆集维护中的优化" class="headerlink" title="G1 在并发标记和记忆集维护中的优化"></a>G1 在并发标记和记忆集维护中的优化</h2><h3 id="并发标记中的优化"><a href="#并发标记中的优化" class="headerlink" title="并发标记中的优化"></a>并发标记中的优化</h3><p>介绍三色标记漏标时曾说过 <code>CMS</code> 选择的即不是前进法也不是后退法，而是复用了卡表 <code>card Table</code>，这种方式可以复用 <code>cardTable</code> 的代码逻辑是其中一个原因，另外还有一个重要原因是写屏障是需要业务线程来完成的，并且写屏障本身的效率不高，容易导致性能问题。</p>
+<p><code>G1</code> 在使用删除写屏障时也考虑到了这个问题，并发标记开始后，如果识别到对象的引用关系被删除，那么业务线程会将需要标记为灰色的对象丢入到本地的 <code>SATB</code> 队列中（每个业务线程都有自己的 <code>SATB</code> 队列），然后由 <code>GC</code> 线程在合适的时机去做标记。</p>
+<p>如果本地 <code>SATB</code> 队列放满了。就会将对象转移到全局的 <code>SATB</code> 集合中，然后申请一个空的 <code>SATB</code>，如下所示：</p>
+<p><img src="http://cdn.processon.com/61cac30663768964cae88a95?e=1640681750&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:1GClBPbikrhPFmSriwmFT1IT4NU=" alt="image"></p>
+<p>在这种维护方式下，业务线程无需关心对象的标记操作，减轻了写屏障的负担，效率更高。</p>
+<h3 id="记忆集优化"><a href="#记忆集优化" class="headerlink" title="记忆集优化"></a>记忆集优化</h3><p><strong>①记忆集的维护时机</strong></p>
+<p>上一篇文章介绍过，因为 <code>G1</code> 的整个内存区域分为很多个 <code>Region</code>，为了避免通用记录集导致的很多不必要查找，<code>G1</code> 实际使用的是专属记忆集的方式，即每个 <code>Region</code> 都有自己的专属记忆集。</p>
+<p><img src="http://cdn.processon.com/61cacd2c079129360c590e93?e=1640684348&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:sZwXOegb-gXH_vKbxH5AIfyth6c=" alt="image"></p>
+<p><code>G1</code> 在维护记忆集时依旧是使用写屏障，并且使用到了本地 <code>SATB</code> 队列相似的方式。写屏障只负责将需要记录到 <code>Rset</code> 中的内容写入到 <code>DirtyCardQueue</code> 中，最后再由特殊的 <code>GC</code> 线程（<strong>又称为 Refine 线程</strong>）来完成 <code>Rset</code> 的写入操作</p>
+<p><img src="http://cdn.processon.com/61cace2e079129360c5914a8?e=1640684607&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:6wnQ76E1f9V7cKqha0Vn6oNI7zY=" alt="image"></p>
+<p><strong>②记忆集的存放形式</strong></p>
+<p>对于一个 <code>Region</code> 来说，它的记忆集可能会因为引用关系比较多，而变得很大。根据另一个 <code>Region</code> 对这个 <code>Region</code> 的引用数量，可以分为少、中、多三种情况。针对这三种情况，有三种不同的数据结构来应对，<strong>分别是稀疏表、细粒度表和粗粒度表</strong>。三种表之间的关系是不断粗化的，如下图所示：</p>
+<p><img src="http://cdn.processon.com/61cad84963768964cae91206?e=1640687193&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:JaQiVfiNNmqmu-q7bu6wBNZB84E=" alt="image"></p>
+<h2 id="关于安全点的补充"><a href="#关于安全点的补充" class="headerlink" title="关于安全点的补充"></a>关于安全点的补充</h2><p>当 <code>GC</code> 线程需要进行 <code>STW</code> 时，会等待所有业务线程都运行到最近的安全点，我们知道，标记根对象 <code>GCRoot</code> 是追踪式回收算法必须的阶段， <code>GC</code> 线程在寻找 <code>GCRoot</code> 时并不会从头查找整个上下文和全局的引用位置去做遍历，因为这样做的效率太低了，而且根对象的标记时间也会随着数量变长。所以在 <code>HotSpot</code> 中借助了一种名叫 <code>oopMap</code> 的辅助结构来记录根对象。</p>
+<p>对于静态数据来说，编译器会在解释阶段将 <code>oopMap</code> 维护进去。而对于运行中动态产生的对象。<code>JIT</code> 解释器会负责将它维护到 <code>oopMap</code> 中。</p>
+<p> <strong>所以说 oopmap 的作用，就是避免直接查找根对象</strong>，但是这里有个新问题就是，运行时可以改变 <code>oopMap</code> 的指令太多了。不太可能每个地方都去维护一次 <code>oopmap</code>。</p>
+<p> 所以 <code>HotSpot</code> 仅在一些关键地方来统一维护 <code>oopMap</code> ，这些地方就被称为安全点 <code>safe point</code> 。 这些特定的位置主要在： </p>
+<ul>
+<li>1、循环的末尾 </li>
+<li>2、方法临返回前 / 调用方法的call指令后 </li>
+<li>3、可能抛异常的位置</li>
+</ul>
+<h2 id="Pauseless-GC-是如何实现的"><a href="#Pauseless-GC-是如何实现的" class="headerlink" title="Pauseless  GC 是如何实现的"></a>Pauseless  GC 是如何实现的</h2><p>介绍完前面的 <code>CMS</code> 、 <code>G1</code> 等收集器之后可以发现，在原有的思想下，我们已经把能够实现与业务线程并发工作的地方都做了并发处理了。只剩下复制（<code>G1</code> 中称为转移）对象的地址时，仍然需要 <code>STW</code> 。下面我们看看 <code>HotSpot</code> 中无暂停 <code>GC</code> 的代表 <code>ZGC</code> 是如何做的。（并不是真的说完全无暂停，在进行 <code>GCRoot</code> 标记时还是需要停下来的）</p>
+<p><code>ZGC</code> 和 <code>G1</code> 的思想很相似，它们都使用将存活对象拷贝到空闲区域的方式进行回收，<code>ZGC</code> 也将整个对区域划分为多个小块，回收时也会优先选择一部分区域，而它最主要的区别在于，<strong>ZGC 可以实现并发的活跃对象对象复制</strong>，而这依赖于两个技术：<strong>读屏障+染色指针</strong></p>
+<p>在了解读屏障和染色指针之前，我们需要复习一下计算机基础知识→什么是虚拟地址，以及什么是物理地址。</p>
+<p><strong>首先，物理地址指的是我们 PC 上的那根内存条</strong>，例如我的内存条为 <code>8G</code> ，那么它所能存储的地址就是从 <code>0~8G</code>。在原始时期，程序员想要对数据进行读写操作都得操作物理内存，这就导致每个数据的地址分配在什么地方、如何合理地进行内存划分、如何保证数据的正确性，都需要编程人员来管理，效率十分低下。为了解决这个问题，<code>CPU</code> 的设计人员 基于<strong>局部性原理</strong>进行了一层虚拟化，这就是虚拟内存。这样一来，我们编写程序时就只需要操作虚拟内存就可以了。</p>
+<p><code>CPU</code> 内部通过内存映射单元（<code>MMU</code>）为我们自动完成虚拟内存到物理内存的映射关系，大致如下：</p>
+<blockquote>
+<p>图中的物理空间即我们的内存条，上面的可分配空间并不一定是连续的.而虚拟空间则是根据进程划分，每个进程都对应这一个虚拟空间</p>
+</blockquote>
+<p><img src="http://cdn.processon.com/61b9b4ff7d9c0868e0234f9c?e=1639564047&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:AIU83Sh69qfrU2r8OD2g69HFl-A=" alt="image"></p>
+<p>这里有几个重要的知识点需要掌握：</p>
+<ul>
+<li>1.<code>CPU</code> 为<strong>每个进程</strong>都虚拟化了同样大小的虚拟内存空间</li>
+<li>2.虚拟内存是有大小的，例如 <code>32</code> 位系统是 <code>2^32</code> ,也就是 <code>4G</code> 大小。而 <code>64</code> 系统只使用了低 <code>48</code> 位，大小为 <code>2^48</code>，即 <code>256T</code></li>
+<li>3.虽然虚拟内存很大，但要实际使用这些内存，还是需要分配在物理内存上能使用。</li>
+</ul>
+<p>虚拟内存与物理内存的映射可以用人数和酒店的房间数来做类比，酒店只有 <code>100</code> 间房，在 <code>100</code> 天之内可以住 <code>10000</code> 人，而同时住房的→只有 <code>100</code> 人。（所以如果需要申请的内存超出了 <code>100</code>，就会发生 <code>OOM</code> ）</p>
+<h3 id="读屏障"><a href="#读屏障" class="headerlink" title="读屏障"></a>读屏障</h3><p>在 <code>CMS</code> 和 <code>G1</code> 中都用到了写屏障（<code>write barrier</code>）来解决漏标问题，而 <code>ZGC</code> 中则使用到了与之相对的读屏障（<code>read barrier</code>）技术。</p>
+<p>当业务线程触发访问动作时，如果该对象正在转移过程中，那么访问该对象的原地址。如果对象已经转移完成，那么则访问该对象的新地址。<strong>read barrier 用于判断该对象是否已经转移完成</strong></p>
+<p><img src="http://cdn.processon.com/61ceb5c6e401fd7a538eef7c?e=1640940502&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:QbMOQ0ktySYbuQnC_LJftq2Zkic=" alt="image"></p>
+<p>如上图所示，线程 <code>a</code> 访问时对象 <code>A</code> 还没有完成地址转移，所以访问的是原地址，当线程 <code>b</code> 访问时，对象已经转移完成了，此时就会触发 <code>write barrier</code> 访问转移后的 <code>A&#39;</code> 新地址</p>
+<p><strong>对于一个常规的程序来说，对象的读操作数量通常都会高于写操作的数量，所以读屏障对性能的要求更高，为了解决这个问题，ZGC 使用了染色指针</strong></p>
+<h3 id="染色指针"><a href="#染色指针" class="headerlink" title="染色指针"></a>染色指针</h3><p>前面说到，在 <code>64</code> 位机器上，<code>CPU</code> 为每个进程都虚拟化了 <code>256T</code> 大小的虚拟地址，而我们的程序是用不了这么大内存的，于是 <code>ZGC</code> 将虚拟地址的第 <code>42-45</code> 四个位置作为标记位，把 <code>0-41</code> 位的地址留给程序作为堆空间来使用（依然还能使用 <code>4T</code>）</p>
+<p><img src="http://cdn.processon.com/61cec002f346fb0692ae44b6?e=1640943122&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:Ibwk-R6T4w1i3Kee_7CgMrZi8XA=" alt="image"></p>
+<p><code>ZGC</code> 将不同的标记位置为 <code>1</code>，用于代表对象所处的不同状态，目前包括 <code>Marked0</code>、<code>Marked1</code>、<code>Remapped</code>、<code>Finalizable</code> 四个状态，我们只需关注前三个状态即可，<code>Finalizable</code> 说的是 与弱引用有关(我也没去细看，忽略忽略)，<strong>我们需要关注的重点是，不管这个标记位的值是什么，它们都指向的是同一个物理地址</strong>，为什么要这么做呢？</p>
+<p>试想一下，在以前如果我们要在对象上存储一些额外的、只供收集器或者虚拟机本身使用的数据，<strong>通常会在对象头中增加额外的存储字段</strong>。例如对象的  <code>Hashcode</code>、分代年龄、<code>forwarding</code> 指针、锁标记位等等。这种记录方式在有对象访问的场景下是很自然流畅的，不会有什么额外负担。<strong>但是如果对象存在被移动的可能性，在不知道是否能成功访问到对象的情况下，甚至是不访问对象，但是却希望得知该对象的某些信息的情况下，对象头中的信息就排不上用场了，</strong> 于是乎，<code>ZGC</code> 把主意打在了对象的虚拟地址上。</p>
+<p>下面为染色指针技术带来的一些优势总结：</p>
+<ul>
+<li>1.有了染色指针的支持后，无需直接访问对象，就可以根据地址的标记位判断是否发生了迁移，也就解决了读屏障的性能问题。并且，一旦某个 <code>Region</code> 中的存活对象被移走之后，原来的 <code>Region</code> 就能够释放和重用；</li>
+<li>2.可以减少收集过程中内存屏障的使用数量，在此之前写屏障的目的通常是为了记录对象引用的变动情况，而现在可以直接维护在指针中，并且目前 <code>ZGC</code> 没有使用任何写屏障，一部分是指针带来的优势，另一部分是 <code>ZGC</code> 目前还不支持分代收集，不存在跨代引用。</li>
+<li>3.这种类似的使用地址位进行标记的方式，可以作为一种扩展的存储结构来记录更多的一些信息，以便日后进一步提高性能。</li>
+</ul>
+<p><strong>下面来看看 ZGC 的回收流程</strong>：</p>
+<p>在 <code>GC</code> 线程开始工作前，所有的对象都处于 <code>Remapped</code> 状态，经过 <code>GCRoot</code> 标记之后，会把存活对象的状态标记修改为 <code>Marked0</code> 状态，仍然处于 <code>Remapped</code> 状态的对象则会被当做垃圾对象。在这个过程中<strong>新产生的对象也像 G1 那样，均当做存活对象处理</strong>。</p>
+<p><strong>正因为不同标记位指向的是同一个物理地址，所以，从地址上业务线程就能够判断出该对象是否发生了转移</strong></p>
+<p><img src="http://cdn.processon.com/61ced38a5653bb069fede1eb?e=1640948122&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:iCEHRsH2KBfOEBrQ0m-5ZQRD-cs=" alt="image"></p>
+<p>标记结束后，接下来 <code>GC</code> 线程会把存活对象转移到空闲区域，并为他们分配新的地址空间，此时会涉及到对象的移动。这个过程总体分为以下两个步骤：</p>
+<ul>
+<li>选择一个区域 ，将其中存活的对象，迁移到另一个区域</li>
+<li>将这些存活对象，放到 <code>forwarding table</code> 中（记录了对象的新地址）</li>
+</ul>
+<p><img src="http://cdn.processon.com/61ced31b07912973efb1eceb?e=1640948012&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:PEDSV-sTJbjq1D3RbMT2kxgSxt0=" alt="image"></p>
+<p>由于业务线程访问对象的时机不确定</p>
+<ul>
+<li>如果访问时还没有完成转移（还处于 <code>Marked0</code> 状态），则业务线程会主动完成转移操作（也称为“自愈”过程），并将信息维护到 <code>forwarding table</code> 中。</li>
+<li>如果已经完成了转移，则直接去 <code>forwarding table</code> 中查找映射，修改引用即可</li>
+</ul>
+<p><img src="http://cdn.processon.com/61ced3327d9c083657b28482?e=1640948035&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:6KqZulgZIyAJsQyAO5__YuKIu7M=" alt="image"></p>
+<p><strong>那 Marked1 状态是什么时候使用的呢？</strong></p>
+<p>还记得年轻代，区域划分中的 <code>S0</code> 和 <code>S1</code> 两个 <code>survicor</code> 区域么- -，<code>Marked0</code> 与 <code>Marked1</code> 的关系与它们类似，会在每一次 <code>GC</code> 时互换身份。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>周志明-《深入理解java虚拟机第三版》</li>
+<li>海纳-《编程高手必学的内存知识》</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/jvm/" rel="tag"><i class="fa fa-tag"></i> jvm</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/03/18/Elasticsearch-7.17源码环境搭建/" rel="next" title="Elasticsearch-7.17 源码环境搭建">
+                <i class="fa fa-chevron-left"></i> Elasticsearch-7.17 源码环境搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div id="gitalk-container">
+	</div>
+	
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/header.png" alt="北方轻巡舰">
+            
+              <p class="site-author-name" itemprop="name">北方轻巡舰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zengxin166850" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+		  
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#G1-在并发标记和记忆集维护中的优化"><span class="nav-text">G1 在并发标记和记忆集维护中的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#并发标记中的优化"><span class="nav-text">并发标记中的优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#记忆集优化"><span class="nav-text">记忆集优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于安全点的补充"><span class="nav-text">关于安全点的补充</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pauseless-GC-是如何实现的"><span class="nav-text">Pauseless  GC 是如何实现的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#读屏障"><span class="nav-text">读屏障</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#染色指针"><span class="nav-text">染色指针</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">北方轻巡舰</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="/css/gitalk.css">
+  <script src="/js/src/md5.min.js"></script>
+  <script src="/js/src/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '4d8264bae956afc03d03',
+		  clientSecret: 'cd2ea936a06ea5daf08bc14cd5538ae1f7eb491e',
+		  repo: 'hoppoComments',
+		  owner: 'zengxin166850',
+		  admin: ['zengxin166850'], 
+		  id: md5(location.pathname),
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script src="/js/src/autoload.js"></script>
+</body>
+</html>
