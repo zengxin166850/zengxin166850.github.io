@@ -90,22 +90,20 @@
 <meta name="keywords" content="elasticsearch">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Elasticsearch-7.17 源码环境搭建">
-<meta property="og:url" content="http://yoursite.com/2022/03/18/Elasticsearch-7.17源码环境搭建/index.html">
+<meta property="og:url" content="http://yoursite.com/2022/10/05/Elasticsearch-7.17源码环境搭建/index.html">
 <meta property="og:site_name" content="北方轻巡舰的博客">
 <meta property="og:description" content="准备环境本次我选择的环境是 7.X 中目前最新的 7.17 版本，代码下载下来之后，需要关注的文件有以下三个：  CONTRIBUTING.md gradle.properties gradle-wrapper.properties  CONTRIBUTING.md 中的 Contributing to the Elasticsearch codebase部分详细说明了需要的 JDK 版本，">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="c:/Users/14452/AppData/Roaming/Typora/typora-user-images/image-20220319170442856.png">
-<meta property="og:image" content="c:/Users/14452/AppData/Roaming/Typora/typora-user-images/image-20220319171719577.png">
-<meta property="og:image" content="c:/Users/14452/AppData/Roaming/Typora/typora-user-images/image-20220319172804255.png">
-<meta property="og:image" content="c:/Users/14452/AppData/Roaming/Typora/typora-user-images/image-20220319183326218.png">
-<meta property="og:image" content="c:/Users/14452/AppData/Roaming/Typora/typora-user-images/image-20220319185038146.png">
-<meta property="og:image" content="c:/Users/14452/AppData/Roaming/Typora/typora-user-images/image-20220319185342039.png">
-<meta property="og:image" content="c:/Users/14452/AppData/Roaming/Typora/typora-user-images/image-20220319211949574.png">
-<meta property="og:updated_time" content="2022-03-19T15:16:46.142Z">
+<meta property="og:image" content="http://cdn.processon.com/633da4b807912921d8ff42c5?e=1664987848&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:WCgUzJ0FknNyCWfMxumD5ymhVzA=">
+<meta property="og:image" content="http://cdn.processon.com/633e3d58e401fd39088efa57?e=1665026920&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:CmvwLtotEk1RbUn4HlKSdXEDlDo=">
+<meta property="og:image" content="http://cdn.processon.com/633e3b850e3e740c57f24a94?e=1665026453&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:705uYm-8ftmW1V2sK4ddPi2yW14=">
+<meta property="og:image" content="http://cdn.processon.com/633e44331efad41678745998?e=1665028675&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:sTX4NJC3XTlQab5hCURe5amOlrQ=">
+<meta property="og:image" content="http://cdn.processon.com/633e4569e0b34d40be519448?e=1665028985&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:yxrGtEMV9sB00-OY6pmIrtfu5Vs=">
+<meta property="og:updated_time" content="2022-10-06T03:03:59.638Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elasticsearch-7.17 源码环境搭建">
 <meta name="twitter:description" content="准备环境本次我选择的环境是 7.X 中目前最新的 7.17 版本，代码下载下来之后，需要关注的文件有以下三个：  CONTRIBUTING.md gradle.properties gradle-wrapper.properties  CONTRIBUTING.md 中的 Contributing to the Elasticsearch codebase部分详细说明了需要的 JDK 版本，">
-<meta name="twitter:image" content="c:/Users/14452/AppData/Roaming/Typora/typora-user-images/image-20220319170442856.png">
+<meta name="twitter:image" content="http://cdn.processon.com/633da4b807912921d8ff42c5?e=1664987848&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:WCgUzJ0FknNyCWfMxumD5ymhVzA=">
 
 
 
@@ -135,7 +133,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2022/03/18/Elasticsearch-7.17源码环境搭建/">
+  <link rel="canonical" href="http://yoursite.com/2022/10/05/Elasticsearch-7.17源码环境搭建/">
 
 
 
@@ -301,7 +299,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/03/18/Elasticsearch-7.17源码环境搭建/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/10/05/Elasticsearch-7.17源码环境搭建/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="北方轻巡舰">
@@ -330,8 +328,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-03-18T21:52:12+08:00">
-                2022-03-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-10-05T13:41:43+08:00">
+                2022-10-05
               </time>
             
 
@@ -398,7 +396,7 @@
 </ul>
 <p><code>CONTRIBUTING.md</code> 中的 <code>Contributing to the Elasticsearch codebase</code>部分详细说明了需要的 <code>JDK</code> 版本，<a id="more"></a>而后面的两个 <code>Ggradle</code> 文件中则声明了对应分支所使用的 <code>Gradle</code> 版本，以及一些额外的要求（其它版本的要求类似，都可以在这些文档中找到），以下为从上述文件中获取到的 <code>7.17</code> 的环境要求信息：</p>
 <ul>
-<li><code>JDK 16</code>（因为在 <a href="https://github.com/elastic/elasticsearch/blob/7.17/gradle.properties" target="_blank" rel="noopener">gradle.properties</a> 文件中明确提到 <code>--add-exports</code>需要 <code>working with jdk16</code>）；</li>
+<li><code>JDK 17</code>；</li>
 <li><code>GRADLE_USER_HOME</code>，环境变量，用于指定依赖的下载位置；</li>
 <li><code>gradle-7.4.1</code> ，在 <a href="https://github.com/elastic/elasticsearch/blob/7.17/gradle/wrapper/gradle-wrapper.properties" target="_blank" rel="noopener">gradle-wrapper.properties</a>中有详细描述，最好的方式是使用 <code>./gradlew</code> 或者<code>gradlew.bat</code> ，它们会自动下载 wrapper文件中对应版本的 <code>gradle</code>，并存放到 <code>GRADLE_USER_HOME</code> 中；</li>
 </ul>
@@ -407,25 +405,23 @@
 <li>选择 <strong>File &gt; Open</strong></li>
 <li>在子窗口中，选择源代码根目录所在的  <code>build.gradle</code> 文件</li>
 <li>在子窗口中选择  <strong>Open as Project</strong></li>
-<li>选择 <strong>File &gt; Project Structure</strong>，设置项目的 <code>SDK</code> 为 <code>JDK16</code></li>
+<li>选择 <strong>File &gt; Project Structure</strong>，设置项目的 <code>SDK</code> 为 <code>JDK17</code></li>
 </ul>
-<p><img src="C:\Users\14452\AppData\Roaming\Typora\typora-user-images\image-20220319170442856.png" alt="image-20220319170442856"></p>
 <blockquote>
 <p>张超老师的源码书中，6.3左右的版本中需要先执行 <code>./gradlew idea</code> 再进行导入，目前使用该命令时会提示已经过时</p>
 </blockquote>
 <h1 id="启动项目"><a href="#启动项目" class="headerlink" title="启动项目"></a>启动项目</h1><p>等待 <code>Gradle</code> 下载完依赖包之后，我们就可以开始启动项目了，具体的程序入口在 <code>server</code> 目录下的 <code>org.elasticsearch.bootstrap.Elasticsearch#main</code> 方法里。这里我们需要针对启动做一些额外配置：</p>
 <p>首先在 <code>idea</code> 的 <strong>run &gt; Edit Configuration</strong> 中新建一个 <code>Application</code> ，设置名称为 <code>local</code> 以及对应的 <code>SDK</code></p>
-<p><img src="C:\Users\14452\AppData\Roaming\Typora\typora-user-images\image-20220319171719577.png" alt="image-20220319171719577"></p>
+<p><img src="http://cdn.processon.com/633da4b807912921d8ff42c5?e=1664987848&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:WCgUzJ0FknNyCWfMxumD5ymhVzA=" alt="image-20220319171719577"></p>
 <p>设置模块名为 <code>elasticsearch.server.main</code>（不先设置的话 <code>Main class</code> 会找不到指定类），设置<code>Main class</code> 为 <code>org.elasticsearch.bootstrap.Elasticsearch</code>，同时找到 <code>Modify options</code>，将 <code>add vm options</code> 选中（我用的 <code>idea2021.3</code> 版本默认是隐藏了的）</p>
-<p><img src="C:\Users\14452\AppData\Roaming\Typora\typora-user-images\image-20220319172804255.png" alt="image-20220319172804255"></p>
 <p><strong>vm options</strong> 一栏的具体内容如下所示：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-Des.path.home=I:\eshome</span><br><span class="line">-Des.path.conf=I:\eshome\config</span><br><span class="line">-Dlog4j2.disable.jmx=true</span><br><span class="line">-Djava.security.policy=I:\eshome\config\elasticsearch.policy</span><br><span class="line">-Xms1g</span><br><span class="line">-Xmx1g</span><br></pre></td></tr></table></figure>
-<p>在解释这些信息前，我们需要创建一个 eshome 目录（名称随意，可以在你电脑磁盘任意位置），ES 在启动时需要从中加载配置、模块，并向该目录写入相关日志信息。然后我们还需要向其中拷贝一些必要的模块和配置文件。获取这些文件的方式有以下两种：</p>
+<p>在解释这些信息前，我们需要创建一个 <code>eshome</code> 目录（名称随意，可以在你电脑磁盘任意位置），<code>ES</code> 在启动时需要从中加载配置、模块，并向该目录写入相关日志信息。然后我们还需要向其中拷贝一些必要的模块和配置文件。获取这些文件的方式有以下两种：</p>
 <ul>
 <li>选择官方发布包对应版本，解压后将 <code>config</code>、<code>modules</code>、<code>plugins</code> 目录复制到 <code>eshome</code> 目录中，<strong>注意修改 elasticsearch.yml 中的配置</strong></li>
-<li>参考 <code>README</code> 中的说明自行编译，然后拷贝到 <code>eshome</code> 目录中，<strong>注意修改 elasticsearch.yml 中的配置</strong>。运行 <code>./gradlew localDistro</code> 之后即可根据自己当前的操作系统编译出对应的包，例如我是 windows系统，可以在 <code>distribution/archives/windows-zip</code>中找到编译完成的文件。</li>
+<li>参考 <code>README</code> 中的说明自行编译，然后拷贝到 <code>eshome</code> 目录中，运行 <code>./gradlew localDistro</code> 之后即可根据自己当前的操作系统编译出对应的包，例如我是 windows系统，可以在 <code>distribution/archives/windows-zip</code> 中找到编译完成的文件。<strong>注意修改 elasticsearch.yml 中的配置</strong></li>
 </ul>
-<p>现在我们来细看下 vm options 中各参数的含义：</p>
+<p>现在我们来细看下 <code>vm options</code> 中各参数的含义：</p>
 <table>
 <thead>
 <tr>
@@ -448,7 +444,7 @@
 </tr>
 <tr>
 <td>-Dlog4j2.disable.jmx</td>
-<td>不加此参数倒也能启动，不过控制台中会多出一些 access denied的错误</td>
+<td>不加此参数倒也能启动，不过控制台中会多出一些 access denied 的错误</td>
 </tr>
 <tr>
 <td>-Xms、-Xmx</td>
@@ -456,16 +452,16 @@
 </tr>
 </tbody>
 </table>
-<p>除上述信息外，我们还需要手动创建一个名为 <strong>elasticsearch.policy</strong> 的文件，其内容如下：</p>
+<p>除上述信息外，我们还需要在 <code>config</code> 目录下手动创建一个名为 <strong>elasticsearch.policy</strong> 的文件，其内容如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">grant &#123;</span><br><span class="line">	permission javax.management.MBeanTruxtPermission &quot;register&quot;;</span><br><span class="line">	permission javax.management.MBeanServerPermission &quot;createMBeanServer&quot;;</span><br><span class="line">	permission java.lang.RuntimePermission &quot;createClassLoader&quot;;</span><br><span class="line">	permission java.lang.RuntimePermission &quot;getClassLoader&quot;;</span><br><span class="line">	permission java.lang.RuntimePermission &quot;setContextClassLoader&quot;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>不同版本下会存在一些区别，启动时如果缺少 <code>permission</code> （例如将上述的最后一行删掉）会报类似如下的错误，将其添加到 <code>policy</code> 文件中即可，本质原因是由于 <code>ES</code> 自定义了代码安全策略，并在自己的 <code>security.policy</code> 文件中进行管理。而我们在调试时 <code>idea</code> 是使用的自行编译的 <code>class</code> 文件，详情可参考这篇文章 <a href="https://www.cnblogs.com/wufengtinghai/p/14579618.html" target="_blank" rel="noopener">elasticsearch之自定义Java代码的安全策略管理</a>。</p>
-<p><img src="C:\Users\14452\AppData\Roaming\Typora\typora-user-images\image-20220319183326218.png" alt="image-20220319183326218"></p>
-<p>配置好自定义的 <code>policy</code> 文件之后，我们还需要在 <code>server</code> 模块的 <code>resouces</code> 目录下找到源码中携带的 <code>security.policy</code>文件</p>
-<p><img src="C:\Users\14452\AppData\Roaming\Typora\typora-user-images\image-20220319185038146.png" alt="image-20220319185038146"></p>
-<p>注释掉 <code>codebase.elasticsearch-secure-sm</code> ，<code>codebase.elasticsearch</code>，<code>codebase.elasticsearch-plugin-classloader</code> 三处的权限配置，否则在启动时你会看到如下报错信息= =。（这里的原因是，此部分配置是针对打包后的设置，而我们在调试运行时，只有 <code>classes</code> 文件，所以会识别不到，详情也可参考社区里的提问<a href="https://elasticsearch.cn/question/11513" target="_blank" rel="noopener">idea运行es报Unknown codebases异常</a>）</p>
-<p><img src="C:\Users\14452\AppData\Roaming\Typora\typora-user-images\image-20220319185342039.png" alt="image-20220319185342039"></p>
+<p><img src="http://cdn.processon.com/633e3d58e401fd39088efa57?e=1665026920&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:CmvwLtotEk1RbUn4HlKSdXEDlDo=" alt="image-20220319183326218"></p>
+<p>配置好自定义的 <code>policy</code> 文件之后，我们还需要在 <code>server</code> 模块的 <code>resouces</code> 目录下找到源码中携带的 <code>security.policy</code>文件，注释掉该文件的 <code>codebase.elasticsearch-secure-sm</code> ，<code>codebase.elasticsearch</code>，<code>codebase.elasticsearch-plugin-classloader</code> 三处的权限配置，否则在启动时你会看到如下报错信息。（这里的原因是，此部分配置是针对打包后的设置，而我们在调试运行时，只有 <code>classes</code> 文件，所以会识别不到，详情也可参考社区里的提问<a href="https://elasticsearch.cn/question/11513" target="_blank" rel="noopener">idea运行es报Unknown codebases异常</a>）</p>
+<p><img src="http://cdn.processon.com/633e3b850e3e740c57f24a94?e=1665026453&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:705uYm-8ftmW1V2sK4ddPi2yW14=" alt></p>
 <p>到这里，我们的环境就配置完成了，点击启动，就能看到调试运行单机版的 <code>ES</code> 了</p>
-<p><img src="C:\Users\14452\AppData\Roaming\Typora\typora-user-images\image-20220319211949574.png" alt="image-20220319211949574"></p>
+<p><img src="http://cdn.processon.com/633e44331efad41678745998?e=1665028675&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:sTX4NJC3XTlQab5hCURe5amOlrQ=" alt="image-20220319211949574"></p>
+<p>另外，节点在启动时默认会去官网同步 <code>geoip</code> 数据，如果 <code>elasticsearch.yml</code> 文件中没有设置  <code>ingest.geoip.downloader.enabled: false</code> 的话，会显示 <code>access denied (org.elasticsearch.secure_sm.ThreadPermission &quot;modifyArbitraryThreadGroup&quot;)</code> ，如果不希望看到报错信息的话，加上该配置即可解决。下图为我使用的配置文件内容：</p>
+<p><img src="http://cdn.processon.com/633e4569e0b34d40be519448?e=1665028985&amp;token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:yxrGtEMV9sB00-OY6pmIrtfu5Vs=" alt></p>
 <h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><ul>
 <li><a href="https://book.douban.com/subject/30386800/" target="_blank" rel="noopener">《Elasticsearch源码解析与优化实战 》</a></li>
 <li><a href="https://www.cnblogs.com/wufengtinghai/p/14579618.html" target="_blank" rel="noopener">elasticsearch之自定义Java代码的安全策略管理</a></li>
@@ -502,8 +498,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/10/31/从回收算法理解JVM(一)/" rel="next" title="从回收算法理解JVM（一）">
-                <i class="fa fa-chevron-left"></i> 从回收算法理解JVM（一）
+              <a href="/2022/03/22/从回收算法理解JVM(二)/" rel="next" title="从回收算法理解JVM（二）">
+                <i class="fa fa-chevron-left"></i> 从回收算法理解JVM（二）
               </a>
             
           </div>
@@ -511,10 +507,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2022/03/22/从回收算法理解JVM(二)/" rel="prev" title="从回收算法理解JVM（二）">
-                从回收算法理解JVM（二） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
